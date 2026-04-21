@@ -322,40 +322,45 @@
 
 <script>
 const App = {
-    // تم تغيير الاعتماد ليكون على السيرفر الخاص بك
-    apiUrl: 'http://localhost:5000/api',
+    // التعديل هنا: شلنا localhost عشان يشتغل على الإنترنت مباشرة
+    apiUrl: '/api', 
     db: { users: [], requests: [], logs: [] },
     curr: null,
     tempSub: null,
-    chartInstance: null,
 
-    // دالة لجلب البيانات المركزية من السيرفر
-    fetchData: async () => {
+    // دالة جلب البيانات الأساسية
+    async init() {
         try {
-            const response = await fetch(`${App.apiUrl}/data`);
-            if(!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            App.db = data;
+            const res = await fetch(`${this.apiUrl}/data`);
+            const data = await res.json();
+            this.db = data;
         } catch (error) {
             console.error('فشل الاتصال بالسيرفر:', error);
-            // لن نظهر تنبيه مزعج هنا لتجنب التشويش المستمر إذا كان السيرفر مغلقاً أثناء التطوير
         }
     },
 
-    // دالة لتسجيل الحركات في السيرفر
-    logAction: async (action) => {
-        const logData = { date: new Date().toLocaleString('ar-KW'), user: App.curr ? App.curr.name : 'النظام', action: action };
+    // دالة تسجيل الحركات (التي كانت في الصورة الثانية)
+    async logAction(action) {
+        const logData = { 
+            date: new Date().toLocaleString('ar-KW'), 
+            user: this.curr ? this.curr.name : 'غير معروف',
+            action: action 
+        };
         try {
-            await fetch(`${App.apiUrl}/logs`, {
+            await fetch(`${this.apiUrl}/logs`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(logData)
             });
-            App.db.logs.unshift(logData); // تحديث الواجهة محلياً
+            this.db.logs.unshift(logData);
         } catch (error) {
             console.error('خطأ في تسجيل الحركة:', error);
         }
-    },
+    }
+};
+// تشغيل النظام
+App.init();
+</script>
 
     init: async () => {
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-KW'); }, 1000);
