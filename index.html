@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>منظومة الإشراف الرقمي - وزارة الشؤون الإسلامية</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #1b4532; --primary-dark: #0a2b1f; 
+            --gold: #c5a059; --bg: #f0f4f3;
+            --card-bg: #ffffff; --text-main: #1a1a1a;
+            --white: #ffffff; --danger: #e63946; --success: #2a9d8f; --info: #023e8a;
+            --whatsapp: #25D366; --shadow: 0 4px 15px rgba(0,0,0,0.1); --border: #ddd;
+        }
+
+        /* الوضع الليلي */
+        body.dark-mode {
+            --primary: #2d6a4f; --primary-dark: #1b4532; 
+            --bg: #121212; --card-bg: #1e1e1e; --text-main: #f0f0f0;
+            --border: #333; --white: #1e1e1e;
+        }
+        body.dark-mode table, body.dark-mode th, body.dark-mode td { background: #1e1e1e; color: #f0f0f0; border-color: #333; }
+        body.dark-mode th { background: #2d6a4f; color: var(--gold); }
+        body.dark-mode .nav-item { background: #333; color: #ccc; }
+        body.dark-mode .form-control { background: #333; color: #fff; border-color: #555; }
+        body.dark-mode .sub-data-box { background: #2a2a2a; color:#fff;}
+
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 0; overflow-x: hidden; transition: 0.3s; }
+        
+        .top-bar { background: var(--primary-dark); color: var(--gold); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: bold; border-bottom: 2px solid var(--gold); }
+        .top-icons { display: flex; gap: 15px; align-items: center; }
+        .top-icons i { cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .top-icons i:hover { color: #fff; }
+
+        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 25px 15px; text-align: center; color: white; border-bottom: 4px solid var(--gold); }
+        header h1 { font-family: 'Amiri', serif; margin: 0; font-size: 28px; letter-spacing: 1px; }
+        
+        nav { display: flex; background: var(--card-bg); overflow-x: auto; padding: 10px; gap: 8px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nav-item { padding: 10px 18px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 700; background: #eee; font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .nav-item.active-nav { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(27,69,50,0.3); }
+
+        main { padding: 15px; max-width: 1200px; margin: auto; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; display: none; animation: fadeIn 0.4s ease; }
+        .card.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid var(--border); }
+        table { width: 100%; min-width: 900px; border-collapse: collapse; background: var(--card-bg); }
+        th, td { padding: 14px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; }
+        th { background: #f8f9fa; color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--gold); }
+        tr:hover { background: rgba(0,0,0,0.02); }
+
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--primary); font-size: 14px; }
+        .form-control { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: 'Cairo'; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
+        .form-control:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2); }
+        
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-info { background: var(--info); color: white; }
+        .btn-excel { background: #1D6F42; color: white; }
+        .btn-wa { background: var(--whatsapp); color: white; font-size: 12px; padding: 8px 12px; }
+
+        .badge { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .bg-wait { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-done { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .bg-frozen { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+
+        #subSearchResults { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--gold); border-radius: 10px; max-height: 250px; overflow-y: auto; z-index: 1000; box-shadow: var(--shadow); display: none; margin-top: 5px; }
+        .search-item { padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .search-item:hover { background: rgba(197, 160, 89, 0.1); border-right: 4px solid var(--gold); }
+        
+        .sub-data-box { background: #f8f9fa; border: 2px dashed var(--gold); padding: 15px; border-radius: 10px; margin-top: 15px; display: none; }
+        .hr-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto;}
+        .hr-tab { flex: 1; padding: 12px; background: #eee; color: #333; border-radius: 10px; text-align: center; cursor: pointer; font-weight: bold; transition: 0.3s; white-space: nowrap; min-width: 120px;}
+        .hr-tab.active { background: var(--gold); color: white; }
+
+        /* نافذة منبثقة (Modal) للتعديل */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto;}
+
+        /* تنسيقات الطباعة */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            nav, .top-bar, .btn { display: none !important; }
+            .card { box-shadow: none; border: none; }
+        }
+        
+        .notice-box {
+            background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px; font-size: 13px; line-height: 1.8;
+        }
+        body.dark-mode .notice-box {
+            background: #332701; color: #ffeb8a; border: 1px solid #5a4601;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar no-print">
+    <div id="hijriDate">جاري الحساب...</div>
+    <div class="top-icons">
+        <i class="fas fa-moon" onclick="App.toggleTheme()" title="الوضع الليلي"></i>
+        <div id="clock">00:00:00</div>
+    </div>
+</div>
+
+<header class="no-print">
+    <h1>وزارة الشؤون الإسلامية</h1>
+    <div style="margin-top:8px; font-size:15px; font-weight:600; color:var(--gold)">إدارة مساجد محافظة الأحمدي</div>
+</header>
+
+<nav id="mainNav" class="no-print">
+    <div class="nav-item active-nav" id="n-login" onclick="App.showPage('loginPage')"><i class="fas fa-lock"></i> دخول</div>
+    <div class="nav-item" id="n-reg" onclick="App.showPage('regPage')"><i class="fas fa-user-plus"></i> تسجيل جديد</div>
+    <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('empDash')"><i class="fas fa-home"></i> الرئيسة</div>
+    <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('requestPage')"><i class="fas fa-calendar-plus"></i> طلب إجازة</div>
+    <div class="nav-item cul-only" style="display:none;" onclick="App.showPage('culturalDash')"><i class="fas fa-check-double"></i> لوحة التوجيه</div>
+    <div class="nav-item hr-only" style="display:none;" onclick="App.showPage('hrDash')"><i class="fas fa-users-cog"></i> شؤون العاملين</div>
+    <div class="nav-item" style="color:var(--danger); display:none;" id="n-logout" onclick="App.logout()"><i class="fas fa-sign-out-alt"></i> خروج</div>
+</nav>
+
+<main>
+    <div id="loginPage" class="card active">
+        <h3 style="text-align:center; color:var(--primary); margin-top:0;">تسجيل دخول النظام</h3>
+        <div class="form-group">
+            <label>الدخول بصفتي:</label>
+            <select id="loginRole" class="form-control">
+                <option value="emp">موظف (إمام / مؤذن)</option>
+                <option value="cultural">التوجيه الثقافي</option>
+                <option value="hr">شؤون العاملين</option>
+            </select>
+        </div>
+        <div class="form-group"><label>الرقم المدني:</label><input type="tel" id="loginId" class="form-control" placeholder="12 رقم"></div>
+        <div class="form-group"><label>كلمة المرور:</label><input type="password" id="loginPass" class="form-control" placeholder="******"></div>
+        <button class="btn btn-primary" onclick="App.login()">تسجيل الدخول <i class="fas fa-arrow-left"></i></button>
+    </div>
+
+    <div id="regPage" class="card">
+        <h3>إنشاء حساب موظف جديد</h3>
+        <div class="form-group"><label>الاسم الرباعي:</label><input type="text" id="rName" class="form-control"></div>
+        <div class="form-group"><label>الرقم المدني:</label><input type="tel" id="rId" class="form-control"></div>
+        <div class="form-group"><label>رقم الملف:</label><input type="text" id="rFile" class="form-control"></div>
+        <div class="form-group"><label>اسم المسجد الحالي:</label><input type="text" id="rPlace" class="form-control"></div>
+        <div class="form-group"><label>رقم الهاتف (واتساب):</label><input type="tel" id="rPhone" class="form-control"></div>
+        <div class="form-group"><label>نوع البند:</label>
+            <select id="rContract" class="form-control">
+                <option value="عامة">عامة</option><option value="مكافآت">مكافآت</option>
+                <option value="إيرادات">إيرادات</option><option value="عقد ثاني">عقد ثاني</option>
+                <option value="استعانة بخبرات">استعانة بخبرات</option><option value="راتب مقطوع">راتب مقطوع</option>
+            </select>
+        </div>
+        <div class="form-group"><label>كلمة المرور:</label><input type="password" id="rPass" class="form-control"></div>
+        <button class="btn btn-primary" onclick="App.register()">تفعيل الحساب الآن</button>
+    </div>
+
+    <div id="empDash" class="card">
+        <div id="empHeader" style="background:var(--primary-dark); color:white; padding:15px; border-radius:12px; margin-bottom:15px;"></div>
+        <div id="noticeArea"></div>
+        <h4>سجل إجازاتي</h4>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>رقم الطلب</th><th>النوع</th><th>البديل</th><th>الفترة والمدة</th><th>حالة الطلب</th><th>طباعة</th></tr></thead>
+                <tbody id="employeeTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="requestPage" class="card">
+        <h3>تقديم طلب إجازة (إجازة الصيف)</h3>
+        
+        <div class="notice-box">
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: inherit;"><i class="fas fa-exclamation-triangle"></i> شروط وتعليمات هامة قبل التقديم:</h4>
+            <ul style="padding-right: 20px; margin-bottom: 0;">
+                <li>يجب تقديم طلب الإجازة قبل <b>سبعة أيام</b> من بدايتها على الأقل.</li>
+                <li>عدم القيام بأية إجراءات للسفر (حجز تذاكر - موعد مسبق) دون اعتماد الإجازة رسمياً.</li>
+                <li>عدم قبول أي تمديد للإجازة وعند التأخير لمدة (7) أيام يعد انقطاع عن العمل.</li>
+                <li>يجب أن يكون البديل <b>من نفس المسجد</b>، ولا يحق للبديل طلب إجازة إلا بعد عودة زميله.</li>
+                <li>يراعى أن يكون الفارق بين إجازة الإمام والمؤذن <b>ثلاثة أيام</b> على الأقل.</li>
+                <li>آخر موعد لتقديم إجازات الصيف هو <b>2026/05/21 م</b>.</li>
+                <li><b>ملاحظة:</b> العاملين على بند (العقد الثاني، الاستعانة) يتم تسجيل إجازتهم على برنامج الديوان وإرسال صورة التسجيل للإدارة.</li>
+            </ul>
+        </div>
+
+        <div class="form-group"><label>نوع الإجازة:</label>
+            <select id="leaveType" class="form-control">
+                <option value="دورية">دورية</option><option value="خاصة">خاصة</option><option value="إجازة الصيف">إجازة الصيف</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>البحث عن البديل (البحث مخصص لزملاء نفس المسجد فقط):</label>
+            <input type="text" id="subSearch" class="form-control" placeholder="اكتب اسم الزميل هنا..." onkeyup="App.searchSub(this.value)">
+            <div id="subSearchResults"></div>
+            <div id="subDataBox" class="sub-data-box">
+                <div style="font-weight:bold; color:var(--primary); border-bottom:1px solid var(--border); margin-bottom:8px; padding-bottom:5px;">بيانات البديل المختار:</div>
+                <div><b>الاسم:</b> <span id="sName"></span></div>
+                <div><b>المسجد:</b> <span id="sPlace"></span></div>
+                <div><b>المدني:</b> <span id="sId"></span></div>
+            </div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group"><label>تبدأ من:</label><input type="date" id="dStart" class="form-control"></div>
+            <div class="form-group"><label>تنتهي في:</label><input type="date" id="dEnd" class="form-control"></div>
+        </div>
+        <button class="btn btn-primary" id="btnReq" onclick="App.submitRequest()" disabled>إرسال الطلب للاعتماد</button>
+    </div>
+
+    <div id="culturalDash" class="card">
+        <h3>لوحة التوجيه الثقافي</h3>
+        <div class="hr-tabs">
+            <div class="hr-tab active" onclick="App.switchCulTab('reqs', this)">الطلبات بانتظار الاعتماد</div>
+            <div class="hr-tab" onclick="App.switchCulTab('archive', this)">أرشيف التوجيه</div>
+        </div>
+        
+        <div id="culReqsView">
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>بيانات الموظف</th><th>بيانات البديل</th><th>الفترة</th><th>الإجراء</th></tr></thead>
+                    <tbody id="culturalTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="culArchiveView" style="display:none;">
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>المجاز (الاسم، المدني، الهاتف)</th><th>البديل (الاسم، المدني، الهاتف)</th><th>الفترة والمدة</th><th>الحالة</th></tr></thead>
+                    <tbody id="culturalArchiveTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="hrDash" class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+            <h2 style="margin:0;">إدارة شؤون العاملين</h2>
+            <button class="btn btn-excel" onclick="App.exportExcel()"><i class="fas fa-file-excel"></i> تصدير الأرشيف الشامل</button>
+        </div>
+        <div class="hr-tabs">
+            <div class="hr-tab active" onclick="App.switchHrTab('dash', this)"><i class="fas fa-chart-pie"></i> الإحصائيات</div>
+            <div class="hr-tab" onclick="App.switchHrTab('requests', this)"><i class="fas fa-bell"></i> الطلبات الجديدة</div>
+            <div class="hr-tab" onclick="App.switchHrTab('emps', this)"><i class="fas fa-users"></i> الموظفين والصلاحيات</div>
+            <div class="hr-tab" onclick="App.switchHrTab('archive', this)"><i class="fas fa-archive"></i> الأرشيف المفصل</div>
+            <div class="hr-tab" onclick="App.switchHrTab('logs', this)"><i class="fas fa-history"></i> سجل النظام</div>
+        </div>
+        
+        <div id="hrStatsView">
+            <div style="max-width: 400px; margin: auto;">
+                <canvas id="reqChart"></canvas>
+            </div>
+        </div>
+
+        <div id="hrReqView" style="display:none;">
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>الموظف</th><th>المسجد</th><th>البديل</th><th>الفترة</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                    <tbody id="hrTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="hrEmpView" style="display:none;">
+            <input type="text" class="form-control" placeholder="ابحث بالاسم، المدني، أو رقم الملف..." onkeyup="App.filterEmps(this.value)" style="margin-bottom:15px;">
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>الملف</th><th>الاسم</th><th>المدني</th><th>الهاتف</th><th>الحالة</th><th>التحكم والصلاحيات</th></tr></thead>
+                    <tbody id="hrEmpTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="hrArchiveView" style="display:none;">
+            <div style="margin-bottom:15px; background:var(--bg); padding:10px; border-radius:8px;">
+                <label>تصفية الأرشيف حسب الشهر:</label>
+                <input type="month" id="hrMonthArchive" class="form-control" style="max-width:250px;" onchange="App.renderHrArchive()">
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>المجاز (الاسم، المدني، الهاتف)</th><th>البديل (الاسم، المدني، الهاتف)</th><th>الفترة والمدة</th><th>الحالة النهائية</th></tr></thead>
+                    <tbody id="hrArchiveTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="hrLogsView" style="display:none;">
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>الوقت والتاريخ</th><th>المستخدم</th><th>الإجراء الذي تم</th></tr></thead>
+                    <tbody id="hrLogsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="printArea" style="display:none;"></div>
+</main>
+
+<div class="modal-overlay" id="editModal">
+    <div class="modal-content">
+        <h3 style="color:var(--primary); margin-top:0;">تعديل بيانات الموظف</h3>
+        <input type="hidden" id="editId">
+        <div class="form-group"><label>الاسم:</label><input type="text" id="editName" class="form-control"></div>
+        <div class="form-group"><label>المسجد:</label><input type="text" id="editPlace" class="form-control"></div>
+        <div class="form-group"><label>رقم الهاتف:</label><input type="tel" id="editPhone" class="form-control"></div>
+        <div class="form-group"><label>البند:</label><input type="text" id="editContract" class="form-control"></div>
+        <div class="form-group"><label>كلمة المرور الجديدة:</label><input type="text" id="editPass" class="form-control"></div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-success" onclick="App.saveEmpEdit()">حفظ التعديلات</button>
+            <button class="btn btn-danger" onclick="document.getElementById('editModal').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const App = {
+    // تم تغيير الاعتماد ليكون على السيرفر الخاص بك
+    apiUrl: 'http://localhost:5000/api',
+    db: { users: [], requests: [], logs: [] },
+    curr: null,
+    tempSub: null,
+    chartInstance: null,
+
+    // دالة لجلب البيانات المركزية من السيرفر
+    fetchData: async () => {
+        try {
+            const response = await fetch(`${App.apiUrl}/data`);
+            if(!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            App.db = data;
+        } catch (error) {
+            console.error('فشل الاتصال بالسيرفر:', error);
+            // لن نظهر تنبيه مزعج هنا لتجنب التشويش المستمر إذا كان السيرفر مغلقاً أثناء التطوير
+        }
+    },
+
+    // دالة لتسجيل الحركات في السيرفر
+    logAction: async (action) => {
+        const logData = { date: new Date().toLocaleString('ar-KW'), user: App.curr ? App.curr.name : 'النظام', action: action };
+        try {
+            await fetch(`${App.apiUrl}/logs`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(logData)
+            });
+            App.db.logs.unshift(logData); // تحديث الواجهة محلياً
+        } catch (error) {
+            console.error('خطأ في تسجيل الحركة:', error);
+        }
+    },
+
+    init: async () => {
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-KW'); }, 1000);
+        document.getElementById('hijriDate').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(new Date());
+        
+        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
+        document.addEventListener('click', (e) => {
+            if(e.target.id !== 'subSearch') document.getElementById('subSearchResults').style.display = 'none';
+        });
+
+        // جلب البيانات الأولية من السيرفر عند فتح النظام
+        await App.fetchData();
+    },
+
+    toggleTheme: () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    },
+
+    showPage: (id) => {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+        const activeNav = document.querySelector(`.nav-item[onclick*="${id}"]`);
+        if(activeNav) activeNav.classList.add('active-nav');
+    },
+
+    login: async () => {
+        const loginData = { id: loginId.value, pass: loginPass.value, role: loginRole.value };
+        try {
+            const response = await fetch(`${App.apiUrl}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData)
+            });
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                const user = result.user;
+                App.curr = user;
+                document.getElementById('n-login').style.display = 'none';
+                document.getElementById('n-reg').style.display = 'none';
+                document.getElementById('n-logout').style.display = 'flex';
+
+                await App.logAction('تسجيل دخول ناجح');
+                await App.fetchData(); // جلب آخر البيانات بعد الدخول
+
+                if(user.role === 'emp') {
+                    document.querySelectorAll('.emp-only').forEach(e => e.style.display = 'flex');
+                    empHeader.innerHTML = `<h3 style="margin:0">${user.name}</h3><small>رقم الملف: ${user.file || '-'} | المدني: ${user.id} | المسجد: ${user.place}</small>`;
+                    App.renderEmp(); App.showPage('empDash');
+                } else if(user.role === 'cultural') {
+                    document.querySelectorAll('.cul-only').forEach(e => e.style.display = 'flex');
+                    App.renderCul(); App.showPage('culturalDash');
+                } else {
+                    document.querySelectorAll('.hr-only').forEach(e => e.style.display = 'flex');
+                    App.renderHrStats(); App.showPage('hrDash');
+                }
+            } else {
+                alert(result.message || 'خطأ في البيانات أو نوع الدخول!');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ في الاتصال بالسيرفر أثناء تسجيل الدخول.');
+        }
+    },
+
+    logout: async () => { 
+        await App.logAction('تسجيل خروج'); 
+        location.reload(); 
+    },
+
+    register: async () => {
+        if(!rId.value || !rName.value || !rPass.value) return alert('أكمل الحقول المطلوبة');
+        
+        const newUser = {
+            id: rId.value, name: rName.value, file: rFile.value, place: rPlace.value,
+            phone: rPhone.value, contract: rContract.value, pass: rPass.value,
+            role: 'emp', status: 'active'
+        };
+
+        try {
+            const response = await fetch(`${App.apiUrl}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newUser)
+            });
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                await App.logAction(`تسجيل موظف جديد: ${rName.value} - ${rId.value}`);
+                alert('تم التسجيل بنجاح. يمكنك الآن الدخول.');
+                App.showPage('loginPage');
+            } else {
+                alert(result.message || 'حدث خطأ أثناء التسجيل. قد يكون الرقم المدني مسجلاً بالفعل.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('تعذر الاتصال بالسيرفر أثناء التسجيل.');
+        }
+    },
+
+    searchSub: (val) => {
+        const box = document.getElementById('subSearchResults');
+        if(val.length < 2) { box.style.display = 'none'; return; }
+        
+        const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.name.includes(val) && u.status === 'active' && u.place === App.curr.place);
+        
+        if(matches.length === 0) {
+            box.innerHTML = '<div class="search-item" style="color:var(--danger)">لا يوجد موظف نشط بهذا الاسم في نفس مسجدك</div>';
+        } else {
+            box.innerHTML = matches.map(u => `
+                <div class="search-item" onclick="App.selectSub('${u.id}')">
+                    <b>${u.name}</b> <br> <small>${u.place} | ${u.id}</small>
+                </div>
+            `).join('');
+        }
+        box.style.display = 'block';
+    },
+
+    selectSub: (id) => {
+        const u = App.db.users.find(x => x.id === id);
+        App.tempSub = u;
+        document.getElementById('subSearch').value = u.name;
+        document.getElementById('sName').innerText = u.name;
+        document.getElementById('sPlace').innerText = u.place;
+        document.getElementById('sId').innerText = u.id;
+        document.getElementById('subDataBox').style.display = 'block';
+        document.getElementById('btnReq').disabled = false;
+    },
+
+    submitRequest: async () => {
+        if(!dStart.value || !dEnd.value) return alert('حدد التواريخ بشكل صحيح');
+        if(!App.tempSub) return alert('يجب اختيار البديل أولاً من القائمة');
+        
+        const start = new Date(dStart.value); 
+        const end = new Date(dEnd.value);
+        const today = new Date();
+        today.setHours(0,0,0,0); 
+
+        const deadline = new Date('2026-05-21');
+        deadline.setHours(23,59,59,999);
+        if (new Date() > deadline) {
+            return alert('عذراً، انتهت فترة تقديم الإجازات (آخر موعد هو 21/05/2026 م) ولن يتم قبول أي إجازة بعد هذا التاريخ.');
+        }
+
+        const diffDaysBefore = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+        if (diffDaysBefore < 7) {
+            return alert('عذراً، يجب تقديم طلب الإجازة قبل سبعة أيام من بدايتها على الأقل.');
+        }
+
+        const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        if(diff <= 0) return alert('خطأ في تحديد الفترة!');
+
+        if (App.tempSub.place !== App.curr.place) {
+            return alert('يجب أن يكون البديل من نفس المسجد.');
+        }
+
+        const isSubbing = App.db.requests.some(r => r.subId === App.curr.id && new Date(r.end) >= today && r.stage > 1);
+        if (isSubbing) {
+            return alert('لا يحق لك التقدم بطلب إجازة حالياً إلا بعد عودة زميلك الذي تنوب عنه من إجازته.');
+        }
+
+        const mosqueReqs = App.db.requests.filter(r => r.empPlace === App.curr.place && r.empId !== App.curr.id && new Date(r.end) >= today && r.stage > 1);
+        const reqStartMs = start.getTime();
+        const reqEndMs = end.getTime();
+        const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+        
+        for (let r of mosqueReqs) {
+            const rStart = new Date(r.start).getTime();
+            const rEnd = new Date(r.end).getTime();
+            if (
+                (reqStartMs >= (rStart - threeDaysMs) && reqStartMs <= (rEnd + threeDaysMs)) ||
+                (reqEndMs >= (rStart - threeDaysMs) && reqEndMs <= (rEnd + threeDaysMs)) ||
+                (reqStartMs <= rStart && reqEndMs >= rEnd)
+            ) {
+                return alert('نعتذر، يجب أن يكون الفارق بين إجازتك وإجازة زميلك في نفس المسجد 3 أيام على الأقل.');
+            }
+        }
+
+        const reqId = Date.now();
+        const req = {
+            id: reqId,
+            empId: App.curr.id, empName: App.curr.name, empPlace: App.curr.place, empPhone: App.curr.phone, empContract: App.curr.contract,
+            subId: App.tempSub.id, subName: App.tempSub.name, subPlace: App.tempSub.place, subPhone: App.tempSub.phone,
+            type: leaveType.value, start: dStart.value, end: dEnd.value, duration: diff,
+            stage: 1, status: 'بانتظار موافقة البديل'
+        };
+
+        try {
+            const response = await fetch(`${App.apiUrl}/requests`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(req)
+            });
+            
+            if (response.ok) {
+                await App.logAction(`تقديم طلب إجازة (${req.type}) للموظف: ${App.curr.name}`);
+                alert('تم الإرسال بنجاح.. يرجى إبلاغ البديل للموافقة على الطلب من حسابه الشخصي ليتم اعتماده.');
+                
+                document.getElementById('dStart').value = '';
+                document.getElementById('dEnd').value = '';
+                document.getElementById('subSearch').value = '';
+                document.getElementById('subDataBox').style.display = 'none';
+                document.getElementById('btnReq').disabled = true;
+                App.tempSub = null;
+
+                await App.fetchData(); // تحديث الواجهة
+                App.showPage('empDash'); App.renderEmp();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ في الاتصال بالسيرفر أثناء إرسال الطلب.');
+        }
+    },
+
+    renderEmp: () => {
+        const notices = App.db.requests.filter(r => r.subId === App.curr.id && r.stage === 1);
+        noticeArea.innerHTML = notices.map(r => `
+            <div style="background:#fff3cd; padding:15px; border-radius:10px; border-right:5px solid #ffc107; margin-bottom:15px;">
+                🔔 زميلك <b>${r.empName}</b> اختارك بديلاً له لطلب إجازة ${r.type}<br>
+                من ${r.start} إلى ${r.end} (${r.duration} يوم)<br>
+                <button class="btn btn-success" style="margin-top:10px; width:100%" onclick="App.confirmAsSub(${r.id})">أوافق على التكليف كبديل</button>
+            </div>
+        `).join('');
+
+        const my = App.db.requests.filter(r => r.empId === App.curr.id);
+        const empHistoryTbody = document.getElementById('employeeTableBody');
+        empHistoryTbody.innerHTML = my.map(r => `
+            <tr>
+                <td>#${r.id.toString().slice(-4)}</td>
+                <td>${r.type}</td>
+                <td>${r.subName}</td>
+                <td>${r.start} إلى ${r.end} <br><b>(${r.duration} يوم)</b></td>
+                <td>
+                    <span class="badge ${r.stage==4?'bg-done':'bg-wait'}">${r.status}</span>
+                    ${r.stage==1? `<br><button class="btn btn-wa" style="margin-top:5px" onclick="App.waSub(${r.id})">واتساب البديل</button>` : ''}
+                </td>
+                <td>${r.stage==4? `<button class="btn btn-info" onclick="App.printPDF(${r.id})"><i class="fas fa-print"></i> طباعة</button>` : '-'}</td>
+            </tr>
+        `).join('');
+    },
+
+    waSub: (rid) => {
+        const r = App.db.requests.find(x => x.id === rid);
+        let p = r.subPhone || ''; if(p.length === 8) p = '965' + p;
+        const msg = encodeURIComponent(`السلام عليكم يا شيخ ${r.subName}، أرسلت لك طلب بديل في نظام الوزارة، يرجى الدخول للموافقة.`);
+        window.open(`https://wa.me/${p}?text=${msg}`);
+    },
+
+    confirmAsSub: async (id) => {
+        const r = App.db.requests.find(x => x.id === id);
+        try {
+            await fetch(`${App.apiUrl}/requests/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stage: 2, status: 'بانتظار التوجيه الثقافي' })
+            });
+            await App.logAction(`موافقة البديل: ${App.curr.name} على طلب ${r.empName}`);
+            await App.fetchData();
+            App.renderEmp(); 
+            alert('تمت موافقتك كبديل بنجاح.');
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ في الاتصال.');
+        }
+    },
+
+    switchCulTab: (tab, el) => {
+        document.querySelectorAll('#culturalDash .hr-tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+        document.getElementById('culReqsView').style.display = tab === 'reqs' ? 'block' : 'none';
+        document.getElementById('culArchiveView').style.display = tab === 'archive' ? 'block' : 'none';
+        App.renderCul();
+    },
+
+    renderCul: () => {
+        const list = App.db.requests.filter(r => r.stage === 2);
+        const culturalTbody = document.getElementById('culturalTbody');
+        culturalTbody.innerHTML = list.map(r => `
+            <tr>
+                <td><b>${r.empName}</b><br><small>المسجد: ${r.empPlace}</small></td>
+                <td><b>${r.subName}</b><br><small>المسجد: ${r.subPlace}</small></td>
+                <td>من: ${r.start}<br>إلى: ${r.end}<br><b>المدة: ${r.duration} يوم</b></td>
+                <td><button class="btn btn-success" onclick="App.culApprove(${r.id})">اعتماد التوجيه</button></td>
+            </tr>
+        `).join('') || '<tr><td colspan="4">لا يوجد طلبات حالية</td></tr>';
+
+        const archive = App.db.requests.filter(r => r.stage >= 3);
+        const culturalArchiveTbody = document.getElementById('culturalArchiveTbody');
+        culturalArchiveTbody.innerHTML = archive.map(r => `
+            <tr>
+                <td><b>${r.empName}</b><br><small>م: ${r.empId}</small><br><small>ت: ${r.empPhone||'-'}</small></td>
+                <td><b>${r.subName}</b><br><small>م: ${r.subId}</small><br><small>ت: ${r.subPhone||'-'}</small></td>
+                <td>${r.start} إلى ${r.end}<br><b>(${r.duration} يوم)</b></td>
+                <td><span class="badge bg-done">تم الاعتماد مسبقاً</span></td>
+            </tr>
+        `).join('') || '<tr><td colspan="4">الأرشيف فارغ</td></tr>';
+    },
+
+    culApprove: async (id) => {
+        const r = App.db.requests.find(x => x.id === id);
+        try {
+            await fetch(`${App.apiUrl}/requests/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stage: 3, status: 'بانتظار شؤون العاملين' })
+            });
+            await App.logAction(`اعتماد التوجيه الثقافي لطلب الموظف: ${r.empName}`);
+            await App.fetchData();
+            App.renderCul();
+        } catch (error) {
+            alert('حدث خطأ في الاتصال.');
+        }
+    },
+
+    switchHrTab: (tab, el) => {
+        document.querySelectorAll('#hrDash .hr-tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+        document.getElementById('hrStatsView').style.display = tab === 'dash' ? 'block' : 'none';
+        document.getElementById('hrReqView').style.display = tab === 'requests' ? 'block' : 'none';
+        document.getElementById('hrEmpView').style.display = tab === 'emps' ? 'block' : 'none';
+        document.getElementById('hrArchiveView').style.display = tab === 'archive' ? 'block' : 'none';
+        document.getElementById('hrLogsView').style.display = tab === 'logs' ? 'block' : 'none';
+        
+        if(tab === 'dash') App.renderHrStats();
+        if(tab === 'requests') App.renderHrReqs();
+        if(tab === 'emps') App.renderHrEmps();
+        if(tab === 'archive') App.renderHrArchive();
+        if(tab === 'logs') App.renderHrLogs();
+    },
+
+    renderHrStats: () => {
+        const reqs = App.db.requests;
+        const done = reqs.filter(r => r.stage === 4).length;
+        const waitHR = reqs.filter(r => r.stage === 3).length;
+        const others = reqs.filter(r => r.stage < 3).length;
+
+        if(App.chartInstance) App.chartInstance.destroy();
+        const ctx = document.getElementById('reqChart').getContext('2d');
+        App.chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['تم الاعتماد النهائي', 'بانتظار الـ HR', 'بانتظار البديل/التوجيه'],
+                datasets: [{ data: [done, waitHR, others], backgroundColor: ['#2a9d8f', '#e63946', '#c5a059'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: {font: {family: 'Cairo'}} } } }
+        });
+    },
+
+    renderHrReqs: () => {
+        const list = App.db.requests.filter(r => r.stage === 3);
+        const hrTbody = document.getElementById('hrTbody');
+        hrTbody.innerHTML = list.map(r => `
+            <tr>
+                <td><b>${r.empName}</b><br><small>هاتف: ${r.empPhone||'-'}</small></td>
+                <td>${r.empPlace}</td>
+                <td><b>${r.subName}</b></td>
+                <td>${r.start} إلى ${r.end}</td>
+                <td><span class="badge bg-wait">${r.status}</span></td>
+                <td><button class="btn btn-success" onclick="App.hrFinal(${r.id})">اعتماد نهائي</button></td>
+            </tr>
+        `).join('') || '<tr><td colspan="6">لا توجد طلبات جديدة بانتظار الاعتماد</td></tr>';
+    },
+
+    hrFinal: async (id) => {
+        const r = App.db.requests.find(x => x.id === id);
+        try {
+            await fetch(`${App.apiUrl}/requests/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stage: 4, status: 'مُعتمد نهائياً' })
+            });
+            await App.logAction(`اعتماد شؤون العاملين لطلب الموظف: ${r.empName}`);
+            await App.fetchData();
+            App.renderHrReqs(); App.renderHrStats();
+        } catch (error) {
+            alert('حدث خطأ في الاتصال.');
+        }
+    },
+
+    renderHrArchive: () => {
+        const month = document.getElementById('hrMonthArchive').value;
+        let list = App.db.requests;
+        if(month) list = list.filter(r => r.start.startsWith(month));
+
+        const hrArchiveTbody = document.getElementById('hrArchiveTbody');
+        hrArchiveTbody.innerHTML = list.map(r => `
+            <tr>
+                <td><b>${r.empName}</b><br><small>م: ${r.empId}</small><br><small>ت: ${r.empPhone||'-'}</small></td>
+                <td><b>${r.subName}</b><br><small>م: ${r.subId}</small><br><small>ت: ${r.subPhone||'-'}</small></td>
+                <td>${r.start} إلى ${r.end}<br><b>(${r.duration} يوم)</b></td>
+                <td><span class="badge ${r.stage==4?'bg-done':'bg-wait'}">${r.status}</span></td>
+            </tr>
+        `).join('') || '<tr><td colspan="4">لا توجد سجلات في الأرشيف</td></tr>';
+    },
+
+    renderHrEmps: () => { App.displayEmps(App.db.users.filter(u => u.role === 'emp')); },
+
+    filterEmps: (v) => {
+        const filtered = App.db.users.filter(u => u.role === 'emp' && (u.name.includes(v) || u.id.includes(v) || (u.file && u.file.includes(v))));
+        App.displayEmps(filtered);
+    },
+
+    displayEmps: (list) => {
+        const hrEmpTbody = document.getElementById('hrEmpTbody');
+        hrEmpTbody.innerHTML = list.map(u => `
+            <tr>
+                <td>${u.file || '-'}</td>
+                <td><b>${u.name}</b></td>
+                <td>${u.id}</td>
+                <td>${u.phone || '-'}</td>
+                <td><span class="badge ${u.status=='active'?'bg-done':'bg-frozen'}">${u.status=='active'?'نشط':'مجمد'}</span></td>
+                <td>
+                    <button class="btn btn-info" style="padding:5px 10px; font-size:11px;" onclick="App.openEditModal('${u.id}')"><i class="fas fa-edit"></i> تعديل</button>
+                    <button class="btn" style="padding:5px 10px; font-size:11px; background:${u.status=='active'?'var(--danger)':'var(--success)'}; color:white;" 
+                    onclick="App.toggleUser('${u.id}')">${u.status=='active'?'تجميد':'تفعيل'}</button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    openEditModal: (id) => {
+        const u = App.db.users.find(x => x.id === id);
+        document.getElementById('editId').value = u.id;
+        document.getElementById('editName').value = u.name;
+        document.getElementById('editPlace').value = u.place;
+        document.getElementById('editPhone').value = u.phone || '';
+        document.getElementById('editContract').value = u.contract || '';
+        document.getElementById('editPass').value = u.pass || '';
+        document.getElementById('editModal').style.display = 'flex';
+    },
+
+    saveEmpEdit: async () => {
+        const id = document.getElementById('editId').value;
+        const u = App.db.users.find(x => x.id === id);
+        
+        const updatedData = {
+            name: document.getElementById('editName').value,
+            place: document.getElementById('editPlace').value,
+            phone: document.getElementById('editPhone').value,
+            contract: document.getElementById('editContract').value,
+            pass: document.getElementById('editPass').value
+        };
+
+        try {
+            await fetch(`${App.apiUrl}/users/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+            await App.logAction(`تعديل بيانات الموظف: ${updatedData.name}`);
+            await App.fetchData();
+            document.getElementById('editModal').style.display = 'none';
+            App.renderHrEmps();
+            alert('تم حفظ التعديلات بنجاح في قاعدة البيانات.');
+        } catch (error) {
+            alert('حدث خطأ أثناء حفظ التعديلات.');
+        }
+    },
+
+    toggleUser: async (id) => {
+        const u = App.db.users.find(x => x.id === id);
+        const newStatus = u.status === 'active' ? 'frozen' : 'active';
+        try {
+            await fetch(`${App.apiUrl}/users/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            await App.logAction(`${newStatus === 'active'?'تفعيل':'تجميد'} حساب الموظف: ${u.name}`);
+            await App.fetchData();
+            App.renderHrEmps();
+        } catch (error) {
+            alert('حدث خطأ أثناء تعديل حالة الموظف.');
+        }
+    },
+
+    renderHrLogs: () => {
+        const hrLogsTbody = document.getElementById('hrLogsTbody');
+        hrLogsTbody.innerHTML = App.db.logs.map(l => `
+            <tr><td><small>${l.date}</small></td><td><b>${l.user}</b></td><td>${l.action}</td></tr>
+        `).join('') || '<tr><td colspan="3">لا توجد حركات مسجلة</td></tr>';
+    },
+
+    printPDF: (reqId) => {
+        const r = App.db.requests.find(x => x.id === reqId);
+        const printDiv = document.getElementById('printArea');
+        printDiv.innerHTML = `
+            <div style="padding:40px; text-align:center; direction:rtl; font-family:'Amiri', serif; background:#fff; color:#000; height:100vh;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/State_of_Kuwait_Emblem.svg/1200px-State_of_Kuwait_Emblem.svg.png" width="100" style="margin-bottom:20px; filter:grayscale(100%)">
+                <h2>وزارة الشؤون الإسلامية</h2>
+                <h3>إدارة مساجد محافظة الأحمدي</h3>
+                <hr style="margin:20px 0; border:1px solid #000;">
+                <h1 style="text-decoration:underline;">إشعار اعتماد إجازة رقم #${r.id.toString().slice(-4)}</h1>
+                <br>
+                <div style="text-align:right; font-size:20px; line-height:2.2;">
+                    تشهد إدارة مساجد محافظة الأحمدي بأنه قد تمت الموافقة النهائية على طلب إجازة (<b>${r.type}</b>)<br>
+                    المقدم من الموظف: <b>${r.empName}</b> (الرقم المدني: ${r.empId})<br>
+                    المكلف بالعمل في مسجد: <b>${r.empPlace}</b><br>
+                    خلال الفترة من تاريخ <b>${r.start}</b> إلى تاريخ <b>${r.end}</b> (لمدة ${r.duration} يوم).<br><br>
+                    وسيقوم السيد/ <b>${r.subName}</b> (الرقم المدني: ${r.subId}) بالعمل كبديل خلال هذه الفترة.<br>
+                </div>
+                <br><br><br>
+                <div style="display:flex; justify-content:space-between; font-size:18px; margin-top:50px;">
+                    <div>اعتماد التوجيه الثقافي<br>....................</div>
+                    <div>اعتماد شؤون العاملين<br>....................</div>
+                </div>
+                <div style="margin-top:100px; font-size:12px;">تم طباعة هذا المستند من منظومة الإشراف الرقمي في ${new Date().toLocaleString('ar-KW')}</div>
+            </div>
+        `;
+        printDiv.style.display = 'block';
+        window.print();
+        setTimeout(() => { printDiv.style.display = 'none'; }, 1000);
+    },
+
+    exportExcel: () => {
+        const data = App.db.requests.map(r => ({
+            'رقم الطلب': r.id, 'حالة الطلب': r.status,
+            'اسم المجاز': r.empName, 'مدني المجاز': r.empId, 'هاتف المجاز': r.empPhone, 'مسجد المجاز': r.empPlace, 'بند المجاز': r.empContract,
+            'اسم البديل': r.subName, 'مدني البديل': r.subId, 'هاتف البديل': r.subPhone,
+            'البداية': r.start, 'النهاية': r.end, 'المدة': r.duration
+        }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Archive");
+        XLSX.writeFile(wb, "Ministry_Archive_Full.xlsx");
+    }
+};
+
+// تشغيل التهيئة عند فتح النظام
+App.init();
+</script>
+</body>
+</html>
