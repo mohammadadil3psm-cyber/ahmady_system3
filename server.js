@@ -4,29 +4,29 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
+// ريندر بيحدد البورت تلقائياً، ولو مفيش بنستخدم 5000
 const PORT = process.env.PORT || 5000;
 
 /**
- * 🔍 مراجعة المسار: 
- * الكود هيفحص أولاً لو مجلد /data (الخزنة المدفوعة) موجود ومتاح للكتابة.
- * لو مش متاح، هيحول تلقائياً للمجلد الحالي عشان السيرفر ميفصلش (Zero Downtime).
+ * 📂 إعدادات مسار قاعدة البيانات:
+ * ريندر بيوفر مسار اسمه /data للمساحة المدفوعة.
+ * الكود بيفحص لو المسار ده موجود بيستخدمه، لو مش موجود بيستخدم مجلد محلي.
  */
-let DB_FILE = '/data/database.json';
-try {
-    if (!fs.existsSync('/data')) {
-        DB_FILE = path.join(__dirname, 'database.json');
-    }
-} catch (e) {
-    DB_FILE = path.join(__dirname, 'database.json');
-}
+const DATA_DIR = fs.existsSync('/data') ? '/data' : path.join(__dirname, 'data');
+const DB_FILE = path.join(DATA_DIR, 'database.json');
 
 app.use(cors());
 app.use(express.json());
+// لتقديم ملفات الـ HTML والـ JS الخاصة بالواجهة
 app.use(express.static(__dirname));
 
-// 🛡️ دالة تأمين وتشغيل قاعدة البيانات
+// 🛡️ دالة لتجهيز قاعدة البيانات والتأكد من الصلاحيات
 const initDB = () => {
     try {
+        if (!fs.existsSync(DATA_DIR)) {
+            fs.mkdirSync(DATA_DIR, { recursive: true });
+        }
+
         if (!fs.existsSync(DB_FILE)) {
             const initialData = {
                 users: [
@@ -36,55 +36,85 @@ const initDB = () => {
                 requests: [],
                 logs: []
             };
-            // تأكد من وجود المجلد قبل الكتابة لتجنب خطأ EACCES
-            const dir = path.dirname(DB_FILE);
-            if (dir !== __dirname && !fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
             fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
+            console.log("✅ Database created at:", DB_FILE);
         }
     } catch (err) {
-        console.error("Database initialization failed, falling back...");
-        DB_FILE = path.join(__dirname, 'database.json');
+        console.error("❌ Initialization error:", err.message);
     }
 };
 
-const readDB = () => JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-const writeDB = (data) => fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+const readDB = () => {
+    try {
+        const data = fs.readFileSync(DB_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        return { users: [], requests: [], logs: [] };
+    }
+};
+
+const writeDB = (data) => {
+    try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+        return true;
+    } catch (e) {
+        console.error("❌ Write error:", e.message);
+        return false;
+    }
+};
 
 initDB();
 
-// 🔑 نظام تسجيل دخول ذكي وسريع
+// --- المسارات (Routes) ---
+
+// 🔑 تسجيل دخول
 app.post('/api/login', (req, res) => {
     const { id, pass, role } = req.body;
     try {
         const db = readDB();
         const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
+        
         if (user) {
             if (user.status === 'frozen') return res.status(403).json({ success: false, message: "frozen" });
             res.json({ success: true, user });
         } else {
             res.status(401).json({ success: false });
         }
-    } catch (e) { res.status(500).json({ success: false }); }
+    } catch (e) { 
+        res.status(500).json({ success: false }); 
+    }
 });
 
-// 📋 جلب البيانات لكل الأقسام
+// 📋 جلب كافة البيانات
 app.get('/api/data', (req, res) => {
-    try { res.json(readDB()); } 
-    catch (e) { res.status(500).json({ success: false }); }
+    try { 
+        res.json(readDB()); 
+    } catch (e) { 
+        res.status(500).json({ success: false }); 
+    }
 });
 
-// ✍️ إضافة موظفين وحفظهم في الخزنة
+// ✍️ إضافة موظف جديد
 app.post('/api/users', (req, res) => {
     try {
         const db = readDB();
         db.users.push(req.body);
-        writeDB(db);
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({ success: false }); }
+        if (writeDB(db)) {
+            res.json({ success: true });
+        } else {
+            res.status(500).json({ success: false });
+        }
+    } catch (e) { 
+        res.status(500).json({ success: false }); 
+    }
+});
+
+// أي طلب غير المسارات اللي فوق يرجع ملف الـ index.html (عشان الـ Routing يشتغل)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`✅ System is fully operational on port ${PORT}`);
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log(`📁 Using database at: ${DB_FILE}`);
 });
