@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -6,7 +5,7 @@ const path = require('path');
 
 const app = express();
 
-// ريندر بيستخدم بورت 10000 أو 5000 بشكل افتراضي
+// ريندر بيفضل بورت 10000 أو 5000
 const PORT = process.env.PORT || 10000;
 
 /**
@@ -18,24 +17,23 @@ const DB_FILE = path.join(DATA_DIR, 'database.json');
 
 app.use(cors());
 app.use(express.json());
+// لتقديم ملفات الموقع (HTML, CSS, JS) من المجلد الحالي
 app.use(express.static(__dirname));
 
 /**
- * 🛡️ وظيفة تجهيز قاعدة البيانات
- * الكود ده بيتأكد إن الديسك المدفوع شغال، ولو مش موجود بيشغل "خطة بديلة" محلياً
+ * 🛡️ وظيفة إعداد قاعدة البيانات
+ * بتتأكد إن الديسك المدفوع شغال، ولو مش موجود بتستخدم تخزين محلي مؤقت
  */
 const initDB = () => {
     try {
         let actualPath = DB_FILE;
 
-        // التأكد من وجود مجلد /data (الديسك المدفوع)
+        // فحص وجود الديسك المدفوع (/data)
         if (!fs.existsSync(DATA_DIR)) {
-            console.log("⚠️ تنبيه: الديسك المدفوع غير متصل، يتم استخدام التخزين المحلي مؤقتاً.");
-            const localDir = path.join(__dirname, 'local_db');
-            if (!fs.existsSync(localDir)) fs.mkdirSync(localDir);
-            actualPath = path.join(localDir, 'database.json');
+            console.log("⚠️ تنبيه: الديسك المدفوع غير متصل، يتم التخزين داخل مجلد المشروع.");
+            actualPath = path.join(__dirname, 'database.json');
         } else {
-            console.log("✅ الديسك المدفوع متصل وجاهز للاستخدام.");
+            console.log("✅ الديسك المدفوع (/data) متصل وجاهز.");
         }
 
         // إنشاء الملف بالبيانات الأساسية لو مش موجود
@@ -53,69 +51,50 @@ const initDB = () => {
         }
         return actualPath;
     } catch (err) {
-        console.error("❌ خطأ فادح في إعداد الملفات:", err.message);
-        return path.join(__dirname, 'fallback_db.json');
+        console.error("❌ خطأ في إعداد الملفات:", err.message);
+        return path.join(__dirname, 'database.json');
     }
 };
 
-// تحديد المسار النهائي اللي السيرفر هيشتغل عليه
 const FINAL_DB_PATH = initDB();
 
-// --- 🔑 نظام تسجيل الدخول ---
+// --- 🔑 مسارات الـ API ---
+
+// تسجيل الدخول
 app.post('/api/login', (req, res) => {
     try {
         const { id, pass, role } = req.body;
         const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
-        
         const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
         
         if (user) {
-            if (user.status === 'frozen') {
-                return res.status(403).json({ success: false, message: "frozen" });
-            }
+            if (user.status === 'frozen') return res.status(403).json({ success: false });
             return res.json({ success: true, user });
         }
-        
         res.status(401).json({ success: false });
     } catch (e) {
-        console.error("❌ خطأ في Login:", e.message);
         res.status(500).json({ success: false });
     }
 });
 
-// --- 📋 جلب البيانات ---
+// جلب البيانات
 app.get('/api/data', (req, res) => {
     try {
         const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
         res.json(db);
-    } catch (e) {
-        res.status(500).json({ success: false });
-    }
-});
-
-// --- ✍️ إضافة مستخدم جديد ---
-app.post('/api/users', (req, res) => {
-    try {
-        const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
-        db.users.push(req.body);
-        fs.writeFileSync(FINAL_DB_PATH, JSON.stringify(db, null, 2));
-        res.json({ success: true });
-    } catch (e) {
-        res.status(500).json({ success: false });
-    }
+    } catch (e) { res.status(500).json({ success: false }); }
 });
 
 /**
- * ⚠️ حل مشكلة الـ PathError (التعديل الأهم)
- * ريندر بيعترض على علامة * لوحدها، فاستخدمنا الـ Regex (.*)
- * عشان يفتح صفحة index.html لو المسار مش معروف
+ * ⚠️ حل مشكلة الـ PathError (التعديل الحاسم)
+ * غيرنا النجمة (*) لـ (/*) عشان النسخ الجديدة من Express و Render تقبلها
  */
-app.get('(.*)', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// تشغيل المحرك
+// تشغيل السيرفر
 app.listen(PORT, () => {
-    console.log(`🚀 السيرفر انطلق بنجاح على بورت: ${PORT}`);
+    console.log(`🚀 السيرفر يعمل الآن على بورت: ${PORT}`);
     console.log(`📁 مسار التخزين النشط: ${FINAL_DB_PATH}`);
 });
