@@ -1,33 +1,45 @@
+
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
-// ريندر بيحدد البورت تلقائياً، ولو مفيش بنستخدم 5000
-const PORT = process.env.PORT || 5000;
+
+// ريندر بيستخدم بورت 10000 أو 5000 بشكل افتراضي
+const PORT = process.env.PORT || 10000;
 
 /**
- * 📂 إعدادات مسار قاعدة البيانات:
- * ريندر بيوفر مسار اسمه /data للمساحة المدفوعة.
- * الكود بيفحص لو المسار ده موجود بيستخدمه، لو مش موجود بيستخدم مجلد محلي.
+ * 📂 إعداد مسار "الخزنة" (Persistent Disk)
+ * في ريندر، الديسك المدفوع بيكون دايماً في المسار الرئيسي /data
  */
-const DATA_DIR = fs.existsSync('/data') ? '/data' : path.join(__dirname, 'data');
+const DATA_DIR = '/data';
 const DB_FILE = path.join(DATA_DIR, 'database.json');
 
 app.use(cors());
 app.use(express.json());
-// لتقديم ملفات الـ HTML والـ JS الخاصة بالواجهة
 app.use(express.static(__dirname));
 
-// 🛡️ دالة لتجهيز قاعدة البيانات والتأكد من الصلاحيات
+/**
+ * 🛡️ وظيفة تجهيز قاعدة البيانات
+ * الكود ده بيتأكد إن الديسك المدفوع شغال، ولو مش موجود بيشغل "خطة بديلة" محلياً
+ */
 const initDB = () => {
     try {
+        let actualPath = DB_FILE;
+
+        // التأكد من وجود مجلد /data (الديسك المدفوع)
         if (!fs.existsSync(DATA_DIR)) {
-            fs.mkdirSync(DATA_DIR, { recursive: true });
+            console.log("⚠️ تنبيه: الديسك المدفوع غير متصل، يتم استخدام التخزين المحلي مؤقتاً.");
+            const localDir = path.join(__dirname, 'local_db');
+            if (!fs.existsSync(localDir)) fs.mkdirSync(localDir);
+            actualPath = path.join(localDir, 'database.json');
+        } else {
+            console.log("✅ الديسك المدفوع متصل وجاهز للاستخدام.");
         }
 
-        if (!fs.existsSync(DB_FILE)) {
+        // إنشاء الملف بالبيانات الأساسية لو مش موجود
+        if (!fs.existsSync(actualPath)) {
             const initialData = {
                 users: [
                     { id: "111111111111", name: "أدمن شؤون العاملين", role: "hr", status: "active", pass: "123" },
@@ -36,86 +48,74 @@ const initDB = () => {
                 requests: [],
                 logs: []
             };
-            fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
-            console.log("✅ Database created at:", DB_FILE);
+            fs.writeFileSync(actualPath, JSON.stringify(initialData, null, 2));
+            console.log("📝 تم إنشاء ملف قاعدة بيانات جديد.");
         }
+        return actualPath;
     } catch (err) {
-        console.error("❌ Initialization error:", err.message);
+        console.error("❌ خطأ فادح في إعداد الملفات:", err.message);
+        return path.join(__dirname, 'fallback_db.json');
     }
 };
 
-const readDB = () => {
-    try {
-        const data = fs.readFileSync(DB_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (e) {
-        return { users: [], requests: [], logs: [] };
-    }
-};
+// تحديد المسار النهائي اللي السيرفر هيشتغل عليه
+const FINAL_DB_PATH = initDB();
 
-const writeDB = (data) => {
-    try {
-        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-        return true;
-    } catch (e) {
-        console.error("❌ Write error:", e.message);
-        return false;
-    }
-};
-
-initDB();
-
-// --- المسارات (Routes) ---
-
-// 🔑 تسجيل دخول
+// --- 🔑 نظام تسجيل الدخول ---
 app.post('/api/login', (req, res) => {
-    const { id, pass, role } = req.body;
     try {
-        const db = readDB();
+        const { id, pass, role } = req.body;
+        const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
+        
         const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
         
         if (user) {
-            if (user.status === 'frozen') return res.status(403).json({ success: false, message: "frozen" });
-            res.json({ success: true, user });
-        } else {
-            res.status(401).json({ success: false });
+            if (user.status === 'frozen') {
+                return res.status(403).json({ success: false, message: "frozen" });
+            }
+            return res.json({ success: true, user });
         }
-    } catch (e) { 
-        res.status(500).json({ success: false }); 
+        
+        res.status(401).json({ success: false });
+    } catch (e) {
+        console.error("❌ خطأ في Login:", e.message);
+        res.status(500).json({ success: false });
     }
 });
 
-// 📋 جلب كافة البيانات
+// --- 📋 جلب البيانات ---
 app.get('/api/data', (req, res) => {
-    try { 
-        res.json(readDB()); 
-    } catch (e) { 
-        res.status(500).json({ success: false }); 
+    try {
+        const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
+        res.json(db);
+    } catch (e) {
+        res.status(500).json({ success: false });
     }
 });
 
-// ✍️ إضافة موظف جديد
+// --- ✍️ إضافة مستخدم جديد ---
 app.post('/api/users', (req, res) => {
     try {
-        const db = readDB();
+        const db = JSON.parse(fs.readFileSync(FINAL_DB_PATH, 'utf8'));
         db.users.push(req.body);
-        if (writeDB(db)) {
-            res.json({ success: true });
-        } else {
-            res.status(500).json({ success: false });
-        }
-    } catch (e) { 
-        res.status(500).json({ success: false }); 
+        fs.writeFileSync(FINAL_DB_PATH, JSON.stringify(db, null, 2));
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false });
     }
 });
 
-// أي طلب غير المسارات اللي فوق يرجع ملف الـ index.html (عشان الـ Routing يشتغل)
-app.get('*', (req, res) => {
+/**
+ * ⚠️ حل مشكلة الـ PathError (التعديل الأهم)
+ * ريندر بيعترض على علامة * لوحدها، فاستخدمنا الـ Regex (.*)
+ * عشان يفتح صفحة index.html لو المسار مش معروف
+ */
+app.get('(.*)', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// تشغيل المحرك
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-    console.log(`📁 Using database at: ${DB_FILE}`);
+    console.log(`🚀 السيرفر انطلق بنجاح على بورت: ${PORT}`);
+    console.log(`📁 مسار التخزين النشط: ${FINAL_DB_PATH}`);
 });
-
