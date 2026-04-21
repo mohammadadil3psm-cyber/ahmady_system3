@@ -4,19 +4,24 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-// تم تثبيت البورت على 5000 ليطابق إعداداتك
-const PORT = 5000; 
-const DB_FILE = path.join(__dirname, 'database.json');
+// رندر بيحدد البورت أوتوماتيكياً من البيئة
+const PORT = process.env.PORT || 5000; 
 
-// إعدادات الـ Middleware
-app.use(cors()); // للسماح بالاتصال بين الواجهة والسيرفر
-app.use(express.json()); // لفهم بيانات الـ JSON المرسلة
+// ⭐ التعديل الأهم: ربط قاعدة البيانات بالخزنة (Disk) اللي عملناها في رندر
+const DB_FILE = '/data/database.json';
 
-// ⭐ السطر السحري: يجعل السيرفر يقرأ ملفات الـ HTML والـ CSS اللي في نفس المجلد
+app.use(cors());
+app.use(express.json());
 app.use(express.static(__dirname)); 
 
-// دالة تهيئة قاعدة البيانات (تنشئ الملف تلقائياً إذا لم يكن موجوداً)
+// دالة تهيئة قاعدة البيانات في المكان الجديد
 const initDB = () => {
+    // التأكد من وجود المجلد أولاً
+    const dir = path.dirname(DB_FILE);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
     if (!fs.existsSync(DB_FILE)) {
         const initialData = { 
             users: [
@@ -27,7 +32,7 @@ const initDB = () => {
             logs: [] 
         };
         fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
-        console.log("📁 تم إنشاء ملف قاعدة البيانات database.json بنجاح.");
+        console.log("📁 تم إنشاء ملف قاعدة البيانات في الخزنة الأمان بنجاح.");
     }
 };
 
@@ -35,10 +40,6 @@ const readDB = () => JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
 const writeDB = (data) => fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 
 initDB();
-
-// ==========================================
-// المسارات (Routes)
-// ==========================================
 
 // جلب كل البيانات
 app.get('/api/data', (req, res) => {
@@ -49,14 +50,16 @@ app.get('/api/data', (req, res) => {
 // تسجيل الدخول
 app.post('/api/login', (req, res) => {
     const { id, pass, role } = req.body;
-    const db = readDB();
-    const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
-    if (user) {
-        if (user.status === 'frozen') return res.status(403).json({ success: false, message: "هذا الحساب مجمد" });
-        res.json({ success: true, user });
-    } else {
-        res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة" });
-    }
+    try {
+        const db = readDB();
+        const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
+        if (user) {
+            if (user.status === 'frozen') return res.status(403).json({ success: false, message: "هذا الحساب مجمد" });
+            res.json({ success: true, user });
+        } else {
+            res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة" });
+        }
+    } catch (e) { res.status(500).json({ success: false }); }
 });
 
 // تسجيل موظف جديد
@@ -82,7 +85,7 @@ app.put('/api/users/:id', (req, res) => {
     } else { res.status(404).json({ success: false }); }
 });
 
-// تقديم طلب جديد (إجازة/إيراد)
+// تقديم طلب جديد
 app.post('/api/requests', (req, res) => {
     const db = readDB();
     db.requests.push(req.body);
@@ -101,7 +104,7 @@ app.put('/api/requests/:id', (req, res) => {
     } else { res.status(404).json({ success: false }); }
 });
 
-// تسجيل الحركات (Logs)
+// تسجيل الحركات
 app.post('/api/logs', (req, res) => {
     const db = readDB();
     db.logs.unshift(req.body);
@@ -109,8 +112,6 @@ app.post('/api/logs', (req, res) => {
     res.json({ success: true });
 });
 
-// تشغيل الخادم
 app.listen(PORT, () => {
-    console.log(`🚀 السيرفر جاهز وشغال تمام على: http://localhost:${PORT}`);
-    console.log(`💻 افتح المتصفح وجرب تسجل دلوقتي!`);
+    console.log(`🚀 السيرفر العالمي شغال الآن على بورت ${PORT}`);
 });
