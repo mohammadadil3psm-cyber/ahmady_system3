@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title><برنامج الإجازات 
-ادارة مساجد محافظة الاحمدي/title>
+    <title>برنامج الإجازات - ادارة مساجد محافظة الاحمدي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -73,6 +72,7 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-wa { background: var(--whatsapp); color: white; }
         .btn-excel { background: #1D6F42; color: white; }
+        .btn-info { background: var(--info); color: white; }
         
         #subSearchResults { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 2px solid var(--gold); border-radius: 12px; max-height: 280px; overflow-y: auto; z-index: 1100; box-shadow: var(--shadow); display: none; margin-top: 8px; }
         .search-item { padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
@@ -122,8 +122,7 @@
 <header class="no-print">
     <div style="margin-bottom: 10px;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/1200px-Emblem_of_Kuwait.svg.png" width="60" alt="شعار الكويت"></div>
     <h1>دولة الكويت - وزارة الشؤون الإسلامية</h1>
-    <p>برنامج الإجازات 
-ادارة مساجد محافظة الاحمدي</p>
+    <p>برنامج الإجازات - ادارة مساجد محافظة الاحمدي</p>
 </header>
 
 <nav id="mainNav" class="no-print">
@@ -228,7 +227,6 @@
                 <li>تقديم الطلب يكون <b>قبل 7 أيام</b> من بدايته على الأقل.</li>
                 <li>يمنع القيام بأية إجراءات للسفر (حجز تذاكر) قبل اعتماد الإجازة رسمياً.</li>
                 <li>يجب أن يكون البديل من <b>نفس المسجد</b>، ولا يحق له طلب إجازة إلا بعد عودتك.</li>
-                <li>آخر موعد لتقديم إجازات الصيف هو <b>2026/05/21 م</b> ولن تقبل بعدها.</li>
             </ul>
         </div>
         
@@ -238,7 +236,7 @@
                 <select id="reqType" class="form-control">
                     <option>إجازة دورية</option>
                     <option>إجازة خاصة</option>
-                     </select>
+                </select>
             </div>
             <div class="form-group">
                 <label>البحث عن البديل (في نفس المسجد):</label>
@@ -366,6 +364,8 @@
             <select id="edStatus" class="form-control">
                 <option value="active">مفعل ونشط</option>
                 <option value="frozen">مجمد</option>
+                <option value="pending">بانتظار الموافقة</option>
+                <option value="deleted">محذوف</option>
             </select>
         </div>
         <div class="form-group">
@@ -427,11 +427,21 @@ const App = {
         const data = await res.json();
         if(data.success) {
             App.curr = data.user;
-            // إضافة تحقق من حالة الحساب إذا كان مجمد
+            
+            // تحقق من الحالات الجديدة
             if(App.curr.status === 'frozen') {
                 alert("عفواً، حسابك مجمد. يرجى مراجعة شؤون العاملين.");
-                return;
+                App.curr = null; return;
             }
+            if(App.curr.status === 'deleted') {
+                alert("عفواً، تم حذف هذا الحساب من قبل الإدارة.");
+                App.curr = null; return;
+            }
+            if(App.curr.status === 'pending') {
+                alert("عفواً، حسابك قيد المراجعة وبانتظار موافقة الإدارة لدخول النظام.");
+                App.curr = null; return;
+            }
+
             App.setupUI();
             App.logAction(`دخل النظام بصفة ${payload.role}`);
         } else {
@@ -460,16 +470,41 @@ const App = {
     },
 
     register: async () => {
-        const newUser = {
+        const existingUser = App.db.users.find(u => u.id === rId.value);
+        
+        const userData = {
             id: rId.value, name: rName.value, file: rFile.value, 
             place: rPlace.value, phone: rPhone.value, job: rJob.value,
             contract: rContract.value, pass: rPass.value,
-            role: 'emp', status: 'active'
+            role: 'emp'
         };
+
+        if(existingUser) {
+            // لو الموظف كان محذوف ورجع سجل، النظام بيحول حالته لـ pending بانتظار موافقة الإدارة
+            if(existingUser.status === 'deleted') {
+                userData.status = 'pending';
+                const res = await fetch(`${App.apiUrl}/users/${existingUser.id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userData)
+                });
+                if(res.ok) {
+                    alert("تم تسجيل طلبك، ولكن حسابك يتطلب موافقة الإدارة نظراً لوجود إجراءات سابقة.");
+                    App.showPage('loginPage');
+                    App.loadAllData();
+                }
+            } else {
+                alert("عفواً، هذا الرقم المدني مسجل بالفعل في النظام!");
+            }
+            return;
+        }
+
+        // تسجيل موظف جديد تماماً
+        userData.status = 'active';
         const res = await fetch(`${App.apiUrl}/users`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newUser)
+            body: JSON.stringify(userData)
         });
         if(res.ok) {
             alert("تم تفعيل حسابك بنجاح! يمكنك الدخول الآن.");
@@ -478,7 +513,6 @@ const App = {
         }
     },
 
-    // دالة لتنظيف وتوحيد النصوص العربية لحل مشكلة البحث عن البديل
     normalizeArabic: (text) => {
         if(!text) return "";
         return text.trim().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
@@ -491,9 +525,8 @@ const App = {
         const searchVal = App.normalizeArabic(val);
         const currPlace = App.curr.place ? App.normalizeArabic(App.curr.place) : "";
 
-        // التعديل هنا: استخدام Normalization ومسح المسافات للبحث الدقيق
         const matches = App.db.users.filter(u => {
-            if(u.role !== 'emp' || u.id === App.curr.id || u.status === 'frozen') return false;
+            if(u.role !== 'emp' || u.id === App.curr.id || u.status === 'frozen' || u.status === 'deleted' || u.status === 'pending') return false;
             const uName = App.normalizeArabic(u.name);
             const uPlace = u.place ? App.normalizeArabic(u.place) : "";
             return uName.includes(searchVal) && uPlace === currPlace;
@@ -524,7 +557,6 @@ const App = {
     },
 
     submitRequest: async () => {
-        // التحقق من أن البديل تم اختياره (لحل مشكلة زر إرسال الطلب)
         if(!App.tempSub) {
             alert("يرجى البحث عن البديل واختياره من القائمة قبل الإرسال.");
             return;
@@ -549,25 +581,12 @@ const App = {
             return;
         }
 
-        // --- تطبيق شروط صورة الإجازات المعممة ---
-        // 1. تقديم الطلب قبل 7 أيام
         const diffTime = start.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
         if(diffDays < 7) {
             alert("بناءً على التعميم: يجب تقديم طلب الإجازة قبل 7 أيام من بدايتها على الأقل.");
             return;
         }
-
-        // 2. آخر موعد لإجازة الصيف 2026/05/21
-        if(typeVal === 'إجازة الصيف') {
-            const deadline = new Date('2026-05-21');
-            deadline.setHours(23,59,59,999);
-            if(today > deadline) {
-                alert("بناءً على التعميم: انتهى موعد تقديم إجازات الصيف في 2026/05/21 م.");
-                return;
-            }
-        }
-        // ----------------------------------------
 
         const req = {
             id: Date.now(),
@@ -586,7 +605,7 @@ const App = {
         if(res.ok) {
             alert("تم إرسال الطلب للزميل البديل.");
             App.sendWhatsApp(req.subPhone, `أهلاً يا زميلي، أنا ${req.empName} اخترتك كبديل لي في ${req.type}. يرجى الدخول للمنظومة للموافقة.`);
-            App.tempSub = null; // تفريغ بعد الإرسال
+            App.tempSub = null;
             document.getElementById('subDataBox').style.display = 'none';
             document.getElementById('btnSubmitReq').disabled = true;
             await App.loadAllData();
@@ -708,19 +727,27 @@ const App = {
 
     renderHrEmps: () => {
         const emps = App.db.users.filter(u => u.role === 'emp');
-        // تم التعديل: إظهار حالة الحساب (مفعل/مجمد) في الجدول
-        hrEmpTbody.innerHTML = emps.map(u => `
+        hrEmpTbody.innerHTML = emps.map(u => {
+            let statusBadge = '';
+            if(u.status === 'frozen') statusBadge = '<span class="badge status-2">مجمد</span>';
+            else if(u.status === 'deleted') statusBadge = '<span class="badge status-1" style="background:var(--danger); color:white;">محذوف</span>';
+            else if(u.status === 'pending') statusBadge = '<span class="badge status-2" style="background:#fca311; color:white; border:none;">بانتظار الموافقة</span>';
+            else statusBadge = '<span class="badge status-3">مفعل</span>';
+
+            return `
             <tr>
                 <td>${u.name}</td>
                 <td>${u.id}</td>
                 <td>${u.place}</td>
                 <td>${u.phone}</td>
-                <td><span class="badge ${u.status === 'frozen' ? 'status-2' : 'status-3'}">${u.status === 'frozen' ? 'مجمد' : 'مفعل'}</span></td>
+                <td>${statusBadge}</td>
                 <td>
-                    <button class="btn btn-info" style="padding:5px 10px;" onclick="App.openEditModal('${u.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-info" style="padding:5px 10px;" onclick="App.openEditModal('${u.id}')" title="تعديل"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" style="padding:5px 10px;" onclick="App.deleteEmp('${u.id}')" title="حذف الحساب"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
-        `).join('');
+            `;
+        }).join('');
     },
 
     renderHrLogs: () => {
@@ -739,35 +766,51 @@ const App = {
         document.getElementById('edName').value = u.name;
         document.getElementById('edPlace').value = u.place;
         document.getElementById('edPhone').value = u.phone;
-        document.getElementById('edStatus').value = u.status || 'active'; // جلب الحالة الحالية
-        document.getElementById('edPass').value = ''; // تفريغ حقل الباسورد لعدم التغيير بالخطأ
+        document.getElementById('edStatus').value = u.status || 'active'; 
+        document.getElementById('edPass').value = ''; 
         document.getElementById('editModal').style.display = 'flex';
     },
 
     saveEmpEdit: async () => {
         const id = document.getElementById('edId').value;
-        const payload = { 
-            name: document.getElementById('edName').value, 
-            place: document.getElementById('edPlace').value, 
-            phone: document.getElementById('edPhone').value,
-            status: document.getElementById('edStatus').value
-        };
+        const u = App.db.users.find(x => x.id === id);
+        
+        u.name = document.getElementById('edName').value;
+        u.place = document.getElementById('edPlace').value;
+        u.phone = document.getElementById('edPhone').value;
+        u.status = document.getElementById('edStatus').value;
         
         const passVal = document.getElementById('edPass').value;
         if(passVal.trim() !== '') {
-            payload.pass = passVal; // إضافة الباسورد الجديد للبيانات المرفوعة للسيرفر
+            u.pass = passVal; 
         }
 
         await fetch(`${App.apiUrl}/users/${id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
+            body: JSON.stringify(u)
         });
         
         alert("تم تحديث بيانات وصلاحيات الموظف بنجاح");
         document.getElementById('editModal').style.display = 'none';
         await App.loadAllData();
         App.renderHrEmps();
+    },
+
+    deleteEmp: async (id) => {
+        if(confirm("هل أنت متأكد من حذف هذا الموظف؟\n(لن يتمكن من الدخول، ولو سجل من جديد سيحتاج موافقة الإدارة)")) {
+            const u = App.db.users.find(x => x.id === id);
+            u.status = 'deleted'; // نغير الحالة فقط لمحذوف عشان يفضل في الـ DB ونقدر نعرف تاريخه
+            
+            await fetch(`${App.apiUrl}/users/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(u)
+            });
+            alert("تم حذف الحساب بنجاح.");
+            await App.loadAllData();
+            App.renderHrEmps();
+        }
     },
 
     logAction: async (action) => {
