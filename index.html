@@ -239,9 +239,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>البحث عن البديل (في نفس المسجد):</label>
-                <input type="text" id="subSearch" class="form-control" placeholder="اكتب اسم الزميل..." onkeyup="App.searchSub(this.value)">
-                <div id="subSearchResults"></div>
+            <label>البحث عن البديل (البحث مخصص لزملاء نفس المسجد فقط):</label>
+            <input type="text" id="subSearch" class="form-control" placeholder="اكتب اسم الزميل هنا..." onkeyup="App.searchSub(this.value)">
+            <div id="subSearchResults"></div>
+            <div id="subDataBox" class="sub-data-box">
+                <div style="font-weight:bold; color:var(--primary); border-bottom:1px solid var(--border); margin-bottom:8px; padding-bottom:5px;">بيانات البديل المختار:</div>
+                <div><b>الاسم:</b> <span id="sName"></span></div>
+                <div><b>المسجد:</b> <span id="sPlace"></span></div>
+                <div><b>المدني:</b> <span id="sId"></span></div>
             </div>
         </div>
 
