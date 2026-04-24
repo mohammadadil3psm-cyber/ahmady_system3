@@ -110,7 +110,7 @@
             table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
             th, td { border: 1px solid #000; padding: 8px; font-size: 12px; color: #000; }
             th { background: #eee !important; -webkit-print-color-adjust: exact; color: #000 !important; }
-            #mainContainer { display: none !important; } /* إخفاء كل شيء وقت الطباعة عدا منطقة الطباعة */
+            #mainContainer { display: none !important; }
         }
     </style>
 </head>
@@ -122,6 +122,7 @@
         <div id="gregDate"></div>
     </div>
     <div class="top-icons">
+        <i class="fas fa-server" id="serverStatus" title="حالة الاتصال بالسيرفر"></i>
         <i class="fas fa-bell" onclick="alert('برجاء مراجعة لوحة الإشعارات داخل لوحة التحكم')" title="الإشعارات"></i>
         <i class="fas fa-moon" onclick="App.toggleTheme()" title="تبديل الوضع"></i>
         <div id="clock">00:00:00</div>
@@ -176,10 +177,12 @@
             <div class="form-group"><label>رقم الملف الوظيفي:</label><input type="text" id="rFile" class="form-control" placeholder="أدخل رقم الملف"></div>
             
             <div class="form-group"><label>المنطقة (كتابة يدوية):</label><input type="text" id="rRegion" class="form-control" placeholder="مثال: المنقف، الفحيحيل..."></div>
-            <div class="form-group"><label>اسم المسجد (كتابة يدوية):</label><input type="text" id="rPlace" class="form-control" placeholder="اكتب اسم المسجد"></div>
+            <div class="form-group"><label>اسم المسجد (كتابة يدوية):</label><input type="text" id="rPlace" class="form-control" placeholder="اكتب اسم المسجد بالكامل"></div>
             
             <div class="form-group"><label>المسمى الوظيفي:</label>
-                <select id="rJob" class="form-control"><option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option></select>
+                <select id="rJob" class="form-control">
+                    <option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option>
+                </select>
             </div>
             <div class="form-group"><label>نوع البند (التعيين):</label>
                 <select id="rContract" class="form-control">
@@ -195,7 +198,7 @@
             <div class="form-group"><label>رقم الهاتف (واتساب):</label><input type="tel" id="rPhone" class="form-control" placeholder="مثال: 90000000"></div>
             <div class="form-group"><label>كلمة المرور:</label><input type="password" id="rPass" class="form-control" placeholder="اختر رقم سري للحساب"></div>
         </div>
-        <button class="btn btn-primary" onclick="App.register()">تسجيل وحفظ البيانات <i class="fas fa-save"></i></button>
+        <button class="btn btn-primary" onclick="App.register()">تسجيل وحفظ البيانات بالسيرفر <i class="fas fa-save"></i></button>
     </div>
 
     <div id="empDash" class="card">
@@ -241,7 +244,7 @@
         
         <div id="waLinkArea" style="display:none; margin-top:20px; text-align:center;">
             <div class="notice-box" style="background:#e8f5e9; color:#2e7d32; border-color:#c8e6c9;">
-                <h4>تم إنشاء الطلب وتسجيله في رادار شؤون العاملين!</h4>
+                <h4>تم إنشاء الطلب ورفعه للسيرفر بنجاح!</h4>
                 <p>يرجى إبلاغ البديل لإعتماد الموافقة إلكترونياً.</p>
                 <button class="btn btn-wa" onclick="App.sendWa()"><i class="fab fa-whatsapp"></i> إرسال رسالة تلقائية للبديل</button>
             </div>
@@ -359,55 +362,102 @@
     <div class="modal-content">
         <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-user-edit"></i> تعديل بيانات الموظف</h3>
         <div class="form-grid">
-            <div class="form-group"><label>الاسم:</label><input type="text" id="edName" class="form-control"></div>
+            <div class="form-group"><label>الاسم الرباعي:</label><input type="text" id="edName" class="form-control"></div>
             <div class="form-group"><label>الجنسية:</label><input type="text" id="edNat" class="form-control"></div>
             <div class="form-group"><label>المنطقة:</label><input type="text" id="edRegion" class="form-control"></div>
-            <div class="form-group"><label>المسجد:</label><input type="text" id="edPlace" class="form-control"></div>
-            <div class="form-group"><label>الهاتف:</label><input type="text" id="edPhone" class="form-control"></div>
-            <div class="form-group"><label>المسمى:</label><input type="text" id="edJob" class="form-control"></div>
-            <div class="form-group"><label>البند:</label>
+            <div class="form-group"><label>اسم المسجد:</label><input type="text" id="edPlace" class="form-control"></div>
+            <div class="form-group"><label>رقم الهاتف:</label><input type="text" id="edPhone" class="form-control"></div>
+            <div class="form-group"><label>المسمى الوظيفي:</label>
+                <select id="edJob" class="form-control"><option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option></select>
+            </div>
+            <div class="form-group"><label>نوع البند:</label>
                 <select id="edContract" class="form-control">
                     <option>عامة</option><option>مكافآت</option><option>إيرادات</option><option>عقد ثاني</option>
                     <option>استعانة بخبرات</option><option>راتب مقطوع</option><option>تكليف</option>
                 </select>
             </div>
-            <div class="form-group"><label>تغيير الباسورد (اتركه فارغاً لعدم التغيير):</label><input type="text" id="edPass" class="form-control"></div>
+            <div class="form-group"><label>كلمة المرور (اتركه فارغاً لعدم التغيير):</label><input type="text" id="edPass" class="form-control"></div>
         </div>
         <input type="hidden" id="edId">
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn btn-success" onclick="App.saveEditEmp()"><i class="fas fa-save"></i> حفظ التعديلات</button>
+            <button class="btn btn-success" onclick="App.saveEditEmp()"><i class="fas fa-save"></i> حفظ وتحديث بالسيرفر</button>
             <button class="btn" style="background:#555; color:white;" onclick="document.getElementById('hrEditEmpModal').style.display='none'">إلغاء</button>
         </div>
     </div>
 </div>
 
-<div id="printArea"></div>
+<div id="printArea" class="no-print"></div>
 
 <script>
+// ==========================================
+// إعدادات السيرفر المركزي الخاص بك
+// قم بوضع رابط الـ API الخاص بسيرفرك هنا
+// ==========================================
+const SERVER_API_URL = "https://your-server-domain.com/api"; // <-- غير هذا الرابط
+
 const App = {
     db: { users: [], requests: [], returnActions: [], logs: [] },
-    curr: null, tempSub: null, waLink: "",
+    curr: null, tempSub: null, waLink: "", serverConnected: false,
 
-    init: () => {
-        App.loadData();
+    init: async () => {
+        await App.loadData();
         App.updateClocks();
         setInterval(App.updateClocks, 1000);
         App.checkOverstays();
     },
 
-    loadData: () => {
-        const stored = localStorage.getItem('mosque_sys_v4');
-        if(stored) App.db = JSON.parse(stored);
+    // دالة جلب البيانات من السيرفر
+    loadData: async () => {
+        try {
+            // محاولة جلب الداتا من سيرفرك
+            const response = await fetch(SERVER_API_URL + '/get_data');
+            if(response.ok) {
+                App.db = await response.json();
+                App.serverConnected = true;
+                document.getElementById('serverStatus').style.color = "var(--success)";
+            } else { throw new Error("Server error"); }
+        } catch(error) {
+            // في حالة فشل السيرفر، يتم الرجوع للتخزين المحلي مؤقتاً لعدم توقف النظام
+            console.log("لم يتم الاتصال بالسيرفر. جاري استخدام التخزين المحلي.");
+            App.serverConnected = false;
+            document.getElementById('serverStatus').style.color = "var(--danger)";
+            
+            const stored = localStorage.getItem('mosque_sys_server');
+            if(stored) App.db = JSON.parse(stored);
+        }
         
+        if(!App.db.users) App.db.users = [];
         if(!App.db.users.find(u => u.id === 'admin')) {
             App.db.users.push({id:'admin', name:'شؤون العاملين', role:'hr', pass:'admin'});
             App.db.users.push({id:'culture', name:'التوجيه الثقافي', role:'cultural', pass:'123'});
         }
         if(!App.db.logs) App.db.logs = [];
-        App.saveData();
+        if(!App.db.requests) App.db.requests = [];
+        if(!App.db.returnActions) App.db.returnActions = [];
+        
+        await App.saveData(); 
     },
     
-    saveData: () => localStorage.setItem('mosque_sys_v4', JSON.stringify(App.db)),
+    // دالة الحفظ وإرسال البيانات للسيرفر
+    saveData: async () => {
+        // حفظ محلي احتياطي
+        localStorage.setItem('mosque_sys_server', JSON.stringify(App.db));
+        
+        // إرسال البيانات للسيرفر المركزي
+        try {
+            await fetch(SERVER_API_URL + '/save_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(App.db)
+            });
+            App.serverConnected = true;
+            document.getElementById('serverStatus').style.color = "var(--success)";
+        } catch(e) {
+            App.serverConnected = false;
+            document.getElementById('serverStatus').style.color = "var(--danger)";
+            console.error("العمل بوضع الأوفلاين (تم الحفظ محلياً).");
+        }
+    },
 
     updateClocks: () => {
         const now = new Date();
@@ -425,12 +475,12 @@ const App = {
         };
     },
 
-    addLog: (roles, msg) => {
+    addLog: async (roles, msg) => {
         const ts = App.getTimestamp();
         const logEntry = { id: Date.now(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
         App.db.logs.unshift(logEntry);
         if(App.db.logs.length > 200) App.db.logs.pop(); 
-        App.saveData();
+        await App.saveData();
     },
 
     renderLogs: (containerId, roleFilter) => {
@@ -438,7 +488,7 @@ const App = {
         if(!box) return;
         const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all'));
         if(myLogs.length === 0) {
-            box.innerHTML = '<div style="color:#888; text-align:center; padding:10px;">لا توجد أحداث مسجلة.</div>';
+            box.innerHTML = '<div style="color:#888; text-align:center; padding:10px;">لا توجد أحداث مسجلة حتى الآن.</div>';
             return;
         }
         box.innerHTML = myLogs.map(l => `
@@ -459,7 +509,10 @@ const App = {
         if(id === 'returnPage') App.setupReturn();
     },
 
-    login: () => {
+    login: async () => {
+        // تحديث البيانات من السيرفر قبل الدخول للتأكد من أحدث الحالات
+        await App.loadData();
+        
         const id = document.getElementById('loginId').value.trim();
         const pass = document.getElementById('loginPass').value;
         const role = document.getElementById('loginRole').value;
@@ -467,7 +520,7 @@ const App = {
         const user = App.db.users.find(u => u.id === id && u.pass === pass && u.role === role);
         if(user) {
             if(user.status === 'frozen') {
-                alert("هذا الحساب مجمد حالياً. يرجى مراجعة شؤون العاملين.");
+                alert("تم تجميد هذا الحساب من قبل شؤون العاملين. يرجى مراجعة الإدارة.");
                 return;
             }
             App.curr = user;
@@ -483,10 +536,11 @@ const App = {
 
     logout: () => location.reload(),
 
-    register: () => {
+    register: async () => {
+        await App.loadData(); // سحب أحدث بيانات عشان ما يحصلش تكرار
         const id = document.getElementById('rId').value.trim();
         if(!id || id.length < 5) return alert("يرجى كتابة الرقم المدني صحيحاً");
-        if(App.db.users.find(u => u.id === id)) return alert("الرقم المدني مسجل مسبقاً");
+        if(App.db.users.find(u => u.id === id)) return alert("الرقم المدني مسجل مسبقاً في النظام");
 
         const user = {
             id, name: document.getElementById('rName').value, pass: document.getElementById('rPass').value,
@@ -496,9 +550,8 @@ const App = {
             phone: document.getElementById('rPhone').value, role: 'emp', status: 'active', ts: App.getTimestamp()
         };
         App.db.users.push(user);
-        App.addLog(['hr'], `موظف جديد سجل بالمنظومة: ${user.name} (${user.id})`);
-        App.saveData();
-        alert("تم إنشاء البطاقة الوظيفية بنجاح.");
+        await App.addLog(['hr'], `تسجيل بطاقة وظيفية جديدة للموظف: ${user.name} (${user.id}) - بند: ${user.contract}`);
+        alert("تم إنشاء البطاقة الوظيفية بنجاح وتسجيلها في السيرفر المركزي.");
         App.showPage('loginPage');
     },
 
@@ -525,7 +578,7 @@ const App = {
             box.innerHTML = matches.map(u => `<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="App.selectSub('${u.id}')"><b>${u.name}</b><br><small>المدني: ${u.id} | المسجد: ${u.place} | المنطقة: ${u.region}</small></div>`).join('');
             box.style.display = 'block';
         } else {
-            box.innerHTML = '<div style="padding:10px;">لا يوجد بديل مطابق</div>';
+            box.innerHTML = '<div style="padding:10px;">لا يوجد بديل مطابق أو الحساب مجمد</div>';
             box.style.display = 'block';
         }
     },
@@ -545,10 +598,12 @@ const App = {
         document.getElementById('btnSubmitReq').disabled = false;
     },
 
-    submitRequest: () => {
+    submitRequest: async () => {
         const start = document.getElementById('reqStart').value;
         const end = document.getElementById('reqEnd').value;
         if(!start || !end || !App.tempSub) return alert("أكمل التواريخ واختر البديل");
+
+        await App.loadData(); // سحب بيانات السيرفر لضمان المزامنة
 
         const ts = App.getTimestamp();
         const reqId = `REQ-${Math.floor(Math.random()*100000)}`;
@@ -560,11 +615,9 @@ const App = {
         
         App.db.requests.push(req);
         
-        App.addLog(['hr'], `تقديم طلب إجازة (${req.type}) من الموظف: ${App.curr.name}، البديل: ${App.tempSub.name}.`);
-        App.addLog(['emp_' + App.curr.id], `تم تقديم طلبك بنجاح برقم ${reqId} وإرساله للبديل.`);
-        if(App.tempSub.id !== "0000") App.addLog(['emp_' + App.tempSub.id], `تنبيه: الزميل ${App.curr.name} اختارك كبديل. يرجى الموافقة.`);
-        
-        App.saveData();
+        await App.addLog(['hr'], `تقديم طلب إجازة (${req.type}) من الموظف: ${App.curr.name}، البديل: ${App.tempSub.name}.`);
+        await App.addLog(['emp_' + App.curr.id], `تم تقديم طلبك بنجاح برقم ${reqId} وإرساله للبديل.`);
+        if(App.tempSub.id !== "0000") await App.addLog(['emp_' + App.tempSub.id], `تنبيه: الزميل ${App.curr.name} اختارك كبديل في إجازته. يرجى الدخول للموافقة.`);
         
         document.getElementById('btnSubmitReq').style.display = 'none';
         document.getElementById('waLinkArea').style.display = 'block';
@@ -608,17 +661,17 @@ const App = {
         `).join('');
     },
 
-    actionReq: (reqId, stage, status) => {
+    actionReq: async (reqId, stage, status) => {
+        await App.loadData(); // سحب أحدث بيانات للتأكد من حالة الطلب الحقيقية من السيرفر
         const r = App.db.requests.find(x => x.id === reqId);
         r.stage = stage; r.status = status;
         const empName = App.db.users.find(u=>u.id===r.empId).name;
         
-        if(stage === 2) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `وافق البديل على طلب الموظف ${empName}.`);
-        else if(stage === 3) App.addLog(['hr', 'emp_'+r.empId], `قام التوجيه الثقافي باعتماد طلب ${empName}.`);
-        else if(stage === 4) App.addLog(['hr', 'emp_'+r.empId], `وافقت الإدارة المركزية (شؤون العاملين) على إجازة الموظف ${empName}.`);
-        else if(stage === 0) App.addLog(['hr', 'emp_'+r.empId], `تم رفض الطلب الخاص بالموظف ${empName} (${status}).`);
+        if(stage === 2) await App.addLog(['hr', 'cultural', 'emp_'+r.empId], `وافق البديل على طلب الموظف ${empName}.`);
+        else if(stage === 3) await App.addLog(['hr', 'emp_'+r.empId], `قام التوجيه الثقافي باعتماد طلب ${empName}.`);
+        else if(stage === 4) await App.addLog(['hr', 'emp_'+r.empId], `اعتمدت شؤون العاملين إجازة الموظف ${empName}.`);
+        else if(stage === 0) await App.addLog(['hr', 'emp_'+r.empId], `تم رفض الطلب الخاص بالموظف ${empName} (${status}).`);
 
-        App.saveData();
         if(App.curr.role === 'emp') App.renderEmp();
         if(App.curr.role === 'cultural') App.renderCul();
         if(App.curr.role === 'hr') App.renderHr();
@@ -664,16 +717,16 @@ const App = {
             </tr>`;
         }).join('');
 
-        // جدول الموظفين (بإضافة حالة الموظف وأزرار التحكم)
+        // جدول الموظفين 
         const emps = App.db.users.filter(u=>u.role==='emp');
         document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
             const statusBadge = u.status === 'frozen' ? '<span class="badge status-0">مجمد</span>' : '<span class="badge status-4">نشط</span>';
             const toggleBtn = u.status === 'frozen' ? 
-                `<button class="btn btn-success" style="padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تفعيل"><i class="fas fa-play"></i></button>` :
-                `<button class="btn" style="background:#f59e0b; color:white; padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تجميد"><i class="fas fa-pause"></i></button>`;
+                `<button class="btn btn-success" style="padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تفعيل الحساب"><i class="fas fa-play"></i></button>` :
+                `<button class="btn" style="background:#f59e0b; color:white; padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تجميد الحساب"><i class="fas fa-pause"></i></button>`;
 
             return `<tr>
-                <td><b>${u.name}</b><br><small>${u.id}</small><br><small>جنسية: ${u.nationality}</small></td>
+                <td><b>${u.name}</b><br><small>${u.id}</small></td>
                 <td>م: ${u.place}<br><small>المنطقة: ${u.region}</small></td>
                 <td>${u.job}<br><small class="badge status-1" style="background:#e0e0e0; color:#333;">بند: ${u.contract}</small></td>
                 <td>${statusBadge}</td>
@@ -699,19 +752,19 @@ const App = {
         }).join('');
     },
 
-    deleteEmp: (id) => {
+    deleteEmp: async (id) => {
         if(confirm("تحذير إداري: هل أنت متأكد من حذف ملف الموظف نهائياً؟")) {
             App.db.users = App.db.users.filter(u => u.id !== id);
-            App.addLog(['hr'], `تم حذف ملف الموظف صاحب الرقم المدني (${id}) من النظام.`);
-            App.saveData(); App.renderHr();
+            await App.addLog(['hr'], `تم حذف ملف الموظف صاحب الرقم المدني (${id}) من النظام.`);
+            App.renderHr();
         }
     },
 
-    toggleEmpStatus: (id) => {
+    toggleEmpStatus: async (id) => {
         const u = App.db.users.find(x => x.id === id);
         u.status = u.status === 'frozen' ? 'active' : 'frozen';
-        App.addLog(['hr'], `تم ${u.status === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
-        App.saveData(); App.renderHr();
+        await App.addLog(['hr'], `تم ${u.status === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
+        App.renderHr();
     },
 
     openEditEmp: (id) => {
@@ -724,11 +777,11 @@ const App = {
         document.getElementById('edPhone').value = u.phone;
         document.getElementById('edJob').value = u.job;
         document.getElementById('edContract').value = u.contract;
-        document.getElementById('edPass').value = ""; // فاضي للتأمين
+        document.getElementById('edPass').value = ""; 
         document.getElementById('hrEditEmpModal').style.display = 'flex';
     },
 
-    saveEditEmp: () => {
+    saveEditEmp: async () => {
         const id = document.getElementById('edId').value;
         const u = App.db.users.find(x => x.id === id);
         u.name = document.getElementById('edName').value;
@@ -742,8 +795,7 @@ const App = {
         const newPass = document.getElementById('edPass').value.trim();
         if(newPass) u.pass = newPass;
 
-        App.addLog(['hr'], `تم تعديل وتحديث بيانات الموظف ${u.name}.`);
-        App.saveData();
+        await App.addLog(['hr'], `تم تعديل وتحديث بيانات الموظف ${u.name}.`);
         document.getElementById('hrEditEmpModal').style.display = 'none';
         App.renderHr();
     },
@@ -763,20 +815,12 @@ const App = {
         document.getElementById('modalReqTime').innerText = `توثيق تقديم الطلب: ${r.ts.greg} | ${r.ts.hijri} (الساعة ${r.ts.time})`;
         
         document.getElementById('compEmp').innerHTML = `
-            <p><strong>الاسم:</strong> ${emp.name}</p>
-            <p><strong>المدني:</strong> ${emp.id}</p>
-            <p><strong>الهاتف:</strong> ${emp.phone}</p>
-            <p><strong>الجنسية:</strong> ${emp.nationality}</p>
-            <p><strong>المنطقة:</strong> ${emp.region}</p>
-            <p><strong>المسجد:</strong> ${emp.place}</p>
+            <p><strong>الاسم:</strong> ${emp.name}</p><p><strong>المدني:</strong> ${emp.id}</p><p><strong>الهاتف:</strong> ${emp.phone}</p>
+            <p><strong>الجنسية:</strong> ${emp.nationality}</p><p><strong>المنطقة:</strong> ${emp.region}</p><p><strong>المسجد:</strong> ${emp.place}</p>
         `;
         document.getElementById('compSub').innerHTML = `
-            <p><strong>الاسم:</strong> ${sub.name}</p>
-            <p><strong>المدني:</strong> ${sub.id}</p>
-            <p><strong>الهاتف:</strong> ${sub.phone}</p>
-            <p><strong>الجنسية:</strong> ${sub.nationality}</p>
-            <p><strong>المنطقة:</strong> ${sub.region}</p>
-            <p><strong>المسجد:</strong> ${sub.place}</p>
+            <p><strong>الاسم:</strong> ${sub.name}</p><p><strong>المدني:</strong> ${sub.id}</p><p><strong>الهاتف:</strong> ${sub.phone}</p>
+            <p><strong>الجنسية:</strong> ${sub.nationality}</p><p><strong>المنطقة:</strong> ${sub.region}</p><p><strong>المسجد:</strong> ${sub.place}</p>
         `;
         document.getElementById('compDates').innerText = `${r.start} إلى ${r.end}`;
         document.getElementById('compType').innerText = r.type;
@@ -817,15 +861,15 @@ const App = {
         document.getElementById('retLeave').innerHTML = '<option value="">-- اختر الإجازة --</option>' + myReqs.map(r => `<option value="${r.id}">${r.type} (${r.start} / ${r.end})</option>`).join('');
     },
 
-    submitReturn: () => {
+    submitReturn: async () => {
         const reqId = document.getElementById('retLeave').value;
         const date = document.getElementById('retDate').value;
         const actionType = document.getElementById('retType').value;
         if(!reqId || !date) return alert("أكمل البيانات المطلوبة.");
         
+        await App.loadData();
         App.db.returnActions.push({ reqId, type: actionType, date, empId: App.curr.id, ts: App.getTimestamp() });
-        App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
-        App.saveData();
+        await App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
         alert("تم إرسال الطلب واعتماده بالمركزية.");
         App.showPage('empDash');
     },
@@ -852,8 +896,9 @@ const App = {
         const printArea = document.getElementById('printArea');
         const ts = App.getTimestamp();
         
-        // إخفاء الواجهة الأساسية تماماً ووضع المحتوى في الديف المخصص للطباعة
         document.getElementById('mainContainer').style.display = 'none';
+        document.querySelector('header').style.display = 'none';
+        document.querySelector('.top-bar').style.display = 'none';
         
         printArea.innerHTML = `
             <div style="text-align:center; margin-bottom:20px; font-family:'Cairo'; direction:rtl;">
@@ -872,9 +917,10 @@ const App = {
         
         window.print();
         
-        // إعادة الواجهة لحالتها الطبيعية بعد الطباعة
         printArea.innerHTML = '';
         document.getElementById('mainContainer').style.display = 'block';
+        document.querySelector('header').style.display = 'flex';
+        document.querySelector('.top-bar').style.display = 'flex';
     },
     
     printTicket: (id) => {
@@ -885,6 +931,8 @@ const App = {
         const ts = App.getTimestamp();
         
         document.getElementById('mainContainer').style.display = 'none';
+        document.querySelector('header').style.display = 'none';
+        document.querySelector('.top-bar').style.display = 'none';
         
         area.innerHTML = `
             <div style="text-align:center; border:5px double #1b4532; padding:40px; direction:rtl; font-family:'Cairo';">
@@ -908,6 +956,8 @@ const App = {
         
         area.innerHTML = '';
         document.getElementById('mainContainer').style.display = 'block';
+        document.querySelector('header').style.display = 'flex';
+        document.querySelector('.top-bar').style.display = 'flex';
     }
 };
 
