@@ -6,7 +6,8 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-const DB_FILE = '/data/database.json';
+const DB_DIR = fs.existsSync('/data') ? '/data' : __dirname;
+const DB_FILE = path.join(DB_DIR, 'database.json');
 
 app.use(cors());
 app.use(express.json());
