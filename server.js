@@ -11,13 +11,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// إنشاء قاعدة البيانات إذا لم تكن موجودة
+// إنشاء قاعدة البيانات إذا لم تكن موجودة (مع إضافة مصفوفة العودة)
 const initDB = () => {
     if (!fs.existsSync(DB_FILE)) {
         const initialData = {
             users: [{ id: "100", name: "أدمن النظام", role: "hr", status: "active", pass: "123", place: "الإدارة" }],
             requests: [],
-            logs: []
+            logs: [],
+            returnActions: [] // تمت الإضافة هنا
         };
         fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
     }
@@ -81,6 +82,16 @@ app.put('/api/users/:id', (req, res) => {
     } catch (e) { res.status(500).json({ success: false }); }
 });
 
+// حذف مستخدم نهائياً
+app.delete('/api/users/:id', (req, res) => {
+    try {
+        const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        db.users = db.users.filter(u => u.id !== req.params.id);
+        fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+        res.json({ success: true });
+    } catch (e) { res.status(500).json({ success: false }); }
+});
+
 // إضافة طلب إجازة
 app.post('/api/requests', (req, res) => {
     try {
@@ -102,6 +113,17 @@ app.put('/api/requests/:id', (req, res) => {
             return res.json({ success: true });
         }
         res.status(404).json({ success: false });
+    } catch (e) { res.status(500).json({ success: false }); }
+});
+
+// إضافة طلب عودة/قطع إجازة
+app.post('/api/returns', (req, res) => {
+    try {
+        const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        if (!db.returnActions) db.returnActions = [];
+        db.returnActions.push(req.body);
+        fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+        res.json({ success: true });
     } catch (e) { res.status(500).json({ success: false }); }
 });
 
