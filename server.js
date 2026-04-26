@@ -19,8 +19,8 @@ const initDB = () => {
     if (!fs.existsSync(DB_FILE)) {
         const initialData = {
             users: [
-                { id: "100", name: "أدمن النظام", role: "hr", status: "active", pass: "123", place: "الإدارة" },
-                { id: "200", name: "التوجيه الثقافي", role: "cultural", status: "active", pass: "123", place: "التوجيه" }
+                { id: "1000", name: "أدمن النظام", role: "hr", status: "active", pass: "1234", place: "الإدارة" },
+                { id: "2000", name: "التوجيه الثقافي", role: "cultural", status: "active", pass: "123", place: "التوجيه" }
             ],
             requests: [],
             logs: [],
