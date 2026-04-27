@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منظومة الإجازات - مساجد محافظة الأحمدي</title>
+    <title>برنامج الإجازات - وزارة الشؤون الإسلامية</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* المتغيرات الأساسية للألوان والتصميم */
         :root {
             --primary: #1b4532; --primary-dark: #0a2b1f; --gold: #c5a059; --gold-light: #e0c58e;
             --bg: #f0f4f3; --card-bg: #ffffff; --text-main: #1a1a1a; --text-muted: #555;
@@ -24,49 +23,53 @@
             --text-main: #f0f0f0; --text-muted: #bbb; --border: #333; --white: #1e1e1e;
         }
 
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 0; overflow-x: hidden; transition: 0.3s; line-height: 1.6; }
+        /* الإعدادات العامة */
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 0; overflow-x: hidden; transition: background 0.3s, color 0.3s; line-height: 1.6; }
         
+        /* الشريط العلوي */
         .top-bar { background: var(--primary-dark); color: var(--gold); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: bold; border-bottom: 3px solid var(--gold); z-index: 1001; }
         .dates-container { display: flex; flex-direction: column; }
         .dates-container #gregDate { color: var(--white); font-size: 11px; }
-        .top-icons { display: flex; gap: 20px; align-items: center; }
+        .top-icons { display: flex; gap: 20px; align-items: center; position: relative; }
         .top-icons i { cursor: pointer; font-size: 18px; transition: 0.3s; }
         .top-icons i:hover { color: var(--white); transform: scale(1.2); }
+        .notif-badge { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; padding: 3px 6px; font-size: 11px; display: none; animation: pulse 1.5s infinite; font-weight: bold; }
 
-        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 25px 20px; color: white; border-bottom: 5px solid var(--gold); position: relative; display: flex; justify-content: space-between; align-items: center; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* الترويسة */
+        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 25px 20px; color: white; border-bottom: 5px solid var(--gold); position: relative; display: flex; justify-content: space-between; align-items: center; overflow: hidden; }
         header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%; background: url('https://www.transparenttextures.com/patterns/arabesque.png'); opacity: 0.1; pointer-events: none; }
-        .header-logo { width: 75px; height: auto; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .header-logo { width: 75px; height: 75px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .header-content { text-align: center; z-index: 2; flex-grow: 1; padding: 0 15px; }
-        header h1 { font-family: 'Amiri', serif; margin: 0; font-size: 26px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        header p { margin: 5px 0 0; font-weight: 600; color: var(--gold-light); font-size: 15px; }
+        header h1 { font-family: 'Amiri', serif; margin: 0; font-size: 26px; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); letter-spacing: 1px; }
+        header p { margin: 5px 0 0; font-weight: 700; color: var(--gold-light); font-size: 16px; }
         
+        /* قائمة التنقل */
         nav { display: flex; background: var(--card-bg); overflow-x: auto; padding: 12px; gap: 10px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); scrollbar-width: none; }
         nav::-webkit-scrollbar { display: none; }
-        .nav-item { padding: 12px 18px; border-radius: 12px; cursor: pointer; white-space: nowrap; font-weight: 700; background: #f0f0f0; font-size: 14px; color: #444; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid transparent; }
+        .nav-item { padding: 12px 18px; border-radius: 12px; cursor: pointer; white-space: nowrap; font-weight: 700; background: #f0f0f0; font-size: 14px; color: #444; display: flex; align-items: center; gap: 8px; transition: all 0.3s; border: 1px solid transparent; }
         .nav-item:hover { background: #e0e0e0; transform: translateY(-2px); }
         .nav-item.active-nav { background: var(--primary); color: white; box-shadow: 0 6px 15px rgba(27,69,50,0.3); border-color: var(--gold); }
 
-        main { padding: 20px; max-width: 1200px; margin: auto; min-height: 70vh; }
+        /* المحتوى الرئيسي */
+        main { padding: 25px 20px; max-width: 1200px; margin: auto; min-height: 70vh; }
         .card { background: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 30px; display: none; animation: fadeIn 0.4s ease-out; }
         .card.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 15px; border: 1px solid var(--border); background: var(--card-bg); }
-        table { width: 100%; min-width: 900px; border-collapse: collapse; }
-        th, td { padding: 14px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
-        th { background: #f8f9fa; color: var(--primary); font-weight: 800; border-bottom: 3px solid var(--gold); }
-        tr:hover { background: rgba(197, 160, 89, 0.05); }
-
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        /* النماذج */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--primary); font-size: 14px; }
         .form-control { width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: 'Cairo'; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
-        .form-control:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15); }
+        .form-control:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.15); }
         
-        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px; text-decoration: none; }
+        /* الأزرار */
+        .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; font-size: 14px; text-decoration: none; }
         .btn-primary { background: linear-gradient(to bottom, var(--primary), var(--primary-dark)); color: white; width: 100%; box-shadow: 0 4px 12px rgba(27,69,50,0.2); }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(27,69,50,0.3); }
-        .btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(27,69,50,0.35); }
+        .btn:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; transform: none; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-wa { background: var(--whatsapp); color: white; }
@@ -74,42 +77,64 @@
         .btn-print { background: #4b5563; color: white; }
         .btn-info { background: var(--info); color: white; }
         
+        /* الشارات (Badges) */
         .badge { padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 900; }
-        .status-1 { background: #cfe2ff; color: #084298; } 
-        .status-2 { background: #fff3cd; color: #856404; } 
-        .status-3 { background: #fed7aa; color: #c2410c; } 
-        .status-4 { background: var(--primary); color: white; } 
-        .status-0 { background: #fecdd3; color: #9f1239; } 
-        .status-alert { background: #fee2e2; color: #b91c1c; border-right: 5px solid #b91c1c; padding: 15px; margin-bottom: 15px; border-radius: 8px; font-weight: bold; }
+        .status-1 { background: #cfe2ff; color: #084298; border: 1px solid #b6d4fe; } 
+        .status-2 { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; } 
+        .status-3 { background: #fed7aa; color: #c2410c; border: 1px solid #fdba74; } 
+        .status-4 { background: var(--success); color: white; border: 1px solid #20c997; } 
+        .status-0 { background: #fecdd3; color: #9f1239; border: 1px solid #fda4af; } 
+        .status-alert { background: #fee2e2; color: #b91c1c; border-right: 5px solid #b91c1c; padding: 15px; margin-bottom: 20px; border-radius: 8px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
 
-        .hr-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .hr-tab { flex: 1; padding: 12px; background: #eee; color: #555; border-radius: 10px; text-align: center; cursor: pointer; font-weight: 800; transition: 0.3s; white-space: nowrap; min-width: 140px; border: 2px solid transparent; }
-        .hr-tab.active { background: var(--white); border-color: var(--gold); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        /* التبويبات */
+        .hr-tabs { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
+        .hr-tab { flex: 1; padding: 14px; background: #f1f5f9; color: #475569; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 800; transition: all 0.3s; white-space: nowrap; min-width: 150px; border: 2px solid transparent; }
+        .hr-tab:hover { background: #e2e8f0; }
+        .hr-tab.active { background: var(--white); border-color: var(--gold); color: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
 
-        .notice-box { background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 10px; border: 1px solid #bbdefb; margin-bottom: 20px; font-weight: bold; }
+        .notice-box { background: #e3f2fd; color: #0d47a1; padding: 20px; border-radius: 12px; border: 1px solid #bbdefb; margin-bottom: 20px; font-weight: bold; text-align: center; }
         
+        /* نظام الكروت للجداول (Data Cards) */
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; margin-top: 15px; }
+        .data-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 20px; transition: 0.3s; position: relative; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .data-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.1); transform: translateY(-4px); border-color: var(--gold-light); }
+        .data-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 12px; margin-bottom: 15px; }
+        .data-card-title { font-weight: 900; color: var(--primary); font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .data-card-body p { margin: 8px 0; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding-bottom: 6px; }
+        .data-card-body strong { color: var(--info); text-align: left; }
+        .data-card-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        /* لوحة الإشعارات */
         .notifications-panel { background: #f8f9fa; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 25px; max-height: 250px; overflow-y: auto; }
-        .notif-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; }
-        .notif-item i { color: var(--gold); margin-top: 3px; }
-        .notif-time { color: var(--text-muted); font-size: 11px; display: block; margin-top: 3px; }
+        .notif-item { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item i { color: var(--gold); margin-top: 4px; font-size: 16px; }
+        .notif-time { color: var(--text-muted); font-size: 11px; display: block; margin-top: 4px; font-weight: bold; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 100%; max-width: 800px; box-shadow: var(--shadow); position: relative; max-height: 90vh; overflow-y: auto; }
+        /* النوافذ المنبثقة (Modals) */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
+        .modal-content { background: var(--card-bg); padding: 35px; border-radius: 24px; width: 100%; max-width: 900px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; max-height: 90vh; overflow-y: auto; }
         
-        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-        .compare-card { border: 2px solid var(--border); border-radius: 15px; padding: 20px; background: #fafafa; }
-        .compare-card h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .compare-card p { margin: 8px 0; font-size: 14px; border-bottom: 1px dashed #ddd; padding-bottom: 5px; }
-        .compare-card strong { color: var(--text-main); display: inline-block; width: 80px; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
+        .compare-card { border: 2px solid var(--border); border-radius: 16px; padding: 25px; background: #f8fafc; }
+        .compare-card h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 18px; }
+        .compare-card p { margin: 10px 0; font-size: 14px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; display: flex; justify-content: space-between; }
+        .compare-card strong { color: var(--text-main); font-weight: 900; }
 
+        /* المصادقة البيومترية */
+        .bio-container { text-align: center; padding: 20px; }
+        .bio-icon { font-size: 70px; color: var(--primary); margin: 20px 0; cursor: pointer; transition: 0.3s; }
+        .bio-icon:hover { color: var(--gold); transform: scale(1.1); }
+        .bio-icon.scanning { animation: scan 1.5s infinite; color: var(--success); }
+        @keyframes scan { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
+        .pin-input { font-size: 28px; letter-spacing: 15px; text-align: center; width: 100%; max-width: 300px; margin: 0 auto; font-family: monospace; }
+
+        /* إعدادات الطباعة */
         @media print {
             body { background: white; color: black; }
             .no-print, nav, .top-bar, header, button, .modal-overlay, .notifications-panel, .hr-tabs { display: none !important; }
             .card { display: block !important; border: none; box-shadow: none; padding: 0; margin: 0; }
             #printArea { display: block !important; width: 100%; direction: rtl; }
-            table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
-            th, td { border: 1px solid #000; padding: 8px; font-size: 12px; color: #000; }
-       th { background: #eee !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; color: #000 !important; }
             #mainContainer { display: none !important; } 
         }
     </style>
@@ -122,262 +147,291 @@
         <div id="gregDate"></div>
     </div>
     <div class="top-icons">
-        <i class="fas fa-bell" onclick="alert('برجاء مراجعة لوحة الإشعارات داخل لوحة التحكم')" title="الإشعارات"></i>
+        <div style="position: relative;" onclick="App.checkNotifications()">
+            <i class="fas fa-bell" title="الإشعارات"></i>
+            <span class="notif-badge" id="mainNotifBadge">!</span>
+        </div>
         <i class="fas fa-moon" onclick="App.toggleTheme()" title="تبديل الوضع"></i>
         <div id="clock">00:00:00</div>
     </div>
 </div>
 
 <header class="no-print">
-    <img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" class="header-logo" alt="شعار الكويت">
+    <div class="header-logo"><i class="fas fa-mosque fa-2x"></i></div>
     <div class="header-content">
         <h1>دولة الكويت</h1>
-        <h1>وزارة الأوقاف والشؤون الإسلامية</h1>
-        <p>إدارة مساجد محافظة الأحمدي </p>
-        <P>برنامج الأجزات</P>
+        <h1>وزارة الشؤون الإسلامية</h1>
+        <p>إدارة مساجد محافظة الأحمدي</p>
+        <p style="font-size: 14px; color: #fff; opacity: 0.9; margin-top: 5px;">برنامج الإجازات</p>
     </div>
-    <img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" class="header-logo" alt="شعار الأوقاف">
+    <div class="header-logo"><i class="fas fa-book-quran fa-2x"></i></div>
 </header>
 
 <nav id="mainNav" class="no-print">
     <div class="nav-item active-nav" id="n-login" onclick="App.showPage('loginPage', this)"><i class="fas fa-sign-in-alt"></i> دخول النظام</div>
     <div class="nav-item" id="n-reg" onclick="App.showPage('regPage', this)"><i class="fas fa-user-plus"></i> فتح حساب</div>
-    <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('empDash', this)"><i class="fas fa-tachometer-alt"></i> لوحة الموظف</div>
+    
+    <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('empDash', this)"><i class="fas fa-id-badge"></i> لوحة الموظف</div>
     <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('requestPage', this)"><i class="fas fa-paper-plane"></i> تقديم طلب</div>
     <div class="nav-item emp-only" style="display:none;" onclick="App.showPage('returnPage', this)"><i class="fas fa-undo"></i> عودة / قطع</div>
+    
     <div class="nav-item cul-only" style="display:none;" onclick="App.showPage('culturalDash', this)"><i class="fas fa-check-circle"></i> التوجيه الثقافي</div>
     <div class="nav-item hr-only" style="display:none;" onclick="App.showPage('hrDash', this)"><i class="fas fa-user-shield"></i> شؤون العاملين</div>
-    <div class="nav-item" id="n-logout" style="display:none; color:var(--danger);" onclick="App.logout()"><i class="fas fa-power-off"></i> خروج</div>
+    
+    <div class="nav-item" id="n-logout" style="display:none; color:var(--danger); margin-right: auto;" onclick="App.logout()"><i class="fas fa-power-off"></i> تسجيل الخروج</div>
 </nav>
 
 <main id="mainContainer" class="no-print">
+    
     <div id="loginPage" class="card active">
-        <div style="text-align:center; margin-bottom:20px;">
-            <i class="fas fa-fingerprint fa-3x" style="color:var(--primary);"></i>
-            <h2>تسجيل الدخول المركزي</h2>
+        <div style="text-align:center; margin-bottom:25px;">
+            <i class="fas fa-shield-alt fa-3x" style="color:var(--primary); margin-bottom:15px;"></i>
+            <h2 style="margin:0; color:var(--primary-dark);">تسجيل الدخول الآمن</h2>
+            <p style="color:var(--text-muted); font-size:14px;">يرجى اختيار الرتبة وإدخال الرقم المدني للمتابعة</p>
         </div>
-        <div class="form-group"><label>نوع الحساب:</label>
+        <div class="form-group"><label>نوع الحساب والصفة الوظيفية</label>
             <select id="loginRole" class="form-control">
                 <option value="emp">موظف (إمام / مؤذن)</option>
-                <option value="cultural">التوجيه الثقافي</option>
+                <option value="cultural">التوجيه الثقافي (لجنة الاعتماد)</option>
                 <option value="hr">شؤون العاملين (الإدارة المركزية)</option>
             </select>
         </div>
-        <div class="form-group"><label>الرقم المدني:</label><input type="tel" id="loginId" class="form-control" placeholder="أدخل 12 رقم"></div>
-        <div class="form-group"><label>كلمة المرور:</label><input type="password" id="loginPass" class="form-control"></div>
-        <button class="btn btn-primary" onclick="App.login()">دخول آمن <i class="fas fa-shield-alt"></i></button>
+        <div class="form-group"><label>الرقم المدني (12 رقم)</label>
+            <input type="tel" id="loginId" class="form-control" placeholder="مثال: 290000000000" maxlength="12">
+        </div>
+        <button class="btn btn-primary" onclick="App.triggerAuth()"><i class="fas fa-fingerprint"></i> متابعة للمصادقة الأمنية</button>
     </div>
 
     <div id="regPage" class="card">
-        <h3><i class="fas fa-address-card"></i> إنشاء بطاقة وظيفية (تسجيل جديد)</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-address-card"></i> إنشاء بطاقة وظيفية جديدة</h3>
         <div class="form-grid">
-            <div class="form-group"><label>الاسم الرباعي الكامل:</label><input type="text" id="rName" class="form-control" placeholder="اكتب الاسم الرباعي"></div>
-            <div class="form-group"><label>الرقم المدني:</label><input type="tel" id="rId" class="form-control" maxlength="12" placeholder="12 رقم"></div>
-            <div class="form-group"><label>الجنسية (كتابة يدوية):</label><input type="text" id="rNat" class="form-control" placeholder="مثال: كويتي، مصري، سوري..."></div>
-            <div class="form-group"><label>رقم الملف الوظيفي:</label><input type="text" id="rFile" class="form-control" placeholder="أدخل رقم الملف"></div>
-            
-            <div class="form-group"><label>المنطقة (كتابة يدوية):</label><input type="text" id="rRegion" class="form-control" placeholder="مثال: المنقف، الفحيحيل..."></div>
-            <div class="form-group"><label>اسم المسجد (كتابة يدوية):</label><input type="text" id="rPlace" class="form-control" placeholder="اكتب اسم المسجد"></div>
-            
-            <div class="form-group"><label>المسمى الوظيفي:</label>
-                <select id="rJob" class="form-control"><option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option></select>
-            </div>
-            <div class="form-group"><label>نوع البند (التعيين):</label>
-                <select id="rContract" class="form-control">
-                    <option>عامة</option>
-                    <option>مكافآت</option>
-                    <option>إيرادات</option>
-                    <option>عقد ثاني</option>
-                    <option>استعانة بخبرات</option>
-                    <option>راتب مقطوع</option>
-                    <option>تكليف</option>
+            <div class="form-group"><label>الاسم الرباعي الكامل</label><input type="text" id="rName" class="form-control" placeholder="تطابق البطاقة المدنية"></div>
+            <div class="form-group"><label>الرقم المدني</label><input type="tel" id="rId" class="form-control" maxlength="12" placeholder="12 رقم"></div>
+            <div class="form-group"><label>رقم الملف الوظيفي <span style="color:red">*</span></label><input type="text" id="rFile" class="form-control" placeholder="رقم الملف المعتمد بالشؤون"></div>
+            <div class="form-group"><label>الجنسية</label><input type="text" id="rNat" class="form-control" placeholder="كويتي، مصري، سوري..."></div>
+            <div class="form-group"><label>المحافظة / المنطقة</label><input type="text" id="rRegion" class="form-control" placeholder="مثال: الأحمدي - المنقف"></div>
+            <div class="form-group"><label>اسم المسجد المخصص</label><input type="text" id="rPlace" class="form-control" placeholder="اكتب اسم المسجد"></div>
+            <div class="form-group"><label>المسمى الوظيفي</label>
+                <select id="rJob" class="form-control">
+                    <option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option>
                 </select>
             </div>
-            <div class="form-group"><label>رقم الهاتف (واتساب):</label><input type="tel" id="rPhone" class="form-control" placeholder="مثال: 90000000"></div>
-            <div class="form-group"><label>كلمة المرور:</label><input type="password" id="rPass" class="form-control" placeholder="اختر رقم سري للحساب"></div>
+            <div class="form-group"><label>نوع البند (العقد)</label>
+                <select id="rContract" class="form-control">
+                    <option>عامة</option><option>مكافآت</option><option>إيرادات</option><option>عقد ثاني</option><option>استعانة بخبرات</option><option>راتب مقطوع</option><option>تكليف</option>
+                </select>
+            </div>
+            <div class="form-group"><label>رقم الهاتف (واتساب)</label><input type="tel" id="rPhone" class="form-control" placeholder="أرقام فقط (مثال: 90000000)"></div>
+            <div class="form-group"><label>كلمة المرور / رمز PIN</label><input type="password" id="rPass" class="form-control" placeholder="4 أرقام أو حروف كحد أدنى"></div>
         </div>
-        <button class="btn btn-primary" onclick="App.register()">تسجيل وحفظ البيانات <i class="fas fa-save"></i></button>
+        <button class="btn btn-primary" onclick="App.register()" style="font-size:16px; padding:15px;"><i class="fas fa-save"></i> تسجيل وحفظ البيانات في المنظومة</button>
     </div>
 
     <div id="empDash" class="card">
-        <div id="empHeader" style="margin-bottom:15px; font-size:16px; font-weight:bold; color:var(--primary);"></div>
+        <div id="empHeader" style="margin-bottom:20px; font-size:16px; font-weight:bold; color:var(--primary); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid #eee; padding-bottom:15px;"></div>
+        
+        <div id="prevLeaveInfo" style="display:none; background:linear-gradient(to right, #f8fafc, #eef2ff); border:1px solid #c7d2fe; padding:20px; border-radius:12px; margin-bottom:25px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+            <h5 style="margin-top:0; color:var(--info); font-size:16px;"><i class="fas fa-certificate"></i> بيانات آخر إجازة معتمدة</h5>
+            <div id="prevLeaveContent" style="font-size:14px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;"></div>
+        </div>
+
         <div class="notifications-panel" id="empNotifs"></div>
         <div id="subNoticeArea"></div>
         
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-            <h4><i class="fas fa-history"></i> سجل طلبات الإجازة الخاصة بي</h4>
-        </div>
-        <div class="table-wrapper">
-            <table id="empTable">
-                <thead><tr><th>رقم الطلب والتاريخ</th><th>النوع</th><th>البديل</th><th>من</th><th>إلى</th><th>الحالة</th><th>إجراء</th></tr></thead>
-                <tbody id="empTbody"></tbody>
-            </table>
-        </div>
+        <h4 style="color:var(--primary-dark);"><i class="fas fa-history"></i> الأرشيف السجل لطلباتي</h4>
+        <div class="data-grid" id="empTbody"></div>
     </div>
 
     <div id="requestPage" class="card">
-        <h3><i class="fas fa-calendar-plus"></i> تقديم طلب إجازة</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-calendar-plus"></i> تقديم وتوثيق طلب إجازة</h3>
+        
         <div class="form-grid">
-            <div class="form-group"><label>نوع الإجازة:</label>
-                <select id="reqType" class="form-control"><option>تسجيل إجازة دورية</option><option>تسجيل إجازة خاصة</option><option>تعديل إجازة</option><option>إلغاء إجازة</option></select>
+            <div class="form-group"><label>اختر نوع الإجازة</label>
+                <select id="reqType" class="form-control">
+                    <option>إجازة دورية</option>
+                    <option>إجازة خاصة</option>
+                    <option>تعديل إجازة</option>
+                    <option>إلغاء إجازة</option>
+                </select>
             </div>
-            <div class="form-group"><label>البحث عن البديل (الرقم المدني أو الاسم):</label>
-                <input type="text" id="subSearch" class="form-control" placeholder="ابحث..." onkeyup="App.searchSub(this.value)">
-                <div id="subSearchResults" style="position:absolute; width:100%; background:#fff; border:1px solid #ddd; display:none; max-height:200px; overflow-y:auto; z-index:100;"></div>
-                <div style="margin-top:8px;">
-                    <input type="checkbox" id="aloneCheckbox" onchange="App.toggleSubSearch()"> <label for="aloneCheckbox" style="display:inline; font-weight:normal;">بمفردي بالمسجد (لا يوجد بديل)</label>
+            
+            <div class="form-group" style="position:relative;"><label>البحث عن البديل (الرقم المدني أو الاسم)</label>
+                <input type="text" id="subSearch" class="form-control" placeholder="اكتب للبحث في قاعدة البيانات..." onkeyup="App.searchSub(this.value)">
+                <div id="subSearchResults" style="position:absolute; top:75px; width:100%; background:#fff; border:1px solid var(--border); border-radius:8px; display:none; max-height:220px; overflow-y:auto; z-index:100; box-shadow:0 10px 25px rgba(0,0,0,0.15);"></div>
+                <div style="margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">
+                    <input type="checkbox" id="aloneCheckbox" onchange="App.toggleSubSearch()" style="transform:scale(1.2); margin-left:8px;"> 
+                    <label for="aloneCheckbox" style="display:inline; font-weight:900; color:#334155; cursor:pointer;">إعفاء من البديل (بمفردي بالمسجد)</label>
                 </div>
             </div>
         </div>
 
-        <div id="subDataBox" style="display:none; background:#f9f9f9; padding:15px; border-radius:10px; margin-bottom:15px;">
-            <h5><i class="fas fa-user-check"></i> بيانات البديل المختار:</h5>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:14px;" id="sInfoGrid"></div>
+        <div id="subDataBox" style="display:none; background:#f0fdf4; padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #bbf7d0;">
+            <h5 style="margin-top:0; color:#166534; font-size:15px;"><i class="fas fa-check-circle"></i> بيانات البديل الذي تم اختياره:</h5>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:14px; color:#14532d;" id="sInfoGrid"></div>
         </div>
 
         <div class="form-grid">
-            <div class="form-group"><label>تاريخ البدء:</label><input type="date" id="reqStart" class="form-control"></div>
-            <div class="form-group"><label>تاريخ العودة:</label><input type="date" id="reqEnd" class="form-control"></div>
+            <div class="form-group"><label>تاريخ بداية الإجازة</label><input type="date" id="reqStart" class="form-control"></div>
+            <div class="form-group"><label>تاريخ نهاية الإجازة (العودة)</label><input type="date" id="reqEnd" class="form-control"></div>
         </div>
         
-        <div id="waLinkArea" style="display:none; margin-top:20px; text-align:center;">
-            <div class="notice-box" style="background:#e8f5e9; color:#2e7d32; border-color:#c8e6c9;">
-                <h4>تم إنشاء الطلب وتسجيله في رادار شؤون العاملين!</h4>
-                <p>يرجى إبلاغ البديل لإعتماد الموافقة إلكترونياً.</p>
-                <button class="btn btn-wa" onclick="App.sendWa()"><i class="fab fa-whatsapp"></i> إرسال رسالة تلقائية للبديل</button>
+        <div id="waLinkArea" style="display:none; margin-top:25px;">
+            <div class="notice-box" style="background:#e8f5e9; color:#1b5e20; border-color:#c8e6c9; text-align:center;">
+                <h4 style="margin-top:0;"><i class="fas fa-check-double"></i> تم إنشاء الطلب وحفظه في النظام بنجاح!</h4>
+                <p>الخطوة التالية: يجب إبلاغ البديل ليدخل النظام ويوافق إلكترونياً لكي ينتقل الطلب للتوجيه الثقافي.</p>
+                <button class="btn btn-wa" style="font-size:16px; padding:12px 25px; margin-top:10px;" onclick="App.sendWa()"><i class="fab fa-whatsapp fa-lg"></i> إرسال رسالة التفاصيل للبديل عبر واتساب</button>
             </div>
         </div>
 
-        <button class="btn btn-primary" id="btnSubmitReq" onclick="App.submitRequest()" disabled>إنشاء الطلب وتوثيق الوقت <i class="fas fa-paper-plane"></i></button>
+        <button class="btn btn-primary" id="btnSubmitReq" onclick="App.submitRequest()" disabled style="font-size:16px; padding:15px;"><i class="fas fa-paper-plane"></i> إرسال الطلب وتوثيق الوقت</button>
     </div>
 
     <div id="returnPage" class="card">
-        <h3><i class="fas fa-undo"></i> طلب عودة أو قطع إجازة</h3>
+        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-undo"></i> توثيق إجراء (عودة / قطع إجازة)</h3>
         <div class="form-grid">
-            <div class="form-group"><label>نوع الإجراء:</label>
-                <select id="retType" class="form-control"><option>عودة من الإجازة</option><option>قطع الإجازة</option></select>
+            <div class="form-group"><label>حدد نوع الإجراء الإداري</label>
+                <select id="retType" class="form-control">
+                    <option>مباشرة عمل (عودة من الإجازة)</option>
+                    <option>قطع الإجازة مبكراً</option>
+                </select>
             </div>
-            <div class="form-group"><label>اختر الإجازة المعتمدة:</label><select id="retLeave" class="form-control"></select></div>
-            <div class="form-group"><label>تاريخ التنفيذ الفعلي للإجراء:</label><input type="date" id="retDate" class="form-control"></div>
+            <div class="form-group"><label>اختر الإجازة المرتبطة بالإجراء</label>
+                <select id="retLeave" class="form-control"></select>
+            </div>
+            <div class="form-group"><label>تاريخ التنفيذ الفعلي</label>
+                <input type="date" id="retDate" class="form-control">
+            </div>
         </div>
-        <button class="btn btn-primary" onclick="App.submitReturn()">إرسال الطلب واعتماده بالشؤون <i class="fas fa-check"></i></button>
+        <button class="btn btn-primary" onclick="App.submitReturn()"><i class="fas fa-save"></i> إرسال الإجراء لاعتماده في الشؤون</button>
     </div>
 
     <div id="culturalDash" class="card">
-        <h3><i class="fas fa-mosque"></i> التوجيه الثقافي - اعتمادات الإجازات</h3>
+        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-mosque"></i> التوجيه الثقافي - الاعتمادات الفنية الشرعية</h3>
         <div class="notifications-panel" id="culNotifs"></div>
-        <div class="table-wrapper">
-            <table>
-                <thead><tr><th>مقدم الطلب (المسجد)</th><th>البديل</th><th>الفترة</th><th>إجراء الاعتماد الفني</th></tr></thead>
-                <tbody id="culTbody"></tbody>
-            </table>
+        
+        <div style="background:#fff3cd; color:#856404; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:bold; border:1px solid #ffeeba;">
+            <i class="fas fa-info-circle"></i> تظهر هنا فقط الطلبات التي تمت الموافقة عليها مسبقاً من قِبل "البديل".
         </div>
+        
+        <div class="data-grid" id="culTbody"></div>
     </div>
 
     <div id="hrDash" class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3><i class="fas fa-satellite-dish"></i> رادار شؤون العاملين (الكنترول المركزي)</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px; border-bottom:2px solid var(--gold); padding-bottom:15px;">
+            <h3 style="margin:0; color:var(--primary);"><i class="fas fa-satellite-dish"></i> رادار شؤون العاملين (الكنترول المركزي)</h3>
             <div>
-                <button class="btn btn-print" onclick="App.printReport('printContentArea', 'الكشف الشامل - شؤون العاملين')"><i class="fas fa-print"></i> طباعة كشف A4</button>
-                <button class="btn btn-excel" onclick="App.exportToExcel('hrReqTable')"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+                <button class="btn btn-excel" onclick="App.exportToExcel()"><i class="fas fa-file-excel"></i> تصدير البيانات الشاملة (Excel)</button>
             </div>
         </div>
         
         <div id="overstayAlerts"></div>
-        <h5><i class="fas fa-list-alt"></i> سجل الأحداث اللحظي (System Logs)</h5>
+        
+        <h5 style="color:var(--text-muted); margin-bottom:10px;"><i class="fas fa-list-ul"></i> سجل المراقبة اللحظي للأحداث (System Logs)</h5>
         <div class="notifications-panel" id="hrNotifs"></div>
 
         <div class="hr-tabs">
-            <div class="hr-tab active" onclick="App.switchHrTab('reqs', this)">الرادار (طلبات لحظية)</div>
-            <div class="hr-tab" onclick="App.switchHrTab('emps', this)">سجلات الموظفين (تعديل وتجميد)</div>
-            <div class="hr-tab" onclick="App.switchHrTab('returns', this)">كشوف العودة والقطع</div>
-            <div class="hr-tab" onclick="App.switchHrTab('archive', this)">الأرشيف النهائي</div>
+            <div class="hr-tab active" onclick="App.switchHrTab('reqs', this)"><i class="fas fa-radar"></i> الرادار والاعتمادات</div>
+            <div class="hr-tab" onclick="App.switchHrTab('emps', this)"><i class="fas fa-users-cog"></i> إدارة الموظفين</div>
+            <div class="hr-tab" onclick="App.switchHrTab('returns', this)"><i class="fas fa-calendar-check"></i> كشوف المباشرة والقطع</div>
         </div>
 
-        <div id="printContentArea">
-            <div id="hrReqsView">
-                <div class="table-wrapper">
-                    <table id="hrReqTable">
-                        <thead><tr><th>التوثيق ورقم الطلب</th><th>طالب الإجازة</th><th>البديل المقترح</th><th>النوع والفترة</th><th>الحالة اللحظية</th><th class="no-print">مطابقة واعتماد</th></tr></thead>
-                        <tbody id="hrReqTbody"></tbody>
-                    </table>
-                </div>
+        <div id="hrReqsView" class="data-grid"></div>
+        
+        <div id="hrEmpsView" style="display:none;">
+            <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #e2e8f0;">
+                <label style="font-weight:bold; color:var(--primary); display:block; margin-bottom:8px;">محرك البحث الشامل للموظفين</label>
+                <input type="text" class="form-control" placeholder="ابحث باستخدام الاسم، الرقم المدني، أو رقم الملف الوظيفي..." onkeyup="App.filterEmps(this.value)">
             </div>
-
-            <div id="hrEmpsView" style="display:none;">
-                <div style="margin-bottom:15px;" class="no-print"><input type="text" class="form-control" placeholder="ابحث بالاسم أو المدني لتصفية الموظفين..." onkeyup="App.filterEmps(this.value)"></div>
-                <div class="table-wrapper">
-                    <table id="hrEmpTable">
-                        <thead><tr><th>الاسم والمدني</th><th>المسجد والمنطقة</th><th>المسمى والبند</th><th>الحالة</th><th class="no-print">التحكم والإدارة</th></tr></thead>
-                        <tbody id="hrEmpTbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="hrReturnsView" style="display:none;">
-                <div class="table-wrapper">
-                    <table id="hrReturnsTable">
-                        <thead><tr><th>الاسم والمدني</th><th>نوع الإجراء</th><th>تاريخ التنفيذ الفعلي</th><th>الإجازة الأصلية</th></tr></thead>
-                        <tbody id="hrReturnsTbody"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div id="hrArchiveView" style="display:none;">
-                <div id="archiveContainer" style="display:grid; gap:10px;"></div>
-            </div>
+            <div class="data-grid" id="hrEmpTbody"></div>
         </div>
+
+        <div id="hrReturnsView" style="display:none;" class="data-grid"></div>
     </div>
 </main>
 
-<div class="modal-overlay" id="hrApproveModal">
+<div class="modal-overlay" id="unifiedDetailsModal">
     <div class="modal-content">
-        <h3 style="text-align:center; color:var(--primary);"><i class="fas fa-balance-scale"></i> مطابقة بيانات الطلب</h3>
-        <p id="modalReqTime" style="text-align:center; font-size:13px; color:var(--text-muted); font-weight:bold;"></p>
+        <h3 style="text-align:center; color:var(--primary); margin-top:0; font-size:22px;"><i class="fas fa-balance-scale"></i> نافذة المطابقة التفصيلية</h3>
+        <p id="modalReqTime" style="text-align:center; font-size:13px; color:var(--text-muted); font-weight:bold; margin-bottom:20px;"></p>
+        
+        <div style="background:linear-gradient(to left, #eef2ff, #f8fafc); padding:20px; border-radius:12px; margin-bottom:25px; text-align:center; border:1px solid #c7d2fe; font-size:16px;">
+            <strong>نوع الإجازة المطلوبة:</strong> <span id="compType" style="color:var(--primary);"></span> &nbsp;|&nbsp; 
+            <strong>الفترة:</strong> <span id="compDates" style="color:var(--danger);"></span> &nbsp;|&nbsp; 
+            <strong>موقف البديل:</strong> <span id="compSubStatus" class="badge status-4" style="font-size:14px;"></span>
+        </div>
+        
         <div class="compare-grid">
             <div class="compare-card">
-                <h4><i class="fas fa-user-circle"></i> مقدم الطلب</h4>
+                <h4><i class="fas fa-user-circle"></i> الطرف الأول (مقدم الطلب)</h4>
                 <div id="compEmp"></div>
             </div>
             <div class="compare-card">
-                <h4><i class="fas fa-user-check"></i> البديل المقترح</h4>
+                <h4><i class="fas fa-user-check"></i> الطرف الثاني (البديل المكلف)</h4>
                 <div id="compSub"></div>
             </div>
         </div>
-        <div style="background:#eef2ff; padding:15px; border-radius:10px; margin-top:20px; text-align:center; border:1px solid #c7d2fe; font-size:15px;">
-            <strong>النوع:</strong> <span id="compType"></span> | <strong>الفترة:</strong> <span id="compDates"></span>
-        </div>
+        
         <input type="hidden" id="compReqId">
-        <div style="display:flex; gap:15px; margin-top:25px;">
-            <button class="btn btn-success" style="flex:1;" onclick="App.hrFinalDecision(4, 'تم الاعتماد من الإدارة')">اعتماد نهائي <i class="fas fa-check"></i></button>
-            <button class="btn btn-danger" style="flex:1;" onclick="App.hrFinalDecision(0, 'مرفوض من الإدارة')">رفض الطلب <i class="fas fa-times"></i></button>
-            <button class="btn" style="background:#555; color:white;" onclick="document.getElementById('hrApproveModal').style.display='none'">إغلاق النافذة</button>
-        </div>
+        
+        <div style="display:flex; gap:15px; margin-top:30px; border-top:2px solid #eee; padding-top:20px;" id="modalActionButtons">
+            </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="hrEditEmpModal">
-    <div class="modal-content">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-user-edit"></i> تعديل بيانات الموظف</h3>
+    <div class="modal-content" style="max-width: 650px;">
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-user-edit"></i> تحديث بيانات الملف الوظيفي</h3>
         <div class="form-grid">
-            <div class="form-group"><label>الاسم:</label><input type="text" id="edName" class="form-control"></div>
-            <div class="form-group"><label>الجنسية:</label><input type="text" id="edNat" class="form-control"></div>
-            <div class="form-group"><label>المنطقة:</label><input type="text" id="edRegion" class="form-control"></div>
-            <div class="form-group"><label>المسجد:</label><input type="text" id="edPlace" class="form-control"></div>
-            <div class="form-group"><label>الهاتف:</label><input type="text" id="edPhone" class="form-control"></div>
-            <div class="form-group"><label>المسمى:</label><input type="text" id="edJob" class="form-control"></div>
-            <div class="form-group"><label>البند:</label>
+            <div class="form-group"><label>الاسم الكامل</label><input type="text" id="edName" class="form-control"></div>
+            <div class="form-group"><label>رقم الملف الوظيفي (هام)</label><input type="text" id="edFile" class="form-control"></div>
+            <div class="form-group"><label>الجنسية</label><input type="text" id="edNat" class="form-control"></div>
+            <div class="form-group"><label>المنطقة</label><input type="text" id="edRegion" class="form-control"></div>
+            <div class="form-group"><label>المسجد</label><input type="text" id="edPlace" class="form-control"></div>
+            <div class="form-group"><label>المسمى الوظيفي</label>
+                <select id="edJob" class="form-control">
+                    <option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option>
+                </select>
+            </div>
+            <div class="form-group"><label>نوع البند</label>
                 <select id="edContract" class="form-control">
                     <option>عامة</option><option>مكافآت</option><option>إيرادات</option><option>عقد ثاني</option>
                     <option>استعانة بخبرات</option><option>راتب مقطوع</option><option>تكليف</option>
                 </select>
             </div>
-            <div class="form-group"><label>تغيير الباسورد (اتركه فارغاً لعدم التغيير):</label><input type="text" id="edPass" class="form-control"></div>
+            <div class="form-group"><label>رقم الهاتف</label><input type="text" id="edPhone" class="form-control"></div>
+            <div class="form-group"><label>إعادة تعيين كلمة المرور (اتركه فارغاً للتجاهل)</label><input type="password" id="edPass" class="form-control" placeholder="كلمة مرور جديدة"></div>
         </div>
         <input type="hidden" id="edId">
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn btn-success" onclick="App.saveEditEmp()"><i class="fas fa-save"></i> حفظ التعديلات</button>
-            <button class="btn" style="background:#555; color:white;" onclick="document.getElementById('hrEditEmpModal').style.display='none'">إلغاء</button>
+        <div style="display:flex; gap:15px; margin-top:20px;">
+            <button class="btn btn-success" style="flex:2;" onclick="App.saveEditEmp()"><i class="fas fa-save"></i> حفظ وتحديث البيانات</button>
+            <button class="btn" style="flex:1; background:#64748b; color:white;" onclick="App.closeModal('hrEditEmpModal')">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="authModal">
+    <div class="modal-content" style="max-width: 450px; text-align:center;">
+        <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-lock"></i> مصادقة الهوية الأمنية</h3>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">يرجى تأكيد الدخول باستخدام البصمة البيومترية، أو إدخال رمز PIN السري الخاص بك.</p>
+        
+        <div class="bio-container" style="background:#f8fafc; border-radius:15px; border:1px solid #e2e8f0; padding:30px;">
+            <i class="fas fa-fingerprint bio-icon" id="fingerIcon" onclick="App.simulateBiometric()"></i>
+            <p id="bioStatus" style="font-weight:bold; color:var(--text-muted);">اضغط على البصمة للتحقق</p>
+        </div>
+        
+        <div style="margin:25px 0; display:flex; align-items:center;">
+            <hr style="flex:1; border:0; border-top:1px dashed #cbd5e1;">
+            <span style="padding:0 15px; color:#94a3b8; font-weight:bold; font-size:12px;">أو عبر الرمز السري</span>
+            <hr style="flex:1; border:0; border-top:1px dashed #cbd5e1;">
+        </div>
+        
+        <div class="form-group">
+            <input type="password" id="authPin" class="form-control pin-input" placeholder="****">
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-top:25px;">
+            <button class="btn btn-primary" style="flex:2;" onclick="App.verifyPin()">تأكيد الدخول <i class="fas fa-sign-in-alt"></i></button>
+            <button class="btn" style="flex:1; background:#64748b; color:white;" onclick="App.closeModal('authModal')">تراجع</button>
         </div>
     </div>
 </div>
@@ -386,45 +440,42 @@
 
 <script>
 const App = {
+    // قاعدة البيانات الوهمية (Local Storage)
     db: { users: [], requests: [], returnActions: [], logs: [] },
-    curr: null, tempSub: null, waLink: "",
-    pollInterval: null,
+    curr: null, tempSub: null, waLink: "", tempLoginData: null,
 
+    // التهيئة المبدئية
     init: () => {
-        App.fetchData(); 
+        App.loadDB();
         App.updateClocks();
-        setInterval(App.updateClocks, 1000);
+        setInterval(App.updateClocks, 1000); // تحديث الساعة كل ثانية
     },
 
-    fetchData: async () => {
-        try {
-            const res = await fetch('/api/data');
-            const data = await res.json();
-            
-            if(!data.returnActions) data.returnActions = [];
-            if(!data.logs) data.logs = [];
-            if(!data.requests) data.requests = [];
-            if(!data.users) data.users = [];
-            
-            App.db = data;
-            
-            if(App.curr) {
-                if(App.curr.role === 'emp') App.renderEmp();
-                if(App.curr.role === 'cultural') App.renderCul();
-                if(App.curr.role === 'hr') {
-                    App.renderHr();
-                    App.checkOverstays();
-                }
-            }
-        } catch (e) { console.error("خطأ في الاتصال بقاعدة البيانات", e); }
-    },
-
-    startPolling: () => {
-        if(!App.pollInterval) {
-            App.pollInterval = setInterval(App.fetchData, 3000); 
+    // تحميل البيانات من المتصفح
+    loadDB: () => {
+        const local = localStorage.getItem('awqaf_db_v2');
+        if(local) {
+            App.db = JSON.parse(local);
+        } else {
+            // بيانات افتراضية للمسؤولين عند تشغيل النظام لأول مرة
+            App.db.users = [
+                { id: "222222222222", name: "مدير شؤون العاملين", pass: "1234", role: "hr", status: "active", place:"الإدارة المركزية", file:"HR-0001", job:"مدير نظام", contract:"عامة", nationality:"كويتي", region:"الكويت", phone:"--" },
+                { id: "333333333333", name: "الموجه الثقافي الأول", pass: "1234", role: "cultural", status: "active", place:"إدارة التوجيه", file:"CUL-0001", job:"موجه عام", contract:"عامة", nationality:"كويتي", region:"الكويت", phone:"--" }
+            ];
+            App.saveDB();
+        }
+        
+        // التحقق من وجود جلسة سابقة
+        const sessionUser = sessionStorage.getItem('awqaf_user_v2');
+        if(sessionUser) {
+            App.curr = JSON.parse(sessionUser);
+            App.routeUser();
         }
     },
 
+    saveDB: () => { localStorage.setItem('awqaf_db_v2', JSON.stringify(App.db)); },
+
+    // إدارة التوقيت والتاريخ
     updateClocks: () => {
         const now = new Date();
         document.getElementById('clock').innerText = now.toLocaleTimeString('ar-KW');
@@ -441,34 +492,45 @@ const App = {
         };
     },
 
-    addLog: async (roles, msg) => {
+    // نظام المراقبة والسجلات (Logs)
+    addLog: (roles, msg) => {
         const ts = App.getTimestamp();
-        const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
-        try {
-            await fetch('/api/logs', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(logEntry)
-            });
-        } catch(e) { console.error(e); }
+        App.db.logs.unshift({ id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` });
+        App.saveDB();
+        App.checkNotifications();
     },
 
     renderLogs: (containerId, roleFilter) => {
         const box = document.getElementById(containerId);
         if(!box) return;
-        const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all'));
-        if(myLogs.length === 0) {
-            box.innerHTML = '<div style="color:#888; text-align:center; padding:10px;">لا توجد أحداث مسجلة.</div>';
-            return;
-        }
-        box.innerHTML = myLogs.map(l => `
-            <div class="notif-item">
-                <i class="fas fa-info-circle"></i>
-                <div><div>${l.msg}</div><span class="notif-time">${l.time}</span></div>
-            </div>
-        `).join('');
+        const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all')).slice(0, 30); // عرض آخر 30 حدث
+        if(myLogs.length === 0) { box.innerHTML = '<div style="color:#888; text-align:center; padding:15px; font-weight:bold;">لا توجد أحداث مسجلة حتى الآن.</div>'; return; }
+        box.innerHTML = myLogs.map(l => `<div class="notif-item"><i class="fas fa-info-circle"></i><div style="flex:1;"><div>${l.msg}</div><span class="notif-time">${l.time}</span></div></div>`).join('');
     },
 
+    // جرس الإشعارات
+    checkNotifications: () => {
+        if(!App.curr) return;
+        const badge = document.getElementById('mainNotifBadge');
+        let pending = 0;
+        // حساب الطلبات المعلقة حسب دور المستخدم
+        if(App.curr.role === 'emp') {
+            pending = App.db.requests.filter(r => r.subId === App.curr.id && r.stage === 1).length;
+        } else if(App.curr.role === 'cultural') {
+            pending = App.db.requests.filter(r => r.stage === 2).length;
+        } else if(App.curr.role === 'hr') {
+            pending = App.db.requests.filter(r => r.stage === 3).length;
+        }
+        
+        if(pending > 0) {
+            badge.style.display = 'block';
+            badge.innerText = pending;
+        } else {
+            badge.style.display = 'none';
+        }
+    },
+
+    // واجهة المستخدم والتنقل
     toggleTheme: () => document.body.classList.toggle('dark-mode'),
 
     showPage: (id, el) => {
@@ -477,100 +539,144 @@ const App = {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
         if(el) el.classList.add('active-nav');
         if(id === 'returnPage') App.setupReturn();
+        if(id === 'hrDash') App.checkOverstays();
+        App.checkNotifications();
     },
 
-    login: async () => {
+    closeModal: (id) => document.getElementById(id).style.display = 'none',
+
+    // --- المصادقة وتسجيل الدخول ---
+    triggerAuth: () => {
         const id = document.getElementById('loginId').value.trim();
-        const pass = document.getElementById('loginPass').value;
         const role = document.getElementById('loginRole').value;
+        if(!id) return alert("خطأ: يرجى إدخال الرقم المدني.");
         
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({id, pass, role})
-            });
-            const data = await res.json();
-            
-            if(data.success) {
-                if(data.user.status === 'frozen') {
-                    alert("هذا الحساب مجمد حالياً. يرجى مراجعة شؤون العاملين.");
-                    return;
-                }
-                App.curr = data.user;
-                document.getElementById('n-login').style.display = 'none';
-                document.getElementById('n-reg').style.display = 'none';
-                document.getElementById('n-logout').style.display = 'flex';
-                
-                if(role === 'emp') { document.querySelectorAll('.emp-only').forEach(e=>e.style.display='flex'); App.renderEmp(); App.showPage('empDash'); }
-                if(role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e=>e.style.display='flex'); App.renderCul(); App.showPage('culturalDash'); }
-                if(role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.showPage('hrDash'); }
-                
-                App.startPolling(); 
-            } else {
-                alert("البيانات غير صحيحة.");
-            }
-        } catch(e) { alert("حدث خطأ في الاتصال بالسيرفر."); }
+        const user = App.db.users.find(u => u.id === id && u.role === role);
+        if(!user) return alert("مرفوض: الرقم المدني غير مسجل، أو الرتبة الإدارية المحددة غير صحيحة.");
+        if(user.status === 'frozen') return alert("تحذير إداري: هذا الحساب تم تجميده وإيقافه. يرجى مراجعة إدارة شؤون العاملين.");
+
+        App.tempLoginData = user;
+        document.getElementById('authPin').value = '';
+        document.getElementById('bioStatus').innerText = 'اضغط على البصمة للتحقق';
+        document.getElementById('bioStatus').style.color = 'var(--text-muted)';
+        document.getElementById('fingerIcon').classList.remove('scanning');
+        document.getElementById('authModal').style.display = 'flex';
+    },
+
+    simulateBiometric: () => {
+        const icon = document.getElementById('fingerIcon');
+        const status = document.getElementById('bioStatus');
+        icon.classList.add('scanning');
+        status.innerText = 'جاري التحقق والمطابقة...';
+        
+        setTimeout(() => {
+            icon.classList.remove('scanning');
+            status.innerText = 'تمت المصادقة بنجاح!';
+            status.style.color = 'var(--success)';
+            setTimeout(App.finalizeLogin, 800);
+        }, 1500);
+    },
+
+    verifyPin: () => {
+        const pin = document.getElementById('authPin').value;
+        if(pin === App.tempLoginData.pass) {
+            App.finalizeLogin();
+        } else {
+            alert("خطأ: رمز PIN أو كلمة المرور غير صحيحة.");
+        }
+    },
+
+    finalizeLogin: () => {
+        App.curr = App.tempLoginData;
+        sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
+        App.closeModal('authModal');
+        App.addLog(['hr', 'all'], `تسجيل دخول للنظام: ${App.curr.name} (${App.curr.role})`);
+        App.routeUser();
+    },
+
+    routeUser: () => {
+        document.getElementById('n-login').style.display = 'none';
+        document.getElementById('n-reg').style.display = 'none';
+        document.getElementById('n-logout').style.display = 'flex';
+        
+        // إظهار الأزرار المخصصة بناءً على الصلاحية
+        if(App.curr.role === 'emp') { document.querySelectorAll('.emp-only').forEach(e=>e.style.display='flex'); App.renderEmp(); App.showPage('empDash'); }
+        if(App.curr.role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e=>e.style.display='flex'); App.renderCul(); App.showPage('culturalDash'); }
+        if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.showPage('hrDash'); }
     },
 
     logout: () => {
-        if(App.pollInterval) clearInterval(App.pollInterval);
+        sessionStorage.removeItem('awqaf_user_v2');
         location.reload();
     },
 
-    register: async () => {
+    // --- تسجيل حساب جديد ---
+    register: () => {
         const id = document.getElementById('rId').value.trim();
-        if(!id || id.length < 5) return alert("يرجى كتابة الرقم المدني صحيحاً");
-        if(App.db.users.find(u => u.id === id)) return alert("الرقم المدني مسجل مسبقاً");
+        const pass = document.getElementById('rPass').value;
+        const fileNo = document.getElementById('rFile').value.trim();
+        const name = document.getElementById('rName').value.trim();
+        
+        if(!name) return alert("الاسم الرباعي إلزامي.");
+        if(!id || id.length < 5) return alert("يرجى كتابة الرقم المدني بشكل صحيح.");
+        if(!fileNo) return alert("رقم الملف الوظيفي إلزامي لربط البيانات.");
+        if(pass.length < 4) return alert("لأسباب أمنية: كلمة المرور أو PIN يجب ألا تقل عن 4 خانات.");
+        if(App.db.users.find(u => u.id === id)) return alert("هذا الرقم المدني مسجل مسبقاً في المنظومة.");
 
         const user = {
-            id, name: document.getElementById('rName').value, pass: document.getElementById('rPass').value,
-            nationality: document.getElementById('rNat').value || 'غير محدد', file: document.getElementById('rFile').value,
-            region: document.getElementById('rRegion').value || 'غير محدد', place: document.getElementById('rPlace').value,
-            job: document.getElementById('rJob').value, contract: document.getElementById('rContract').value,
-            phone: document.getElementById('rPhone').value, role: 'emp', status: 'active', ts: App.getTimestamp()
+            id, pass, file: fileNo, name,
+            nationality: document.getElementById('rNat').value || 'غير محدد',
+            region: document.getElementById('rRegion').value || 'غير محدد',
+            place: document.getElementById('rPlace').value || 'غير محدد',
+            job: document.getElementById('rJob').value,
+            contract: document.getElementById('rContract').value,
+            phone: document.getElementById('rPhone').value || 'غير محدد',
+            role: 'emp', status: 'active', ts: App.getTimestamp()
         };
         
-        try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(user)
-            });
-            const data = await res.json();
-            if(data.success) {
-                App.addLog(['hr'], `موظف جديد سجل بالمنظومة: ${user.name} (${user.id})`);
-                alert("تم إنشاء البطاقة الوظيفية بنجاح.");
-                App.fetchData();
-                App.showPage('loginPage');
-            } else { alert(data.message || "فشل التسجيل"); }
-        } catch(e) { alert("خطأ في الاتصال"); }
+        App.db.users.push(user);
+        App.saveDB();
+        App.addLog(['hr'], `موظف جديد: تم إنشاء ملف وظيفي لـ ${user.name} (رقم الملف: ${user.file})`);
+        
+        alert("تم التوثيق! تم إنشاء البطاقة الوظيفية بنجاح. يمكنك تسجيل الدخول الآن باستخدام رقمك المدني.");
+        App.showPage('loginPage');
     },
 
+    // --- إدارة الإجازات والبديل ---
     toggleSubSearch: () => {
         const isAlone = document.getElementById('aloneCheckbox').checked;
         const btn = document.getElementById('btnSubmitReq');
         const sInput = document.getElementById('subSearch');
         if(isAlone) {
-            App.tempSub = { id: "0000", name: "بمفرده (لا يوجد بديل)", place: App.curr.place, phone: "--", job: "--", region: "--", nationality: "--" };
-            sInput.disabled = true; btn.disabled = false;
+            // كائن وهمي كامل التفاصيل لتفادي الأخطاء في نافذة المطابقة
+            App.tempSub = { id: "0000", name: "مُعفى (بمفرده بالمسجد)", place: App.curr.place, phone: "--", job: "غير مطلوب", region: App.curr.region, nationality: "--", file: "0000", contract: "--" };
+            sInput.disabled = true; 
+            sInput.value = "";
+            btn.disabled = false;
+            document.getElementById('subSearchResults').style.display = 'none';
+            document.getElementById('subDataBox').style.display = 'block';
+            document.getElementById('sInfoGrid').innerHTML = `<div style="grid-column: span 2; text-align:center; font-weight:bold; color:var(--danger); padding:10px;">تم تفعيل حالة الإعفاء لعدم وجود بديل متوفر بالمسجد.</div>`;
         } else {
-            App.tempSub = null; sInput.disabled = false; btn.disabled = true;
+            App.tempSub = null; 
+            sInput.disabled = false; 
+            btn.disabled = true;
+            document.getElementById('subDataBox').style.display = 'none';
         }
     },
 
     searchSub: (val) => {
-        const cleanVal = val.trim().replace(/\s+/g, ' ');
+        const cleanVal = val.trim();
         const box = document.getElementById('subSearchResults');
         if(cleanVal.length < 2) { box.style.display = 'none'; return; }
         
-        const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status !== 'frozen' && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
+        // البحث عن موظف (نشط) غير المستخدم الحالي يطابق الاسم أو المدني
+        const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status === 'active' && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
         
         if(matches.length > 0) {
-            box.innerHTML = matches.map(u => `<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="App.selectSub('${u.id}')"><b>${u.name}</b><br><small>المدني: ${u.id} | المسجد: ${u.place} | المنطقة: ${u.region}</small></div>`).join('');
+            box.innerHTML = matches.map(u => `<div style="padding:12px; border-bottom:1px solid #eee; cursor:pointer; transition:0.3s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="App.selectSub('${u.id}')"><b style="color:var(--primary);">${u.name}</b><br><small style="color:#64748b;">ر.مدني: ${u.id} | م: ${u.place}</small></div>`).join('');
             box.style.display = 'block';
         } else {
-            box.innerHTML = '<div style="padding:10px;">لا يوجد بديل مطابق</div>';
+            box.innerHTML = '<div style="padding:15px; color:var(--danger); font-weight:bold; text-align:center;">لا يوجد زميل مطابق أو حسابه مجمد إدارياً</div>';
             box.style.display = 'block';
         }
     },
@@ -582,290 +688,407 @@ const App = {
         
         document.getElementById('sInfoGrid').innerHTML = `
             <div><strong>الاسم:</strong> ${App.tempSub.name}</div>
-            <div><strong>المدني:</strong> ${App.tempSub.id}</div>
+            <div><strong>الرقم المدني:</strong> ${App.tempSub.id}</div>
             <div><strong>المسجد:</strong> ${App.tempSub.place}</div>
-            <div><strong>المنطقة:</strong> ${App.tempSub.region}</div>
+            <div><strong>المسمى الوظيفي:</strong> ${App.tempSub.job}</div>
         `;
         document.getElementById('subDataBox').style.display = 'block';
         document.getElementById('btnSubmitReq').disabled = false;
     },
 
-    submitRequest: async () => {
+    submitRequest: () => {
         const start = document.getElementById('reqStart').value;
         const end = document.getElementById('reqEnd').value;
-        if(!start || !end || !App.tempSub) return alert("أكمل التواريخ واختر البديل");
+        const type = document.getElementById('reqType').value;
+        if(!start || !end || !App.tempSub) return alert("خطأ: يرجى استكمال تواريخ الإجازة وتحديد البديل.");
 
         const ts = App.getTimestamp();
-        const reqId = `REQ-${Math.floor(Math.random()*100000)}`;
+        const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`; // رقم عشوائي مكون من 5 أرقام
 
         const req = {
-            id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: document.getElementById('reqType').value,
-            start, end, stage: 1, status: 'بانتظار البديل', ts: ts
+            id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type,
+            start, end, stage: 1, status: 'بانتظار موافقة البديل', ts: ts
         };
         
-        try {
-            const res = await fetch('/api/requests', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(req)
-            });
-            const data = await res.json();
+        App.db.requests.push(req);
+        App.saveDB();
+        
+        App.addLog(['hr'], `الرادار: تقديم طلب (${type}) للموظف: ${App.curr.name}، البديل المقترح: ${App.tempSub.name}.`);
+        App.addLog(['emp_' + App.curr.id], `تم تسجيل وحفظ طلبك (رقم ${reqId}) بنجاح.`);
+        
+        document.getElementById('btnSubmitReq').style.display = 'none';
+        document.getElementById('waLinkArea').style.display = 'block';
+        
+        // تجهيز رابط الواتساب بدقة واحترافية عالية
+        if(App.tempSub.id !== "0000") {
+            App.addLog(['emp_' + App.tempSub.id], `إشعار هام: الزميل ${App.curr.name} رشحك كبديل له. يرجى الدخول للموافقة.`);
             
-            if(data.success) {
-                App.addLog(['hr'], `تقديم طلب إجازة (${req.type}) من الموظف: ${App.curr.name}، البديل: ${App.tempSub.name}.`);
-                App.addLog(['emp_' + App.curr.id], `تم تقديم طلبك بنجاح برقم ${reqId} وإرساله للبديل.`);
-                if(App.tempSub.id !== "0000") App.addLog(['emp_' + App.tempSub.id], `تنبيه: الزميل ${App.curr.name} اختارك كبديل. يرجى الموافقة.`);
-                
-                App.fetchData(); 
-                
-                document.getElementById('btnSubmitReq').style.display = 'none';
-                document.getElementById('waLinkArea').style.display = 'block';
-                
-                if(App.tempSub.id !== "0000") {
-                    const sysLink = window.location.href;
-                    const msg = `السلام عليكم ورحمة الله، أخي ${App.tempSub.name}.\nأنا الزميل ${App.curr.name} (مسجد ${App.curr.place}).\nقمت بتقديم طلب ${req.type} واخترتك كبديل من تاريخ ${start} إلى ${end}.\nيرجى الدخول للنظام للموافقة حتى يتم استكمال الإجراءات:\n${sysLink}`;
-                    App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
-                } else {
-                    document.querySelector('.btn-wa').style.display = 'none';
-                }
-            }
-        } catch(e) { alert("حدث خطأ أثناء إرسال الطلب"); }
+            const sysLink = window.location.href; // رابط الموقع الحالي
+            const msg = `السلام عليكم ورحمة الله وبركاته، أخي الفاضل ${App.tempSub.name}.\n\nأنا زميلك ${App.curr.name} من مسجد (${App.curr.place}).\nقمت بتقديم طلب (${req.type})، ورشحتك كبديل لتغطية المسجد في الفترة:\nمن: ${start}\nإلى: ${end}\n\nيرجى التكرم بالدخول إلى المنظومة واعتماد الموافقة إلكترونياً ليتم رفع الطلب للتوجيه الثقافي.\n\nرابط المنظومة: ${sysLink}`;
+            
+            App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
+            document.querySelector('.btn-wa').style.display = 'inline-flex';
+        } else {
+            // حالة "بمفرده" يتخطى مرحلة البديل تلقائياً للمرحلة 2 (التوجيه)
+            document.querySelector('.btn-wa').style.display = 'none';
+            App.actionReq(reqId, 2, 'مُعفى (بانتظار التوجيه)');
+        }
     },
 
-    sendWa: () => { window.open(App.waLink, '_blank'); setTimeout(()=>location.reload(), 2000); },
+    sendWa: () => { 
+        window.open(App.waLink, '_blank'); 
+        // إعادة تحميل بعد الإرسال ليعود للشاشة الرئيسية
+        setTimeout(() => location.reload(), 2500); 
+    },
 
+    // --- معالج الإجراءات والقرارات (الاعتمادات) ---
+    actionReq: (reqId, stage, status) => {
+        const r = App.db.requests.find(x => x.id === reqId);
+        if(!r) return;
+        
+        r.stage = stage;
+        r.status = status;
+        App.saveDB();
+
+        const empName = App.db.users.find(u=>u.id===r.empId).name;
+        
+        // السجلات حسب المرحلة
+        if(stage === 2) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `الاعتماد الأولي: تمت الموافقة من قِبل البديل على طلب (${empName}).`);
+        else if(stage === 3) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الفني الشرعي: التوجيه الثقافي اعتمد طلب (${empName}).`);
+        else if(stage === 4) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الإداري والنهائي: شؤون العاملين وافقت على إجازة (${empName}).`);
+        else if(stage === 0) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `مرفوض: تم رفض وإلغاء طلب (${empName})، السبب: ${status}.`);
+
+        App.closeModal('unifiedDetailsModal');
+        
+        // تحديث الواجهة النشطة فوراً
+        if(App.curr.role === 'emp') App.renderEmp();
+        if(App.curr.role === 'cultural') App.renderCul();
+        if(App.curr.role === 'hr') App.renderHr();
+    },
+
+    // --- العروض الخاصة بكل دور (Render) ---
+
+    // 1. لوحة الموظف
     renderEmp: () => {
-        document.getElementById('empHeader').innerText = `أهلاً بك: ${App.curr.name} | المسجد: ${App.curr.place} | المنطقة: ${App.curr.region}`;
+        document.getElementById('empHeader').innerHTML = `
+            <span><i class="fas fa-user"></i> الموظف: ${App.curr.name}</span>
+            <span class="badge status-1" style="font-size:14px; padding:8px 15px;">مسجد: ${App.curr.place}</span>
+        `;
         App.renderLogs('empNotifs', 'emp_' + App.curr.id);
 
+        // بيانات الإجازة السابقة المعتمدة
+        const approvedReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
+        if(approvedReqs.length > 0) {
+            const last = approvedReqs[approvedReqs.length - 1]; // أحدث واحدة
+            document.getElementById('prevLeaveInfo').style.display = 'block';
+            document.getElementById('prevLeaveContent').innerHTML = `
+                <div style="flex:1;">رقم: <strong>${last.id}</strong> | النوع: <strong>${last.type}</strong> | الفترة: <strong>${last.start}</strong> إلى <strong>${last.end}</strong></div>
+                <button class="btn btn-print" style="padding:8px 15px; font-size:13px;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> طباعة التصريح</button>
+            `;
+        }
+
+        // الإشعارات العاجلة (مطلوب كموافقة بديل)
         const subTask = App.db.requests.find(r => r.subId === App.curr.id && r.stage === 1);
         const notice = document.getElementById('subNoticeArea');
         if(subTask) {
             const emp = App.db.users.find(u=>u.id===subTask.empId);
-            notice.innerHTML = `<div class="notice-box">
-                <p>طلب تغطية من الزميل <b>${emp.name}</b> (${emp.place}) للفترة ${subTask.start} إلى ${subTask.end}</p>
-                <button class="btn btn-success" onclick="App.actionReq('${subTask.id}', 2, 'بانتظار التوجيه')">أوافق</button>
-                <button class="btn btn-danger" onclick="App.actionReq('${subTask.id}', 0, 'مرفوض من البديل')">أعتذر</button>
+            notice.innerHTML = `<div class="notice-box" style="background:#fff7ed; border-color:#fed7aa; color:#9a3412;">
+                <h4 style="margin-top:0;"><i class="fas fa-exclamation-circle"></i> تنبيه: طلب تغطية</h4>
+                <p>قام الزميل <b>${emp.name}</b> (مسجد: ${emp.place}) باختيارك كبديل لتغطيته للفترة من ${subTask.start} إلى ${subTask.end}.</p>
+                <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                    <button class="btn btn-success" onclick="App.actionReq('${subTask.id}', 2, 'تمت موافقة البديل')"><i class="fas fa-check"></i> أوافق على التغطية</button>
+                    <button class="btn btn-danger" onclick="App.actionReq('${subTask.id}', 0, 'تم الرفض من قبل البديل')"><i class="fas fa-times"></i> أعتذر عن التغطية</button>
+                </div>
             </div>`;
         } else notice.innerHTML = '';
 
+        // الأرشيف الخاص به
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id).reverse();
         document.getElementById('empTbody').innerHTML = myReqs.map(r => `
-            <tr>
-                <td><b>${r.id}</b><br><small>${r.ts.greg}</small></td>
-                <td>${r.type}</td>
-                <td>${r.subId === '0000' ? 'بمفرده' : (App.db.users.find(u=>u.id===r.subId)?.name || '--')}</td>
-                <td>${r.start}</td><td>${r.end}</td>
-                <td><span class="badge status-${r.stage}">${r.status}</span></td>
-                <td>${r.stage === 4 ? `<button class="btn btn-primary" onclick="App.printTicket('${r.id}')">طباعة الإجازة</button>` : '--'}</td>
-            </tr>
+            <div class="data-card">
+                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-file-alt"></i> ${r.type}</span><span class="badge status-${r.stage}">${r.status}</span></div>
+                <div class="data-card-body">
+                    <p><span>رقم الطلب:</span> <strong>${r.id}</strong></p>
+                    <p><span>البديل المقترح:</span> <strong>${r.subId === '0000' ? 'لا يوجد (بمفرده)' : (App.db.users.find(u=>u.id===r.subId)?.name || 'محذوف')}</strong></p>
+                    <p><span>فترة الإجازة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
+                    <p><span>تاريخ التقديم:</span> <strong>${r.ts.greg}</strong></p>
+                </div>
+            </div>
         `).join('');
     },
 
-    actionReq: async (reqId, stage, status) => {
-        const r = App.db.requests.find(x => x.id === reqId);
-        const empName = App.db.users.find(u=>u.id===r.empId).name;
-        
-        try {
-            await fetch(`/api/requests/${reqId}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ stage, status })
-            });
-
-            if(stage === 2) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `وافق البديل على طلب الموظف ${empName}.`);
-            else if(stage === 3) App.addLog(['hr', 'emp_'+r.empId], `قام التوجيه الثقافي باعتماد طلب ${empName}.`);
-            else if(stage === 4) App.addLog(['hr', 'emp_'+r.empId], `وافقت الإدارة المركزية (شؤون العاملين) على إجازة الموظف ${empName}.`);
-            else if(stage === 0) App.addLog(['hr', 'emp_'+r.empId], `تم رفض الطلب الخاص بالموظف ${empName} (${status}).`);
-
-            App.fetchData(); 
-        } catch(e) { console.error("خطأ في تحديث الطلب", e); }
-    },
-
+    // 2. لوحة التوجيه الثقافي
     renderCul: () => {
         App.renderLogs('culNotifs', 'cultural');
+        
+        // التوجيه يرى فقط الطلبات التي وافق عليها البديل (المرحلة 2)
         const reqs = App.db.requests.filter(r => r.stage === 2);
+        
+        if(reqs.length === 0) {
+            document.getElementById('culTbody').innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#fff; border-radius:15px; border:1px dashed #ccc;">لا توجد طلبات معلقة تتطلب الاعتماد الفني حالياً.</div>';
+            return;
+        }
+
         document.getElementById('culTbody').innerHTML = reqs.map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId);
-            const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId);
-            return `<tr>
-                <td><b>${emp.name}</b><br><small>${emp.place}</small></td>
-                <td>${sub?.name || '--'}</td><td>${r.start} إلى ${r.end}</td>
-                <td><button class="btn btn-success" onclick="App.actionReq('${r.id}', 3, 'بانتظار الشؤون')">اعتماد ثقافي</button></td>
-            </tr>`;
+            const subName = r.subId === '0000' ? 'لا يوجد (بمفرده)' : (App.db.users.find(u=>u.id===r.subId)?.name || '--');
+            return `
+            <div class="data-card" style="border-top:4px solid var(--info);">
+                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-user-tie"></i> ${emp.name}</span> <span class="badge status-2">موافق كبديل</span></div>
+                <div class="data-card-body">
+                    <p><span>المسجد:</span> <strong>${emp.place}</strong></p>
+                    <p><span>البديل المكلف:</span> <strong>${subName}</strong></p>
+                    <p><span>الفترة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
+                </div>
+                <div class="data-card-actions">
+                    <button class="btn btn-info" style="flex:1;" onclick="App.openDetails('${r.id}')"><i class="fas fa-search-plus"></i> تفاصيل الطلب والمطابقة</button>
+                </div>
+            </div>`;
         }).join('');
     },
 
+    // 3. لوحة شؤون العاملين
     switchHrTab: (tab, el) => {
-        ['hrReqsView', 'hrEmpsView', 'hrReturnsView', 'hrArchiveView'].forEach(v => document.getElementById(v).style.display='none');
-        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display='block';
+        ['hrReqsView', 'hrEmpsView', 'hrReturnsView'].forEach(v => document.getElementById(v).style.display='none');
+        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display='grid';
         document.querySelectorAll('.hr-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
-        if(tab === 'archive') App.renderHrArchive();
     },
 
     renderHr: () => {
         App.renderLogs('hrNotifs', 'hr');
         
+        // أ. الرادار والطلبات (كل الطلبات مرتبة بالأحدث)
         const reqs = App.db.requests.slice().reverse();
-        document.getElementById('hrReqTbody').innerHTML = reqs.map(r => {
+        document.getElementById('hrReqsView').innerHTML = reqs.map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId) || {};
-            const sub = r.subId === '0000' ? {name:'بمفرده', place:'--'} : App.db.users.find(u=>u.id===r.subId) || {};
-            return `<tr>
-                <td><b>${r.id}</b><br><small style="color:var(--primary);">${r.ts.greg} | ${r.ts.hijri}</small><br><small>الساعة: ${r.ts.time}</small></td>
-                <td style="text-align:right;"><b>${emp.name || '--'}</b><br><small>م: ${emp.place || '--'}</small></td>
-                <td style="text-align:right;"><b>${sub.name || '--'}</b><br><small>م: ${sub.place || '--'}</small></td>
-                <td><b>${r.type}</b><br><small>${r.start} / ${r.end}</small></td>
-                <td><span class="badge status-${r.stage}">${r.status}</span></td>
-                <td class="no-print"><button class="btn btn-info" onclick="App.openCompare('${r.id}')"><i class="fas fa-balance-scale"></i> مطابقة</button></td>
-            </tr>`;
+            const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
+            // تحديد لون الكرت إذا كان الطلب في المرحلة 3 (ينتظر قرار الشؤون)
+            const isPendingHr = r.stage === 3;
+            return `
+            <div class="data-card" style="${isPendingHr ? 'border:2px solid var(--primary); box-shadow:0 0 15px rgba(27,69,50,0.2); transform:scale(1.02);' : ''}">
+                <div class="data-card-header">
+                    <span class="data-card-title" style="font-size:14px;"><i class="fas fa-hashtag"></i> ${r.id}</span>
+                    <span class="badge status-${r.stage}">${r.status}</span>
+                </div>
+                <div class="data-card-body">
+                    <p><span>مقدم الطلب:</span> <strong>${emp.name || 'محذوف'}</strong></p>
+                    <p><span>البديل:</span> <strong>${sub.name || '--'}</strong></p>
+                    <p><span>النوع:</span> <strong>${r.type}</strong></p>
+                    <p><span>الفترة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
+                </div>
+                <div class="data-card-actions">
+                    <button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-balance-scale"></i> ${isPendingHr ? 'فتح للاعتماد النهائي' : 'تفاصيل ومطابقة'}</button>
+                </div>
+            </div>`;
         }).join('');
 
+        // ب. إدارة الموظفين
         const emps = App.db.users.filter(u=>u.role==='emp');
         document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
-            const statusBadge = u.status === 'frozen' ? '<span class="badge status-0">مجمد</span>' : '<span class="badge status-4">نشط</span>';
-            const toggleBtn = u.status === 'frozen' ? 
-                `<button class="btn btn-success" style="padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تفعيل"><i class="fas fa-play"></i></button>` :
-                `<button class="btn" style="background:#f59e0b; color:white; padding:5px 10px; margin:2px;" onclick="App.toggleEmpStatus('${u.id}')" title="تجميد"><i class="fas fa-pause"></i></button>`;
-
-            return `<tr>
-                <td><b>${u.name}</b><br><small>${u.id}</small><br><small>جنسية: ${u.nationality}</small></td>
-                <td>م: ${u.place}<br><small>المنطقة: ${u.region}</small></td>
-                <td>${u.job}<br><small class="badge status-1" style="background:#e0e0e0; color:#333;">بند: ${u.contract}</small></td>
-                <td>${statusBadge}</td>
-                <td class="no-print">
-                    ${toggleBtn}
-                    <button class="btn btn-info" style="padding:5px 10px; margin:2px;" onclick="App.openEditEmp('${u.id}')" title="تعديل"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-danger" style="padding:5px 10px; margin:2px;" onclick="App.deleteEmp('${u.id}')" title="حذف"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
+            const isF = u.status === 'frozen';
+            return `
+            <div class="data-card employee-card" data-search="${u.name} ${u.id} ${u.file || ''}">
+                <div class="data-card-header">
+                    <span class="data-card-title"><i class="fas fa-user"></i> ${u.name}</span>
+                    <span class="badge ${isF ? 'status-0' : 'status-4'}">${isF ? 'حساب مجمد' : 'حساب نشط'}</span>
+                </div>
+                <div class="data-card-body">
+                    <p><span>الرقم المدني:</span> <strong>${u.id}</strong></p>
+                    <p><span>رقم الملف:</span> <strong>${u.file || '--'}</strong></p>
+                    <p><span>المسجد:</span> <strong>${u.place}</strong></p>
+                    <p><span>المسمى/البند:</span> <strong>${u.job} / ${u.contract}</strong></p>
+                </div>
+                <div class="data-card-actions">
+                    <button class="btn ${isF ? 'btn-success' : 'btn-danger'}" style="flex:1" onclick="App.toggleEmpStatus('${u.id}')" title="${isF ? 'تفعيل الحساب' : 'تجميد الحساب'}"><i class="fas fa-${isF?'play':'pause'}"></i></button>
+                    <button class="btn btn-info" style="flex:2" onclick="App.openEditEmp('${u.id}')"><i class="fas fa-edit"></i> تعديل البيانات</button>
+                </div>
+            </div>`;
         }).join('');
 
+        // ج. سجلات القطع والعودة
         const acts = App.db.returnActions || [];
-        document.getElementById('hrReturnsTbody').innerHTML = acts.map(a => {
+        document.getElementById('hrReturnsView').innerHTML = acts.slice().reverse().map(a => {
             const emp = App.db.users.find(u=>u.id===a.empId) || {};
             const req = App.db.requests.find(r=>r.id===a.reqId) || {};
-            return `<tr>
-                <td><b>${emp.name || '--'}</b><br><small>${emp.id || '--'}</small></td>
-                <td><span class="badge ${a.type==='قطع الإجازة' ? 'status-2' : 'status-1'}">${a.type}</span></td>
-                <td style="font-weight:bold; color:var(--primary);">${a.date}<br><small>تاريخ الطلب: ${a.ts?.greg || '--'}</small></td>
-                <td>الفترة الأصلية: ${req.start || '--'} إلى ${req.end || '--'}</td>
-            </tr>`;
+            return `
+            <div class="data-card" style="border-top:4px solid var(--gold);">
+                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-file-signature"></i> ${a.type}</span><span class="badge status-1">${a.date}</span></div>
+                <div class="data-card-body">
+                    <p><span>اسم الموظف:</span> <strong>${emp.name || 'محذوف'}</strong></p>
+                    <p><span>رقم الملف:</span> <strong>${emp.file || '--'}</strong></p>
+                    <p><span>الإجازة الأصلية:</span> <strong>${req.type || '--'}</strong></p>
+                    <p><span>فترة الإجازة:</span> <strong style="direction:ltr;">${req.start || '--'} ➝ ${req.end || '--'}</strong></p>
+                    <p><span>وقت التسجيل:</span> <strong>${a.ts?.greg || '--'} ${a.ts?.time || ''}</strong></p>
+                </div>
+            </div>`;
         }).join('');
     },
 
-    deleteEmp: async (id) => {
-        if(confirm("تحذير إداري: هل أنت متأكد من حذف ملف الموظف نهائياً؟")) {
-            try {
-                await fetch(`/api/users/${id}`, { method: 'DELETE' });
-                App.addLog(['hr'], `تم حذف ملف الموظف صاحب الرقم المدني (${id}) من النظام.`);
-                App.fetchData();
-            } catch(e) { console.error(e); }
+    // --- النافذة التفصيلية الموحدة (أهم ميزة للثقافي والشؤون) ---
+    openDetails: (reqId) => {
+        const r = App.db.requests.find(x => x.id === reqId);
+        if(!r) return;
+        
+        const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        const sub = r.subId === '0000' ? {name:'معفى (بمفرده)', id:'--', nationality:'--', region: emp.region || '--', place: emp.place || '--', job:'--', file:'--', contract:'--'} : (App.db.users.find(u=>u.id===r.subId) || {});
+        
+        document.getElementById('modalReqTime').innerText = `تاريخ وتوثيق النظام: ${r.ts.greg} (الساعة ${r.ts.time})`;
+        document.getElementById('compType').innerText = r.type;
+        document.getElementById('compDates').innerText = `${r.start} إلى ${r.end}`;
+        
+        // تحديد حالة البديل بشكل نصي دقيق
+        let subStatusTxt = 'بانتظار البديل';
+        let subBadgeClass = 'status-2';
+        if(r.subId === '0000') { subStatusTxt = 'معفى (بدون بديل)'; subBadgeClass = 'status-1'; }
+        else if(r.stage >= 2) { subStatusTxt = 'موافق على التغطية'; subBadgeClass = 'status-4'; }
+        else if(r.stage === 0) { subStatusTxt = 'مرفوض'; subBadgeClass = 'status-0'; }
+        
+        const statusEl = document.getElementById('compSubStatus');
+        statusEl.innerText = subStatusTxt;
+        statusEl.className = `badge ${subBadgeClass}`;
+
+        // بيانات مقدم الطلب كاملة
+        document.getElementById('compEmp').innerHTML = `
+            <p><span>الاسم الرباعي:</span> <strong>${emp.name || '--'}</strong></p>
+            <p><span>رقم الملف الوظيفي:</span> <strong>${emp.file || '--'}</strong></p>
+            <p><span>الرقم المدني:</span> <strong>${emp.id || '--'}</strong></p>
+            <p><span>الجنسية:</span> <strong>${emp.nationality || '--'}</strong></p>
+            <p><span>المحافظة/المنطقة:</span> <strong>${emp.region || '--'}</strong></p>
+            <p><span>اسم المسجد:</span> <strong>${emp.place || '--'}</strong></p>
+            <p><span>المسمى الوظيفي:</span> <strong>${emp.job || '--'}</strong></p>
+            <p><span>نوع البند (العقد):</span> <strong>${emp.contract || '--'}</strong></p>
+        `;
+        
+        // بيانات البديل كاملة للمطابقة
+        document.getElementById('compSub').innerHTML = `
+            <p><span>الاسم الرباعي:</span> <strong>${sub.name || '--'}</strong></p>
+            <p><span>رقم الملف الوظيفي:</span> <strong>${sub.file || '--'}</strong></p>
+            <p><span>الرقم المدني:</span> <strong>${sub.id || '--'}</strong></p>
+            <p><span>الجنسية:</span> <strong>${sub.nationality || '--'}</strong></p>
+            <p><span>المحافظة/المنطقة:</span> <strong>${sub.region || '--'}</strong></p>
+            <p><span>اسم المسجد:</span> <strong>${sub.place || '--'}</strong></p>
+            <p><span>المسمى الوظيفي:</span> <strong>${sub.job || '--'}</strong></p>
+            <p><span>نوع البند (العقد):</span> <strong>${sub.contract || '--'}</strong></p>
+        `;
+        
+        document.getElementById('compReqId').value = r.id;
+
+        // الأزرار الديناميكية بناءً على الرتبة وحالة الطلب
+        let btns = '';
+        if(App.curr.role === 'cultural' && r.stage === 2) {
+            btns = `
+                <button class="btn btn-success" style="flex:1; font-size:16px;" onclick="App.actionReq('${r.id}', 3, 'معتمد ثقافياً (بانتظار الشؤون)')"><i class="fas fa-check-circle"></i> اعتماد فني للمسجد</button>
+                <button class="btn btn-danger" style="flex:1; font-size:16px;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من التوجيه الثقافي')"><i class="fas fa-times-circle"></i> رفض الطلب</button>
+            `;
+        } else if(App.curr.role === 'hr' && r.stage === 3) {
+            btns = `
+                <button class="btn btn-primary" style="flex:1; font-size:16px;" onclick="App.actionReq('${r.id}', 4, 'معتمد إدارياً ونهائياً')"><i class="fas fa-stamp"></i> اعتماد إداري ونهائي</button>
+                <button class="btn btn-danger" style="flex:1; font-size:16px;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من شؤون العاملين')"><i class="fas fa-times-circle"></i> رفض الطلب</button>
+            `;
+        } else if(App.curr.role === 'hr' && r.stage === 4) {
+             btns = `<button class="btn btn-print" style="flex:1; font-size:16px;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة كرت الإجازة المعتمد ورقياً</button>`;
         }
+        
+        btns += `<button class="btn" style="background:#475569; color:white; font-size:16px; padding:12px 30px;" onclick="App.closeModal('unifiedDetailsModal')">إغلاق النافذة</button>`;
+        
+        document.getElementById('modalActionButtons').innerHTML = btns;
+        document.getElementById('unifiedDetailsModal').style.display = 'flex';
     },
 
-    toggleEmpStatus: async (id) => {
+    // --- إدارة بيانات الموظفين (الشؤون) ---
+    toggleEmpStatus: (id) => {
         const u = App.db.users.find(x => x.id === id);
-        const newStatus = u.status === 'frozen' ? 'active' : 'frozen';
-        try {
-            await fetch(`/api/users/${id}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ status: newStatus })
-            });
-            App.addLog(['hr'], `تم ${newStatus === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
-            App.fetchData();
-        } catch(e) { console.error(e); }
+        u.status = u.status === 'frozen' ? 'active' : 'frozen';
+        App.saveDB();
+        App.addLog(['hr'], `أمان: تم ${u.status === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
+        App.renderHr();
     },
 
     openEditEmp: (id) => {
         const u = App.db.users.find(x => x.id === id);
+        if(!u) return;
         document.getElementById('edId').value = u.id;
-        document.getElementById('edName').value = u.name;
-        document.getElementById('edNat').value = u.nationality;
-        document.getElementById('edRegion').value = u.region;
-        document.getElementById('edPlace').value = u.place;
-        document.getElementById('edPhone').value = u.phone;
-        document.getElementById('edJob').value = u.job;
-        document.getElementById('edContract').value = u.contract;
-        document.getElementById('edPass').value = ""; 
+        document.getElementById('edName').value = u.name || '';
+        document.getElementById('edFile').value = u.file || '';
+        document.getElementById('edNat').value = u.nationality || '';
+        document.getElementById('edRegion').value = u.region || '';
+        document.getElementById('edPlace').value = u.place || '';
+        document.getElementById('edJob').value = u.job || '';
+        document.getElementById('edContract').value = u.contract || '';
+        document.getElementById('edPhone').value = u.phone || '';
+        document.getElementById('edPass').value = ""; // مخفي للأمان
         document.getElementById('hrEditEmpModal').style.display = 'flex';
     },
 
-    saveEditEmp: async () => {
+    saveEditEmp: () => {
         const id = document.getElementById('edId').value;
         const u = App.db.users.find(x => x.id === id);
         
-        const updatedData = {
-            name: document.getElementById('edName').value,
-            nationality: document.getElementById('edNat').value,
-            region: document.getElementById('edRegion').value,
-            place: document.getElementById('edPlace').value,
-            phone: document.getElementById('edPhone').value,
-            job: document.getElementById('edJob').value,
-            contract: document.getElementById('edContract').value
-        };
+        u.name = document.getElementById('edName').value;
+        u.file = document.getElementById('edFile').value;
+        u.nationality = document.getElementById('edNat').value;
+        u.region = document.getElementById('edRegion').value;
+        u.place = document.getElementById('edPlace').value;
+        u.job = document.getElementById('edJob').value;
+        u.contract = document.getElementById('edContract').value;
+        u.phone = document.getElementById('edPhone').value;
         
+        // تحديث كلمة المرور فقط إذا أدخل المسؤول قيمة جديدة
         const newPass = document.getElementById('edPass').value.trim();
-        if(newPass) updatedData.pass = newPass;
+        if(newPass && newPass.length >= 4) {
+            u.pass = newPass;
+            App.addLog(['hr'], `أمان: تم تغيير كلمة المرور للموظف ${u.name}.`);
+        }
 
-        try {
-            await fetch(`/api/users/${id}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(updatedData)
-            });
-            App.addLog(['hr'], `تم تعديل وتحديث بيانات الموظف ${updatedData.name}.`);
-            document.getElementById('hrEditEmpModal').style.display = 'none';
-            App.fetchData();
-        } catch(e) { console.error(e); }
+        App.saveDB();
+        App.addLog(['hr'], `إدارة: تم تحديث بيانات الملف الوظيفي للموظف ${u.name}.`);
+        App.closeModal('hrEditEmpModal');
+        App.renderHr();
     },
 
     filterEmps: (val) => {
-        const term = val.toLowerCase();
-        document.querySelectorAll('#hrEmpTable tbody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+        const term = val.toLowerCase().trim();
+        document.querySelectorAll('.employee-card').forEach(card => {
+            const dataStr = card.getAttribute('data-search').toLowerCase();
+            card.style.display = dataStr.includes(term) ? '' : 'none';
         });
     },
 
-    openCompare: (reqId) => {
-        const r = App.db.requests.find(x => x.id === reqId);
-        const emp = App.db.users.find(u=>u.id===r.empId);
-        const sub = r.subId === '0000' ? {name:'بمفرده', id:'--', nationality:'--', region:'--', place:'--', phone:'--'} : App.db.users.find(u=>u.id===r.subId);
-        
-        document.getElementById('modalReqTime').innerText = `توثيق تقديم الطلب: ${r.ts.greg} | ${r.ts.hijri} (الساعة ${r.ts.time})`;
-        
-        document.getElementById('compEmp').innerHTML = `
-            <p><strong>الاسم:</strong> ${emp.name}</p>
-            <p><strong>المدني:</strong> ${emp.id}</p>
-            <p><strong>الهاتف:</strong> ${emp.phone}</p>
-            <p><strong>الجنسية:</strong> ${emp.nationality}</p>
-            <p><strong>المنطقة:</strong> ${emp.region}</p>
-            <p><strong>المسجد:</strong> ${emp.place}</p>
-        `;
-        document.getElementById('compSub').innerHTML = `
-            <p><strong>الاسم:</strong> ${sub.name}</p>
-            <p><strong>المدني:</strong> ${sub.id}</p>
-            <p><strong>الهاتف:</strong> ${sub.phone}</p>
-            <p><strong>الجنسية:</strong> ${sub.nationality}</p>
-            <p><strong>المنطقة:</strong> ${sub.region}</p>
-            <p><strong>المسجد:</strong> ${sub.place}</p>
-        `;
-        document.getElementById('compDates').innerText = `${r.start} إلى ${r.end}`;
-        document.getElementById('compType').innerText = r.type;
-        document.getElementById('compReqId').value = r.id;
-        
-        document.getElementById('hrApproveModal').style.display = 'flex';
+    // --- إجراءات العودة والقطع وإنذار الـ 48 ساعة ---
+    setupReturn: () => {
+        const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
+        const select = document.getElementById('retLeave');
+        if(myReqs.length === 0) {
+            select.innerHTML = '<option value="">لا توجد إجازات معتمدة سابقة</option>';
+            select.disabled = true;
+        } else {
+            select.innerHTML = '<option value="">-- يرجى اختيار الإجازة المعتمدة --</option>' + myReqs.map(r => `<option value="${r.id}">(${r.id}) ${r.type} - من ${r.start} إلى ${r.end}</option>`).join('');
+            select.disabled = false;
+        }
     },
 
-    hrFinalDecision: (stage, status) => {
-        const id = document.getElementById('compReqId').value;
-        App.actionReq(id, stage, status);
-        document.getElementById('hrApproveModal').style.display = 'none';
+    submitReturn: () => {
+        const reqId = document.getElementById('retLeave').value;
+        const date = document.getElementById('retDate').value;
+        const actionType = document.getElementById('retType').value;
+        
+        if(!reqId || !date) return alert("خطأ: يرجى استكمال كافة البيانات (اختيار الإجازة وتاريخ التنفيذ).");
+        
+        App.db.returnActions.push({ reqId, type: actionType, date, empId: App.curr.id, ts: App.getTimestamp() });
+        App.saveDB();
+        
+        App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
+        alert("تم إرسال الإجراء بنجاح. سيتم توثيقه في كشوفات الشؤون المركزية.");
+        
+        document.getElementById('retDate').value = "";
+        App.showPage('empDash');
     },
 
     checkOverstays: () => {
         const now = new Date().getTime();
         const acts = App.db.returnActions || [];
+        
+        // البحث عن الإجازات التي انتهت منذ أكثر من 48 ساعة ولم يتم تسجيل عودة لها
         const overstays = App.db.requests.filter(r => {
             if(r.stage !== 4) return false;
             const endDate = new Date(r.end).getTime();
@@ -877,120 +1100,127 @@ const App = {
         const alertBox = document.getElementById('overstayAlerts');
         if(overstays.length > 0) {
             alertBox.innerHTML = overstays.map(r => {
-                const emp = App.db.users.find(u=>u.id===r.empId);
+                const emp = App.db.users.find(u=>u.id===r.empId) || {};
                 return `<div class="status-alert">
-                <i class="fas fa-exclamation-triangle"></i> <b>إنذار إداري (تأخير 48 ساعة):</b> الموظف ${emp?.name || '--'} انتهت إجازته بتاريخ ${r.end} ولم يسجل طلب عودة!
+                    <i class="fas fa-exclamation-triangle fa-2x"></i> 
+                    <div>
+                        <div style="font-size:16px;"><b>إنذار إداري آلي (تجاوز 48 ساعة):</b></div>
+                        <div style="font-size:13px;">الموظف (${emp.name}) - ملف: ${emp.file || '--'} | انتهت إجازته في ${r.end} ولم يسجل إشعار مباشرة عمل حتى الآن!</div>
+                    </div>
                 </div>`;
             }).join('');
-        } else alertBox.innerHTML = '';
+        } else {
+            alertBox.innerHTML = '';
+        }
     },
 
-    setupReturn: () => {
-        const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
-        document.getElementById('retLeave').innerHTML = '<option value="">-- اختر الإجازة --</option>' + myReqs.map(r => `<option value="${r.id}">${r.type} (${r.start} / ${r.end})</option>`).join('');
-    },
-
-    submitReturn: async () => {
-        const reqId = document.getElementById('retLeave').value;
-        const date = document.getElementById('retDate').value;
-        const actionType = document.getElementById('retType').value;
-        if(!reqId || !date) return alert("أكمل البيانات المطلوبة.");
+    // --- التصدير والطباعة (التقارير) ---
+    exportToExcel: () => {
+        if(App.db.requests.length === 0) return alert("لا توجد بيانات لتصديرها.");
         
-        const returnData = { reqId, type: actionType, date, empId: App.curr.id, ts: App.getTimestamp() };
+        // بناء المصفوفة لملف الإكسيل
+        const expData = App.db.requests.map(r => {
+            const e = App.db.users.find(u=>u.id===r.empId) || {};
+            const s = r.subId === '0000' ? {name:'مُعفى (بمفرده)', file:'--'} : (App.db.users.find(u=>u.id===r.subId) || {});
+            return {
+                "رقم الطلب (ID)": r.id,
+                "اسم الموظف المجاز": e.name || '--', 
+                "الرقم المدني للمجاز": e.id || '--',
+                "رقم الملف الوظيفي": e.file || '--', 
+                "المسجد والمنطقة": `${e.place || '--'} (${e.region || '--'})`,
+                "المسمى والبند": `${e.job || '--'} / ${e.contract || '--'}`,
+                "اسم البديل المكلف": s.name || '--',
+                "رقم ملف البديل": s.file || '--',
+                "نوع الإجازة": r.type, 
+                "تاريخ البداية": r.start, 
+                "تاريخ النهاية": r.end,
+                "حالة الطلب النهائية": r.status,
+                "تاريخ التقديم (ميلادي)": r.ts.greg,
+                "تاريخ التقديم (هجري)": r.ts.hijri
+            }
+        });
         
         try {
-            await fetch('/api/returns', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(returnData)
-            });
-            App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
-            alert("تم إرسال الطلب واعتماده بالمركزية.");
-            App.fetchData();
-            App.showPage('empDash');
-        } catch(e) { alert("حدث خطأ"); }
+            const ws = XLSX.utils.json_to_sheet(expData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "سجل الإجازات الشامل");
+            XLSX.writeFile(wb, `إحصائية_شؤون_العاملين_الأحمدي_${Date.now()}.xlsx`);
+            App.addLog(['hr'], `التقارير: تم تصدير قاعدة بيانات الإجازات إلى ملف Excel.`);
+        } catch(e) {
+            alert("حدث خطأ أثناء تصدير الملف. تأكد من اتصالك بالإنترنت لتحميل المكتبة.");
+        }
     },
 
-    renderHrArchive: () => {
-        const reqs = App.db.requests.filter(r => r.stage === 4);
-        document.getElementById('archiveContainer').innerHTML = reqs.map(r => {
-            const emp = App.db.users.find(u=>u.id===r.empId) || {};
-            return `<div style="border:1px solid #ddd; padding:15px; border-radius:10px; background:#fafafa;">
-                <h4 style="margin:0 0 10px 0;"><i class="fas fa-archive" style="color:var(--primary)"></i> أرشيف إجازة: ${emp.name || '--'}</h4>
-                <div style="font-size:14px;">الرقم المدني: ${emp.id || '--'} | الفترة: ${r.start} إلى ${r.end} | النوع: ${r.type} | رقم النظام: ${r.id}</div>
-            </div>`;
-        }).join('');
-    },
-
-    exportToExcel: (tableId) => {
-        const table = document.getElementById(tableId);
-        const wb = XLSX.utils.table_to_book(table);
-        XLSX.writeFile(wb, `الكشف_الرسمي_${Date.now()}.xlsx`);
-    },
-
-    printReport: (areaId, title) => {
-        const printContent = document.getElementById(areaId).innerHTML;
-        const printArea = document.getElementById('printArea');
-        const ts = App.getTimestamp();
-        
-        document.getElementById('mainContainer').style.display = 'none';
-        
-        printArea.innerHTML = `
-            <div style="text-align:center; margin-bottom:20px; font-family:'Cairo'; direction:rtl;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" width="70">
-                <h2>دولة الكويت - وزارة الأوقاف والشؤون الإسلامية</h2>
-                <h3>إدارة مساجد محافظة الأحمدي (شؤون العاملين)</h3>
-                <hr style="border:1px solid #000;">
-                <h4>${title} | تاريخ الإصدار: ${ts.greg} م - ${ts.hijri} هـ</h4>
-            </div>
-            ${printContent}
-            <div style="margin-top:50px; display:flex; justify-content:space-between; font-weight:bold; font-family:'Cairo'; direction:rtl;">
-                <div>اعتماد شؤون العاملين: ..............................</div>
-                <div>الختم الرسمي للإدارة: ..............................</div>
-            </div>
-        `;
-        
-        window.print();
-        
-        printArea.innerHTML = '';
-        document.getElementById('mainContainer').style.display = 'block';
-    },
-    
     printTicket: (id) => {
+        App.closeModal('unifiedDetailsModal');
         const r = App.db.requests.find(x => x.id === id);
-        const emp = App.db.users.find(u=>u.id===r.empId);
-        const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId);
+        if(!r) return;
+        
+        const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        const sub = r.subId === '0000' ? {name:'مُعفى (بدون بديل)'} : (App.db.users.find(u=>u.id===r.subId) || {});
+        
         const area = document.getElementById('printArea');
         const ts = App.getTimestamp();
         
+        // إخفاء الحاوية الرئيسية وعرض منطقة الطباعة
         document.getElementById('mainContainer').style.display = 'none';
         
         area.innerHTML = `
-            <div style="text-align:center; border:5px double #1b4532; padding:40px; direction:rtl; font-family:'Cairo';">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" width="80">
-                <h2>وزارة الأوقاف والشؤون الإسلامية - الأحمدي</h2>
-                <h3>مستند إجازة إلكتروني معتمد رقم (${r.id})</h3>
-                <hr>
-                <div style="text-align:right; font-size:18px; margin-top:20px; line-height:2;">
-                    <p><b>اسم الموظف:</b> ${emp.name} (مدني: ${emp.id})</p>
-                    <p><b>الجنسية:</b> ${emp.nationality}</p>
-                    <p><b>المسجد:</b> ${emp.place} (منطقة: ${emp.region})</p>
-                    <p><b>نوع الإجازة:</b> ${r.type}</p>
-                    <p><b>الفترة المعتمدة:</b> من ${r.start} إلى ${r.end}</p>
-                    <p><b>البديل المكلف:</b> ${sub?.name || '--'}</p>
+            <div style="text-align:center; border:6px double var(--primary-dark); padding:50px; direction:rtl; font-family:'Cairo'; max-width:850px; margin:20px auto; background:white;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" width="90" style="margin-bottom:15px;">
+                <h2 style="margin:5px 0;">دولة الكويت - وزارة الشؤون الإسلامية</h2>
+                <h3 style="margin:5px 0;">إدارة مساجد محافظة الأحمدي - شؤون العاملين</h3>
+                
+                <div style="background:var(--primary); color:white; padding:15px; margin:30px 0; border-radius:10px;">
+                    <h2 style="margin:0;">تصريح إجازة معتمد إلكترونياً (رقم: ${r.id})</h2>
                 </div>
-                <div style="margin-top:40px; font-size:14px; color:#555;">طُبع بواسطة النظام الآلي بتاريخ: ${ts.greg} / ${ts.hijri}</div>
+                
+                <div style="text-align:right; font-size:18px; margin-top:30px; line-height:2.2; display:grid; grid-template-columns:1fr 1fr; gap:20px; border:1px solid #ddd; padding:30px; border-radius:10px; background:#fafafa;">
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>اسم الموظف:</b> ${emp.name || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>رقم الملف الوظيفي:</b> ${emp.file || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>الرقم المدني:</b> ${emp.id || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>المسمى الوظيفي (البند):</b> ${emp.job || '--'} (${emp.contract || '--'})</p>
+                    <p style="margin:0; border-bottom:1px solid #eee; grid-column: span 2;"><b>المسجد والمنطقة:</b> ${emp.place || '--'} - بمحافظة ${emp.region || '--'}</p>
+                    
+                    <p style="margin:0; border-bottom:1px solid #eee; color:var(--primary); font-weight:bold;"><b>نوع الإجازة:</b> ${r.type}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>حالة الاعتماد:</b> معتمد نهائياً</p>
+                    
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>تاريخ البداية:</b> <span style="direction:ltr; display:inline-block;">${r.start}</span></p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>تاريخ النهاية:</b> <span style="direction:ltr; display:inline-block;">${r.end}</span></p>
+                    
+                    <p style="margin:0; grid-column: span 2; background:#eef2ff; padding:10px; border-radius:5px;"><b>البديل المكلف بالتغطية:</b> ${sub.name || '--'}</p>
+                </div>
+                
+                <div style="margin-top:60px; display:flex; justify-content:space-between; font-weight:bold; font-size:18px; padding:0 30px;">
+                    <div style="text-align:center;">
+                        <p style="margin-bottom:40px;">الاعتماد الإداري والشؤون</p>
+                        <p style="color:var(--primary);">[ مُعْتَمَد إلكترونياً ]</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <p style="margin-bottom:40px;">ختم الإدارة المعتمد</p>
+                        <p style="color:var(--primary);">[ بـصـمـة الـنـظـام ]</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top:50px; font-size:13px; color:#777; border-top:1px dashed #ccc; padding-top:15px; text-align:right;">
+                    * هذه الوثيقة مستخرجة من النظام الآلي وتعتبر رسمية ولا تحتاج لتوقيع حي.<br>
+                    * تاريخ وساعة استخراج الوثيقة: ${ts.greg} م - ${ts.hijri} هـ | ${ts.time}
+                </div>
             </div>
         `;
         
+        // استدعاء نافذة الطباعة الخاصة بالمتصفح
         window.print();
         
+        // تنظيف وإعادة العرض بعد انتهاء الطباعة (أو الإلغاء)
         area.innerHTML = '';
         document.getElementById('mainContainer').style.display = 'block';
     }
 };
 
+// بدء تشغيل التطبيق عند تحميل الصفحة
 window.onload = App.init;
 </script>
 </body>
 </html>
+
