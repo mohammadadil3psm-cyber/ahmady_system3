@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// تحديد مسار قاعدة البيانات (متوافق مع Render Disk أو محلي)
+// إعداد مسار قاعدة البيانات ليتوافق مع (Render Disk) أو التشغيل المحلي
 const DB_DIR = fs.existsSync('/data') ? '/data' : __dirname;
 const DB_FILE = path.join(DB_DIR, 'database.json');
 
@@ -14,63 +14,62 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// وظيفة مساعدة للقراءة والكتابة
-const readDB = () => JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-const writeDB = (data) => fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+// وظائف مساعدة للقراءة والكتابة الآمنة
+const readDB = () => {
+    try {
+        if (!fs.existsSync(DB_FILE)) return { users: [], requests: [], returnActions: [], logs: [] };
+        const data = fs.readFileSync(DB_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("خطأ في قراءة قاعدة البيانات:", error);
+        return { users: [], requests: [], returnActions: [], logs: [] };
+    }
+};
 
-// تهيئة قاعدة البيانات عند أول تشغيل
+const writeDB = (data) => {
+    try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error("خطأ في كتابة قاعدة البيانات:", error);
+    }
+};
+
+// تهيئة قاعدة البيانات بالمسؤولين عند أول تشغيل (إذا كانت فارغة)
 if (!fs.existsSync(DB_FILE)) {
-    const initialData = {
+    writeDB({
         users: [
-            { id: "admin1", name: "مدير شؤون العاملين", role: "hr", status: "active", pass: "1234", place: "الإدارة الرئيسي" },
-            { id: "admin2", name: "مدير التوجيه الثقافي", role: "cultural", status: "active", pass: "1234", place: "التوجيه" }
+            { id: "222222222222", name: "مدير شؤون العاملين", role: "hr", status: "active", pass: "1234", place: "الإدارة المركزية", file: "HR-001", nationality: "كويتي", region: "الأحمدي", job: "مدير نظام", contract: "عامة", phone: "--" },
+            { id: "333333333333", name: "الموجه الثقافي", role: "cultural", status: "active", pass: "1234", place: "إدارة التوجيه", file: "CUL-001", nationality: "كويتي", region: "الأحمدي", job: "موجه فني", contract: "عامة", phone: "--" }
         ],
         requests: [],
-        logs: [],
-        returns: []
-    };
-    writeDB(initialData);
+        returnActions: [], // تم تعديل الاسم ليتطابق مع الواجهة
+        logs: []
+    });
 }
 
-// --- مسارات الـ API ---
+// ==========================================
+// مسارات الـ API (الروابط التي يتصل بها المتصفح)
+// ==========================================
 
-// 1. تسجيل الدخول
+// 1. جلب كافة البيانات (يستخدمه المتصفح للمزامنة الدائمة)
+app.get('/api/data', (req, res) => {
+    res.json(readDB());
+});
+
+// 2. تسجيل الدخول
 app.post('/api/login', (req, res) => {
     const { id, pass, role } = req.body;
     const db = readDB();
     const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
-    if (user) return res.json({ success: true, user });
-    res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة" });
-});
-
-// 2. جلب كل البيانات (للمزامنة)
-app.get('/api/sync', (req, res) => {
-    res.json(readDB());
-});
-
-// 3. تقديم طلب إجازة جديد
-app.post('/api/requests', (req, res) => {
-    const db = readDB();
-    db.requests.push(req.body);
-    writeDB(db);
-    res.json({ success: true });
-});
-
-// 4. تحديث حالة الطلب (اعتماد البديل، الثقافي، أو HR)
-app.put('/api/requests/:id', (req, res) => {
-    const db = readDB();
-    const index = db.requests.findIndex(r => r.id === req.params.id);
-    if (index !== -1) {
-        db.requests[index] = { ...db.requests[index], ...req.body };
-        writeDB(db);
-        res.json({ success: true });
-    } else {
-        res.status(404).json({ success: false });
+    
+    if (user) {
+        return res.json({ success: true, user });
     }
+    res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة أو الرتبة خاطئة" });
 });
 
-// 5. تسجيل مستخدم جديد
-app.post('/api/register', (req, res) => {
+// 3. إضافة مستخدم جديد (موظف)
+app.post('/api/users', (req, res) => {
     const db = readDB();
     if (db.users.find(u => u.id === req.body.id)) {
         return res.status(400).json({ success: false, message: "الرقم المدني مسجل مسبقاً" });
@@ -80,37 +79,70 @@ app.post('/api/register', (req, res) => {
     res.json({ success: true });
 });
 
-// 6. إضافة الإشعارات (Logs)
-app.post('/api/logs', (req, res) => {
+// 4. تعديل بيانات موظف أو (تجميد/تفعيل) الحساب
+app.put('/api/users/:id', (req, res) => {
     const db = readDB();
-    db.logs.push(req.body);
+    const index = db.users.findIndex(u => u.id === req.params.id);
+    if (index !== -1) {
+        db.users[index] = { ...db.users[index], ...req.body };
+        writeDB(db);
+        res.json({ success: true });
+    } else {
+        res.status(404).json({ success: false, message: "الموظف غير موجود" });
+    }
+});
+
+// 5. حذف موظف نهائياً (صلاحية الشؤون)
+app.delete('/api/users/:id', (req, res) => {
+    const db = readDB();
+    db.users = db.users.filter(u => u.id !== req.params.id);
     writeDB(db);
     res.json({ success: true });
 });
 
-// 7. تحديث إشعارات "تمت القراءة"
-app.put('/api/logs/read', (req, res) => {
-    const { userId } = req.body;
+// 6. تقديم طلب إجازة جديد
+app.post('/api/requests', (req, res) => {
     const db = readDB();
-    db.logs.forEach(l => { if(l.userId === userId) l.read = true; });
+    db.requests.push(req.body);
     writeDB(db);
     res.json({ success: true });
 });
 
-// 8. طلبات العودة والقطع
+// 7. تحديث حالة الطلب (الموافقات والاعتمادات)
+app.put('/api/requests/:id', (req, res) => {
+    const db = readDB();
+    const index = db.requests.findIndex(r => r.id === req.params.id);
+    if (index !== -1) {
+        db.requests[index] = { ...db.requests[index], ...req.body };
+        writeDB(db);
+        res.json({ success: true });
+    } else {
+        res.status(404).json({ success: false, message: "الطلب غير موجود" });
+    }
+});
+
+// 8. تسجيل طلبات القطع والعودة
 app.post('/api/returns', (req, res) => {
     const db = readDB();
-    db.returns.push(req.body);
+    db.returnActions.push(req.body);
     writeDB(db);
     res.json({ success: true });
 });
 
+// 9. إضافة سجل للإشعارات (Logs)
+app.post('/api/logs', (req, res) => {
+    const db = readDB();
+    db.logs.unshift(req.body); // الإضافة في البداية ليكون الأحدث أولاً
+    writeDB(db);
+    res.json({ success: true });
+});
+
+// 10. توجيه جميع المسارات الأخرى إلى ملف HTML (هام جداً لعمل الموقع)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// تشغيل الخادم
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ الخادم يعمل بنجاح على المنفذ ${PORT}`);
 });
-
-
