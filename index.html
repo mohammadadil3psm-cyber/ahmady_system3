@@ -203,7 +203,7 @@
     </div>
 
     <div id="regPage" class="card">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-address-card"></i> إنشاء بطاقة وظيفية جديدة</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-address-card"></i> إنشاء بطاقة الوظيفية جديدة</h3>
         <div class="form-grid">
             <div class="form-group"><label>الاسم الرباعي الكامل</label><input type="text" id="rName" class="form-control" placeholder="تطابق البطاقة المدنية"></div>
             <div class="form-group"><label>الرقم المدني</label><input type="tel" id="rId" class="form-control" maxlength="12" placeholder="12 رقم"></div>
@@ -310,7 +310,7 @@
         <div class="notifications-panel" id="culNotifs"></div>
         
         <div style="background:#fff3cd; color:#856404; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:bold; border:1px solid #ffeeba;">
-            <i class="fas fa-info-circle"></i> تظهر هنا فقط الطلبات التي تمت الموافقة عليها مسبقاً من قِبل "البديل".
+            <i class="fas fa-info-circle"></i> تظهر هنا فقط الطلبات التي تمت الموافقة عليها مسبقاً من قِبل "البديل" (أو المعفاة من البديل).
         </div>
         
         <div class="data-grid" id="culTbody"></div>
@@ -412,21 +412,15 @@
 <div class="modal-overlay" id="authModal">
     <div class="modal-content" style="max-width: 450px; text-align:center;">
         <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-lock"></i> مصادقة الهوية الأمنية</h3>
-        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">يرجى تأكيد الدخول باستخدام البصمة البيومترية، أو إدخال رمز PIN السري الخاص بك.</p>
-        
-        <div class="bio-container" style="background:#f8fafc; border-radius:15px; border:1px solid #e2e8f0; padding:30px;">
-            <i class="fas fa-fingerprint bio-icon" id="fingerIcon" onclick="App.simulateBiometric()"></i>
-            <p id="bioStatus" style="font-weight:bold; color:var(--text-muted);">اضغط على البصمة للتحقق</p>
-        </div>
-        
-        <div style="margin:25px 0; display:flex; align-items:center;">
-            <hr style="flex:1; border:0; border-top:1px dashed #cbd5e1;">
-            <span style="padding:0 15px; color:#94a3b8; font-weight:bold; font-size:12px;">أو عبر الرمز السري</span>
-            <hr style="flex:1; border:0; border-top:1px dashed #cbd5e1;">
-        </div>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">يرجى إدخال رمز PIN السري الخاص بك، أو الضغط على البصمة بعد كتابة الرمز.</p>
         
         <div class="form-group">
             <input type="password" id="authPin" class="form-control pin-input" placeholder="****">
+        </div>
+
+        <div class="bio-container" style="background:#f8fafc; border-radius:15px; border:1px solid #e2e8f0; padding:15px; margin-top:15px;">
+            <i class="fas fa-fingerprint bio-icon" id="fingerIcon" onclick="App.simulateBiometric()"></i>
+            <p id="bioStatus" style="font-weight:bold; color:var(--text-muted);">اضغط على البصمة بعد كتابة الرمز</p>
         </div>
         
         <div style="display:flex; gap:10px; margin-top:25px;">
@@ -439,7 +433,7 @@
 <div id="printArea"></div>
 
 <script>
-// --- كود JavaScript المعدل ليعمل مع السيرفر الحقيقي (API) ---
+// --- كود JavaScript المعدل ليعمل مع السيرفر الحقيقي (API) وبأمان تام ---
 
 const App = {
     db: { users: [], requests: [], returnActions: [], logs: [] },
@@ -447,12 +441,11 @@ const App = {
     pollInterval: null,
 
     init: () => {
-        App.fetchData(); // جلب البيانات من السيرفر فور تشغيل التطبيق
+        App.fetchData();
         App.updateClocks();
         setInterval(App.updateClocks, 1000);
     },
 
-    // 1. وظيفة جلب البيانات من السيرفر بدلاً من التخزين المحلي
     fetchData: async () => {
         try {
             const res = await fetch('/api/data');
@@ -470,7 +463,6 @@ const App = {
                 App.curr = JSON.parse(sessionUser);
                 App.routeUser();
             } else if (App.curr) {
-                // تحديث الواجهة إذا كان المستخدم مسجل دخوله بالفعل
                 if(App.curr.role === 'emp') App.renderEmp();
                 if(App.curr.role === 'cultural') App.renderCul();
                 if(App.curr.role === 'hr') App.renderHr();
@@ -497,7 +489,6 @@ const App = {
         };
     },
 
-    // 2. إرسال سجلات الأنشطة (Logs) للسيرفر
     addLog: async (roles, msg) => {
         const ts = App.getTimestamp();
         const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
@@ -507,7 +498,7 @@ const App = {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(logEntry)
             });
-            App.fetchData(); // تحديث فوري
+            App.fetchData();
         } catch(e) { console.error(e); }
     },
 
@@ -553,45 +544,52 @@ const App = {
 
     closeModal: (id) => document.getElementById(id).style.display = 'none',
 
-    // 3. التحقق وتسجيل الدخول عبر السيرفر
+    // --- المصادقة والأمان الصارم ---
     triggerAuth: async () => {
         const id = document.getElementById('loginId').value.trim();
         const role = document.getElementById('loginRole').value;
         if(!id) return alert("خطأ: يرجى إدخال الرقم المدني.");
         
-        // التحقق المبدئي
         const user = App.db.users.find(u => u.id === id && u.role === role);
         if(!user) return alert("مرفوض: الرقم المدني غير مسجل، أو الرتبة الإدارية المحددة غير صحيحة.");
         if(user.status === 'frozen') return alert("تحذير إداري: هذا الحساب تم تجميده وإيقافه.");
 
         App.tempLoginData = user;
         document.getElementById('authPin').value = '';
-        document.getElementById('bioStatus').innerText = 'اضغط على البصمة للتحقق';
+        document.getElementById('bioStatus').innerText = 'اضغط على البصمة بعد كتابة الرمز';
         document.getElementById('bioStatus').style.color = 'var(--text-muted)';
         document.getElementById('fingerIcon').classList.remove('scanning');
         document.getElementById('authModal').style.display = 'flex';
     },
 
+    // تعديل أمني: البصمة لن تعمل إلا بإدخال الرمز الصحيح أولاً
     simulateBiometric: () => {
-        const icon = document.getElementById('fingerIcon');
-        const status = document.getElementById('bioStatus');
-        icon.classList.add('scanning');
-        status.innerText = 'جاري التحقق والمطابقة...';
-        
-        setTimeout(() => {
-            icon.classList.remove('scanning');
-            status.innerText = 'تمت المصادقة بنجاح!';
-            status.style.color = 'var(--success)';
-            setTimeout(App.finalizeLogin, 800);
-        }, 1500);
+        const pin = document.getElementById('authPin').value;
+        if(pin && pin === App.tempLoginData.pass) {
+            const icon = document.getElementById('fingerIcon');
+            const status = document.getElementById('bioStatus');
+            icon.classList.add('scanning');
+            status.innerText = 'جاري مطابقة الرمز والبصمة...';
+            setTimeout(() => {
+                icon.classList.remove('scanning');
+                status.innerText = 'تمت المصادقة بنجاح!';
+                status.style.color = 'var(--success)';
+                setTimeout(App.finalizeLogin, 800);
+            }, 1000);
+        } else {
+            alert("لأسباب أمنية: يرجى إدخال الرمز السري (PIN) الصحيح أولاً ثم الضغط على البصمة.");
+            document.getElementById('authPin').focus();
+        }
     },
 
     verifyPin: async () => {
         const pin = document.getElementById('authPin').value;
+        if(!pin) return alert("يرجى إدخال الرمز السري (PIN) للمتابعة.");
+        
         if(pin === App.tempLoginData.pass) {
             App.finalizeLogin();
         } else {
-            alert("خطأ: رمز PIN أو كلمة المرور غير صحيحة.");
+            alert("خطأ: الرمز السري (PIN) غير صحيح. الدخول مرفوض.");
         }
     },
 
@@ -601,9 +599,7 @@ const App = {
         App.closeModal('authModal');
         App.addLog(['hr', 'all'], `تسجيل دخول للنظام: ${App.curr.name} (${App.curr.role})`);
         
-        // تشغيل مؤقت لجلب البيانات الجديدة كل 3 ثوانٍ
         if(!App.pollInterval) App.pollInterval = setInterval(App.fetchData, 3000);
-        
         App.routeUser();
     },
 
@@ -623,7 +619,6 @@ const App = {
         location.reload();
     },
 
-    // 4. إنشاء ملف موظف جديد عبر الـ API
     register: async () => {
         const id = document.getElementById('rId').value.trim();
         const pass = document.getElementById('rPass').value;
@@ -716,7 +711,7 @@ const App = {
         document.getElementById('btnSubmitReq').disabled = false;
     },
 
-    // 5. إرسال الطلب للسيرفر
+    // --- تعديل نظام الإعفاء ليتخطى البديل ويتجه للتوجيه مباشرة ---
     submitRequest: async () => {
         const start = document.getElementById('reqStart').value;
         const end = document.getElementById('reqEnd').value;
@@ -726,9 +721,18 @@ const App = {
         const ts = App.getTimestamp();
         const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`;
 
+        // تحديد المرحلة الافتراضية بناءً على اختيار الموظف
+        let initialStage = 1;
+        let initialStatus = 'بانتظار موافقة البديل';
+
+        if (App.tempSub.id === "0000") {
+            initialStage = 2; // تخطي المرحلة الأولى مباشرة
+            initialStatus = 'مُعفى (بانتظار التوجيه)';
+        }
+
         const req = {
             id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type,
-            start, end, stage: 1, status: 'بانتظار موافقة البديل', ts: ts
+            start, end, stage: initialStage, status: initialStatus, ts: ts
         };
         
         try {
@@ -750,9 +754,13 @@ const App = {
                 const msg = `السلام عليكم ورحمة الله وبركاته، أخي الفاضل ${App.tempSub.name}.\n\nأنا زميلك ${App.curr.name} من مسجد (${App.curr.place}).\nقمت بتقديم طلب (${req.type})، ورشحتك كبديل لتغطية المسجد في الفترة:\nمن: ${start}\nإلى: ${end}\n\nيرجى التكرم بالدخول إلى المنظومة واعتماد الموافقة إلكترونياً ليتم رفع الطلب للتوجيه الثقافي.\n\nرابط المنظومة: ${sysLink}`;
                 App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
                 document.querySelector('.btn-wa').style.display = 'inline-flex';
+                document.querySelector('#waLinkArea p').innerText = "الخطوة التالية: يجب إبلاغ البديل ليدخل النظام ويوافق إلكترونياً لكي ينتقل الطلب للتوجيه الثقافي.";
             } else {
+                // رسالة واضحة للموظف أنه تم تخطي البديل بنجاح
                 document.querySelector('.btn-wa').style.display = 'none';
-                App.actionReq(reqId, 2, 'مُعفى (بانتظار التوجيه)');
+                document.querySelector('#waLinkArea h4').innerHTML = '<i class="fas fa-check-double"></i> تم الإرسال للتوجيه الثقافي بنجاح!';
+                document.querySelector('#waLinkArea p').innerText = "تم إعفاؤك من البديل. طلبك الآن قيد المراجعة في التوجيه الثقافي مباشرة.";
+                App.fetchData(); // تحديث فوري ليظهر الطلب عند التوجيه
             }
         } catch(e) { alert("حدث خطأ أثناء إرسال الطلب للسيرفر."); }
     },
@@ -762,7 +770,6 @@ const App = {
         setTimeout(() => location.reload(), 2500); 
     },
 
-    // 6. تحديث حالة الطلب عبر السيرفر
     actionReq: async (reqId, stage, status) => {
         const r = App.db.requests.find(x => x.id === reqId);
         if(!r) return;
@@ -781,7 +788,7 @@ const App = {
             else if(stage === 0) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `مرفوض: تم رفض وإلغاء طلب (${empName})، السبب: ${status}.`);
 
             App.closeModal('unifiedDetailsModal');
-            App.fetchData(); // تحديث فوري للبيانات بعد اتخاذ القرار
+            App.fetchData(); 
         } catch(e) { console.error("خطأ في تحديث الطلب", e); }
     },
 
@@ -994,7 +1001,6 @@ const App = {
         document.getElementById('unifiedDetailsModal').style.display = 'flex';
     },
 
-    // 7. تحديث ملفات الموظفين عبر الـ API
     toggleEmpStatus: async (id) => {
         const u = App.db.users.find(x => x.id === id);
         const newStatus = u.status === 'frozen' ? 'active' : 'frozen';
@@ -1065,7 +1071,6 @@ const App = {
         });
     },
 
-    // 8. إرسال إجراء العودة/القطع للسيرفر
     setupReturn: () => {
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
         const select = document.getElementById('retLeave');
