@@ -374,7 +374,7 @@
         <input type="hidden" id="compReqId">
         
         <div style="display:flex; gap:15px; margin-top:30px; border-top:2px solid #eee; padding-top:20px;" id="modalActionButtons">
-            </div>
+        </div>
     </div>
 </div>
 
@@ -439,43 +439,48 @@
 <div id="printArea"></div>
 
 <script>
+// --- كود JavaScript المعدل ليعمل مع السيرفر الحقيقي (API) ---
+
 const App = {
-    // قاعدة البيانات الوهمية (Local Storage)
     db: { users: [], requests: [], returnActions: [], logs: [] },
     curr: null, tempSub: null, waLink: "", tempLoginData: null,
+    pollInterval: null,
 
-    // التهيئة المبدئية
     init: () => {
-        App.loadDB();
+        App.fetchData(); // جلب البيانات من السيرفر فور تشغيل التطبيق
         App.updateClocks();
-        setInterval(App.updateClocks, 1000); // تحديث الساعة كل ثانية
+        setInterval(App.updateClocks, 1000);
     },
 
-    // تحميل البيانات من المتصفح
-    loadDB: () => {
-        const local = localStorage.getItem('awqaf_db_v2');
-        if(local) {
-            App.db = JSON.parse(local);
-        } else {
-            // بيانات افتراضية للمسؤولين عند تشغيل النظام لأول مرة
-            App.db.users = [
-                { id: "222222222222", name: "مدير شؤون العاملين", pass: "1234", role: "hr", status: "active", place:"الإدارة المركزية", file:"HR-0001", job:"مدير نظام", contract:"عامة", nationality:"كويتي", region:"الكويت", phone:"--" },
-                { id: "333333333333", name: "الموجه الثقافي الأول", pass: "1234", role: "cultural", status: "active", place:"إدارة التوجيه", file:"CUL-0001", job:"موجه عام", contract:"عامة", nationality:"كويتي", region:"الكويت", phone:"--" }
-            ];
-            App.saveDB();
-        }
-        
-        // التحقق من وجود جلسة سابقة
-        const sessionUser = sessionStorage.getItem('awqaf_user_v2');
-        if(sessionUser) {
-            App.curr = JSON.parse(sessionUser);
-            App.routeUser();
+    // 1. وظيفة جلب البيانات من السيرفر بدلاً من التخزين المحلي
+    fetchData: async () => {
+        try {
+            const res = await fetch('/api/data');
+            const data = await res.json();
+            
+            App.db = {
+                users: data.users || [],
+                requests: data.requests || [],
+                returnActions: data.returnActions || [],
+                logs: data.logs || []
+            };
+
+            const sessionUser = sessionStorage.getItem('awqaf_user_v2');
+            if(sessionUser && !App.curr) {
+                App.curr = JSON.parse(sessionUser);
+                App.routeUser();
+            } else if (App.curr) {
+                // تحديث الواجهة إذا كان المستخدم مسجل دخوله بالفعل
+                if(App.curr.role === 'emp') App.renderEmp();
+                if(App.curr.role === 'cultural') App.renderCul();
+                if(App.curr.role === 'hr') App.renderHr();
+                App.checkNotifications();
+            }
+        } catch (e) {
+            console.error("خطأ في الاتصال بقاعدة البيانات", e);
         }
     },
 
-    saveDB: () => { localStorage.setItem('awqaf_db_v2', JSON.stringify(App.db)); },
-
-    // إدارة التوقيت والتاريخ
     updateClocks: () => {
         const now = new Date();
         document.getElementById('clock').innerText = now.toLocaleTimeString('ar-KW');
@@ -492,28 +497,32 @@ const App = {
         };
     },
 
-    // نظام المراقبة والسجلات (Logs)
-    addLog: (roles, msg) => {
+    // 2. إرسال سجلات الأنشطة (Logs) للسيرفر
+    addLog: async (roles, msg) => {
         const ts = App.getTimestamp();
-        App.db.logs.unshift({ id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` });
-        App.saveDB();
-        App.checkNotifications();
+        const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
+        try {
+            await fetch('/api/logs', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(logEntry)
+            });
+            App.fetchData(); // تحديث فوري
+        } catch(e) { console.error(e); }
     },
 
     renderLogs: (containerId, roleFilter) => {
         const box = document.getElementById(containerId);
         if(!box) return;
-        const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all')).slice(0, 30); // عرض آخر 30 حدث
+        const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all')).slice(0, 30);
         if(myLogs.length === 0) { box.innerHTML = '<div style="color:#888; text-align:center; padding:15px; font-weight:bold;">لا توجد أحداث مسجلة حتى الآن.</div>'; return; }
         box.innerHTML = myLogs.map(l => `<div class="notif-item"><i class="fas fa-info-circle"></i><div style="flex:1;"><div>${l.msg}</div><span class="notif-time">${l.time}</span></div></div>`).join('');
     },
 
-    // جرس الإشعارات
     checkNotifications: () => {
         if(!App.curr) return;
         const badge = document.getElementById('mainNotifBadge');
         let pending = 0;
-        // حساب الطلبات المعلقة حسب دور المستخدم
         if(App.curr.role === 'emp') {
             pending = App.db.requests.filter(r => r.subId === App.curr.id && r.stage === 1).length;
         } else if(App.curr.role === 'cultural') {
@@ -530,7 +539,6 @@ const App = {
         }
     },
 
-    // واجهة المستخدم والتنقل
     toggleTheme: () => document.body.classList.toggle('dark-mode'),
 
     showPage: (id, el) => {
@@ -545,15 +553,16 @@ const App = {
 
     closeModal: (id) => document.getElementById(id).style.display = 'none',
 
-    // --- المصادقة وتسجيل الدخول ---
-    triggerAuth: () => {
+    // 3. التحقق وتسجيل الدخول عبر السيرفر
+    triggerAuth: async () => {
         const id = document.getElementById('loginId').value.trim();
         const role = document.getElementById('loginRole').value;
         if(!id) return alert("خطأ: يرجى إدخال الرقم المدني.");
         
+        // التحقق المبدئي
         const user = App.db.users.find(u => u.id === id && u.role === role);
         if(!user) return alert("مرفوض: الرقم المدني غير مسجل، أو الرتبة الإدارية المحددة غير صحيحة.");
-        if(user.status === 'frozen') return alert("تحذير إداري: هذا الحساب تم تجميده وإيقافه. يرجى مراجعة إدارة شؤون العاملين.");
+        if(user.status === 'frozen') return alert("تحذير إداري: هذا الحساب تم تجميده وإيقافه.");
 
         App.tempLoginData = user;
         document.getElementById('authPin').value = '';
@@ -577,7 +586,7 @@ const App = {
         }, 1500);
     },
 
-    verifyPin: () => {
+    verifyPin: async () => {
         const pin = document.getElementById('authPin').value;
         if(pin === App.tempLoginData.pass) {
             App.finalizeLogin();
@@ -591,6 +600,10 @@ const App = {
         sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
         App.closeModal('authModal');
         App.addLog(['hr', 'all'], `تسجيل دخول للنظام: ${App.curr.name} (${App.curr.role})`);
+        
+        // تشغيل مؤقت لجلب البيانات الجديدة كل 3 ثوانٍ
+        if(!App.pollInterval) App.pollInterval = setInterval(App.fetchData, 3000);
+        
         App.routeUser();
     },
 
@@ -599,7 +612,6 @@ const App = {
         document.getElementById('n-reg').style.display = 'none';
         document.getElementById('n-logout').style.display = 'flex';
         
-        // إظهار الأزرار المخصصة بناءً على الصلاحية
         if(App.curr.role === 'emp') { document.querySelectorAll('.emp-only').forEach(e=>e.style.display='flex'); App.renderEmp(); App.showPage('empDash'); }
         if(App.curr.role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e=>e.style.display='flex'); App.renderCul(); App.showPage('culturalDash'); }
         if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.showPage('hrDash'); }
@@ -607,11 +619,12 @@ const App = {
 
     logout: () => {
         sessionStorage.removeItem('awqaf_user_v2');
+        if(App.pollInterval) clearInterval(App.pollInterval);
         location.reload();
     },
 
-    // --- تسجيل حساب جديد ---
-    register: () => {
+    // 4. إنشاء ملف موظف جديد عبر الـ API
+    register: async () => {
         const id = document.getElementById('rId').value.trim();
         const pass = document.getElementById('rPass').value;
         const fileNo = document.getElementById('rFile').value.trim();
@@ -619,9 +632,9 @@ const App = {
         
         if(!name) return alert("الاسم الرباعي إلزامي.");
         if(!id || id.length < 5) return alert("يرجى كتابة الرقم المدني بشكل صحيح.");
-        if(!fileNo) return alert("رقم الملف الوظيفي إلزامي لربط البيانات.");
+        if(!fileNo) return alert("رقم الملف الوظيفي إلزامي.");
         if(pass.length < 4) return alert("لأسباب أمنية: كلمة المرور أو PIN يجب ألا تقل عن 4 خانات.");
-        if(App.db.users.find(u => u.id === id)) return alert("هذا الرقم المدني مسجل مسبقاً في المنظومة.");
+        if(App.db.users.find(u => u.id === id)) return alert("هذا الرقم المدني مسجل مسبقاً.");
 
         const user = {
             id, pass, file: fileNo, name,
@@ -634,21 +647,29 @@ const App = {
             role: 'emp', status: 'active', ts: App.getTimestamp()
         };
         
-        App.db.users.push(user);
-        App.saveDB();
-        App.addLog(['hr'], `موظف جديد: تم إنشاء ملف وظيفي لـ ${user.name} (رقم الملف: ${user.file})`);
-        
-        alert("تم التوثيق! تم إنشاء البطاقة الوظيفية بنجاح. يمكنك تسجيل الدخول الآن باستخدام رقمك المدني.");
-        App.showPage('loginPage');
+        try {
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(user)
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                App.addLog(['hr'], `موظف جديد: تم إنشاء ملف وظيفي لـ ${user.name} (رقم الملف: ${user.file})`);
+                alert("تم التوثيق! تم إنشاء البطاقة الوظيفية بنجاح. يمكنك تسجيل الدخول الآن.");
+                App.showPage('loginPage');
+            } else {
+                alert(data.message || "حدث خطأ أثناء التسجيل");
+            }
+        } catch(e) { alert("فشل الاتصال بالخادم."); }
     },
 
-    // --- إدارة الإجازات والبديل ---
     toggleSubSearch: () => {
         const isAlone = document.getElementById('aloneCheckbox').checked;
         const btn = document.getElementById('btnSubmitReq');
         const sInput = document.getElementById('subSearch');
         if(isAlone) {
-            // كائن وهمي كامل التفاصيل لتفادي الأخطاء في نافذة المطابقة
             App.tempSub = { id: "0000", name: "مُعفى (بمفرده بالمسجد)", place: App.curr.place, phone: "--", job: "غير مطلوب", region: App.curr.region, nationality: "--", file: "0000", contract: "--" };
             sInput.disabled = true; 
             sInput.value = "";
@@ -669,7 +690,6 @@ const App = {
         const box = document.getElementById('subSearchResults');
         if(cleanVal.length < 2) { box.style.display = 'none'; return; }
         
-        // البحث عن موظف (نشط) غير المستخدم الحالي يطابق الاسم أو المدني
         const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status === 'active' && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
         
         if(matches.length > 0) {
@@ -696,79 +716,75 @@ const App = {
         document.getElementById('btnSubmitReq').disabled = false;
     },
 
-    submitRequest: () => {
+    // 5. إرسال الطلب للسيرفر
+    submitRequest: async () => {
         const start = document.getElementById('reqStart').value;
         const end = document.getElementById('reqEnd').value;
         const type = document.getElementById('reqType').value;
-        if(!start || !end || !App.tempSub) return alert("خطأ: يرجى استكمال تواريخ الإجازة وتحديد البديل.");
+        if(!start || !end || !App.tempSub) return alert("خطأ: يرجى استكمال التواريخ وتحديد البديل.");
 
         const ts = App.getTimestamp();
-        const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`; // رقم عشوائي مكون من 5 أرقام
+        const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`;
 
         const req = {
             id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type,
             start, end, stage: 1, status: 'بانتظار موافقة البديل', ts: ts
         };
         
-        App.db.requests.push(req);
-        App.saveDB();
-        
-        App.addLog(['hr'], `الرادار: تقديم طلب (${type}) للموظف: ${App.curr.name}، البديل المقترح: ${App.tempSub.name}.`);
-        App.addLog(['emp_' + App.curr.id], `تم تسجيل وحفظ طلبك (رقم ${reqId}) بنجاح.`);
-        
-        document.getElementById('btnSubmitReq').style.display = 'none';
-        document.getElementById('waLinkArea').style.display = 'block';
-        
-        // تجهيز رابط الواتساب بدقة واحترافية عالية
-        if(App.tempSub.id !== "0000") {
-            App.addLog(['emp_' + App.tempSub.id], `إشعار هام: الزميل ${App.curr.name} رشحك كبديل له. يرجى الدخول للموافقة.`);
+        try {
+            await fetch('/api/requests', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(req)
+            });
+
+            App.addLog(['hr'], `الرادار: تقديم طلب (${type}) للموظف: ${App.curr.name}، البديل: ${App.tempSub.name}.`);
+            App.addLog(['emp_' + App.curr.id], `تم تسجيل وحفظ طلبك (رقم ${reqId}) بنجاح.`);
             
-            const sysLink = window.location.href; // رابط الموقع الحالي
-            const msg = `السلام عليكم ورحمة الله وبركاته، أخي الفاضل ${App.tempSub.name}.\n\nأنا زميلك ${App.curr.name} من مسجد (${App.curr.place}).\nقمت بتقديم طلب (${req.type})، ورشحتك كبديل لتغطية المسجد في الفترة:\nمن: ${start}\nإلى: ${end}\n\nيرجى التكرم بالدخول إلى المنظومة واعتماد الموافقة إلكترونياً ليتم رفع الطلب للتوجيه الثقافي.\n\nرابط المنظومة: ${sysLink}`;
+            document.getElementById('btnSubmitReq').style.display = 'none';
+            document.getElementById('waLinkArea').style.display = 'block';
             
-            App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
-            document.querySelector('.btn-wa').style.display = 'inline-flex';
-        } else {
-            // حالة "بمفرده" يتخطى مرحلة البديل تلقائياً للمرحلة 2 (التوجيه)
-            document.querySelector('.btn-wa').style.display = 'none';
-            App.actionReq(reqId, 2, 'مُعفى (بانتظار التوجيه)');
-        }
+            if(App.tempSub.id !== "0000") {
+                App.addLog(['emp_' + App.tempSub.id], `إشعار هام: الزميل ${App.curr.name} رشحك كبديل له.`);
+                const sysLink = window.location.href;
+                const msg = `السلام عليكم ورحمة الله وبركاته، أخي الفاضل ${App.tempSub.name}.\n\nأنا زميلك ${App.curr.name} من مسجد (${App.curr.place}).\nقمت بتقديم طلب (${req.type})، ورشحتك كبديل لتغطية المسجد في الفترة:\nمن: ${start}\nإلى: ${end}\n\nيرجى التكرم بالدخول إلى المنظومة واعتماد الموافقة إلكترونياً ليتم رفع الطلب للتوجيه الثقافي.\n\nرابط المنظومة: ${sysLink}`;
+                App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
+                document.querySelector('.btn-wa').style.display = 'inline-flex';
+            } else {
+                document.querySelector('.btn-wa').style.display = 'none';
+                App.actionReq(reqId, 2, 'مُعفى (بانتظار التوجيه)');
+            }
+        } catch(e) { alert("حدث خطأ أثناء إرسال الطلب للسيرفر."); }
     },
 
     sendWa: () => { 
         window.open(App.waLink, '_blank'); 
-        // إعادة تحميل بعد الإرسال ليعود للشاشة الرئيسية
         setTimeout(() => location.reload(), 2500); 
     },
 
-    // --- معالج الإجراءات والقرارات (الاعتمادات) ---
-    actionReq: (reqId, stage, status) => {
+    // 6. تحديث حالة الطلب عبر السيرفر
+    actionReq: async (reqId, stage, status) => {
         const r = App.db.requests.find(x => x.id === reqId);
         if(!r) return;
         
-        r.stage = stage;
-        r.status = status;
-        App.saveDB();
+        try {
+            await fetch(`/api/requests/${reqId}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ stage, status })
+            });
 
-        const empName = App.db.users.find(u=>u.id===r.empId).name;
-        
-        // السجلات حسب المرحلة
-        if(stage === 2) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `الاعتماد الأولي: تمت الموافقة من قِبل البديل على طلب (${empName}).`);
-        else if(stage === 3) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الفني الشرعي: التوجيه الثقافي اعتمد طلب (${empName}).`);
-        else if(stage === 4) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الإداري والنهائي: شؤون العاملين وافقت على إجازة (${empName}).`);
-        else if(stage === 0) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `مرفوض: تم رفض وإلغاء طلب (${empName})، السبب: ${status}.`);
+            const empName = App.db.users.find(u=>u.id===r.empId).name;
+            if(stage === 2) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `الاعتماد الأولي: تمت الموافقة من قِبل البديل على طلب (${empName}).`);
+            else if(stage === 3) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الفني الشرعي: التوجيه الثقافي اعتمد طلب (${empName}).`);
+            else if(stage === 4) App.addLog(['hr', 'emp_'+r.empId], `الاعتماد الإداري والنهائي: شؤون العاملين وافقت على إجازة (${empName}).`);
+            else if(stage === 0) App.addLog(['hr', 'cultural', 'emp_'+r.empId], `مرفوض: تم رفض وإلغاء طلب (${empName})، السبب: ${status}.`);
 
-        App.closeModal('unifiedDetailsModal');
-        
-        // تحديث الواجهة النشطة فوراً
-        if(App.curr.role === 'emp') App.renderEmp();
-        if(App.curr.role === 'cultural') App.renderCul();
-        if(App.curr.role === 'hr') App.renderHr();
+            App.closeModal('unifiedDetailsModal');
+            App.fetchData(); // تحديث فوري للبيانات بعد اتخاذ القرار
+        } catch(e) { console.error("خطأ في تحديث الطلب", e); }
     },
 
-    // --- العروض الخاصة بكل دور (Render) ---
-
-    // 1. لوحة الموظف
     renderEmp: () => {
         document.getElementById('empHeader').innerHTML = `
             <span><i class="fas fa-user"></i> الموظف: ${App.curr.name}</span>
@@ -776,10 +792,9 @@ const App = {
         `;
         App.renderLogs('empNotifs', 'emp_' + App.curr.id);
 
-        // بيانات الإجازة السابقة المعتمدة
         const approvedReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
         if(approvedReqs.length > 0) {
-            const last = approvedReqs[approvedReqs.length - 1]; // أحدث واحدة
+            const last = approvedReqs[approvedReqs.length - 1];
             document.getElementById('prevLeaveInfo').style.display = 'block';
             document.getElementById('prevLeaveContent').innerHTML = `
                 <div style="flex:1;">رقم: <strong>${last.id}</strong> | النوع: <strong>${last.type}</strong> | الفترة: <strong>${last.start}</strong> إلى <strong>${last.end}</strong></div>
@@ -787,7 +802,6 @@ const App = {
             `;
         }
 
-        // الإشعارات العاجلة (مطلوب كموافقة بديل)
         const subTask = App.db.requests.find(r => r.subId === App.curr.id && r.stage === 1);
         const notice = document.getElementById('subNoticeArea');
         if(subTask) {
@@ -802,7 +816,6 @@ const App = {
             </div>`;
         } else notice.innerHTML = '';
 
-        // الأرشيف الخاص به
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id).reverse();
         document.getElementById('empTbody').innerHTML = myReqs.map(r => `
             <div class="data-card">
@@ -817,11 +830,8 @@ const App = {
         `).join('');
     },
 
-    // 2. لوحة التوجيه الثقافي
     renderCul: () => {
         App.renderLogs('culNotifs', 'cultural');
-        
-        // التوجيه يرى فقط الطلبات التي وافق عليها البديل (المرحلة 2)
         const reqs = App.db.requests.filter(r => r.stage === 2);
         
         if(reqs.length === 0) {
@@ -847,7 +857,6 @@ const App = {
         }).join('');
     },
 
-    // 3. لوحة شؤون العاملين
     switchHrTab: (tab, el) => {
         ['hrReqsView', 'hrEmpsView', 'hrReturnsView'].forEach(v => document.getElementById(v).style.display='none');
         document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display='grid';
@@ -856,13 +865,10 @@ const App = {
 
     renderHr: () => {
         App.renderLogs('hrNotifs', 'hr');
-        
-        // أ. الرادار والطلبات (كل الطلبات مرتبة بالأحدث)
         const reqs = App.db.requests.slice().reverse();
         document.getElementById('hrReqsView').innerHTML = reqs.map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId) || {};
             const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
-            // تحديد لون الكرت إذا كان الطلب في المرحلة 3 (ينتظر قرار الشؤون)
             const isPendingHr = r.stage === 3;
             return `
             <div class="data-card" style="${isPendingHr ? 'border:2px solid var(--primary); box-shadow:0 0 15px rgba(27,69,50,0.2); transform:scale(1.02);' : ''}">
@@ -882,7 +888,6 @@ const App = {
             </div>`;
         }).join('');
 
-        // ب. إدارة الموظفين
         const emps = App.db.users.filter(u=>u.role==='emp');
         document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
             const isF = u.status === 'frozen';
@@ -905,7 +910,6 @@ const App = {
             </div>`;
         }).join('');
 
-        // ج. سجلات القطع والعودة
         const acts = App.db.returnActions || [];
         document.getElementById('hrReturnsView').innerHTML = acts.slice().reverse().map(a => {
             const emp = App.db.users.find(u=>u.id===a.empId) || {};
@@ -924,7 +928,6 @@ const App = {
         }).join('');
     },
 
-    // --- النافذة التفصيلية الموحدة (أهم ميزة للثقافي والشؤون) ---
     openDetails: (reqId) => {
         const r = App.db.requests.find(x => x.id === reqId);
         if(!r) return;
@@ -936,7 +939,6 @@ const App = {
         document.getElementById('compType').innerText = r.type;
         document.getElementById('compDates').innerText = `${r.start} إلى ${r.end}`;
         
-        // تحديد حالة البديل بشكل نصي دقيق
         let subStatusTxt = 'بانتظار البديل';
         let subBadgeClass = 'status-2';
         if(r.subId === '0000') { subStatusTxt = 'معفى (بدون بديل)'; subBadgeClass = 'status-1'; }
@@ -947,7 +949,6 @@ const App = {
         statusEl.innerText = subStatusTxt;
         statusEl.className = `badge ${subBadgeClass}`;
 
-        // بيانات مقدم الطلب كاملة
         document.getElementById('compEmp').innerHTML = `
             <p><span>الاسم الرباعي:</span> <strong>${emp.name || '--'}</strong></p>
             <p><span>رقم الملف الوظيفي:</span> <strong>${emp.file || '--'}</strong></p>
@@ -959,7 +960,6 @@ const App = {
             <p><span>نوع البند (العقد):</span> <strong>${emp.contract || '--'}</strong></p>
         `;
         
-        // بيانات البديل كاملة للمطابقة
         document.getElementById('compSub').innerHTML = `
             <p><span>الاسم الرباعي:</span> <strong>${sub.name || '--'}</strong></p>
             <p><span>رقم الملف الوظيفي:</span> <strong>${sub.file || '--'}</strong></p>
@@ -973,7 +973,6 @@ const App = {
         
         document.getElementById('compReqId').value = r.id;
 
-        // الأزرار الديناميكية بناءً على الرتبة وحالة الطلب
         let btns = '';
         if(App.curr.role === 'cultural' && r.stage === 2) {
             btns = `
@@ -995,13 +994,18 @@ const App = {
         document.getElementById('unifiedDetailsModal').style.display = 'flex';
     },
 
-    // --- إدارة بيانات الموظفين (الشؤون) ---
-    toggleEmpStatus: (id) => {
+    // 7. تحديث ملفات الموظفين عبر الـ API
+    toggleEmpStatus: async (id) => {
         const u = App.db.users.find(x => x.id === id);
-        u.status = u.status === 'frozen' ? 'active' : 'frozen';
-        App.saveDB();
-        App.addLog(['hr'], `أمان: تم ${u.status === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
-        App.renderHr();
+        const newStatus = u.status === 'frozen' ? 'active' : 'frozen';
+        try {
+            await fetch(`/api/users/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ status: newStatus })
+            });
+            App.addLog(['hr'], `أمان: تم ${newStatus === 'frozen' ? 'تجميد' : 'تفعيل'} حساب الموظف ${u.name}.`);
+        } catch(e) { console.error(e); }
     },
 
     openEditEmp: (id) => {
@@ -1016,34 +1020,41 @@ const App = {
         document.getElementById('edJob').value = u.job || '';
         document.getElementById('edContract').value = u.contract || '';
         document.getElementById('edPhone').value = u.phone || '';
-        document.getElementById('edPass').value = ""; // مخفي للأمان
+        document.getElementById('edPass').value = "";
         document.getElementById('hrEditEmpModal').style.display = 'flex';
     },
 
-    saveEditEmp: () => {
+    saveEditEmp: async () => {
         const id = document.getElementById('edId').value;
         const u = App.db.users.find(x => x.id === id);
         
-        u.name = document.getElementById('edName').value;
-        u.file = document.getElementById('edFile').value;
-        u.nationality = document.getElementById('edNat').value;
-        u.region = document.getElementById('edRegion').value;
-        u.place = document.getElementById('edPlace').value;
-        u.job = document.getElementById('edJob').value;
-        u.contract = document.getElementById('edContract').value;
-        u.phone = document.getElementById('edPhone').value;
+        const updatedData = {
+            name: document.getElementById('edName').value,
+            file: document.getElementById('edFile').value,
+            nationality: document.getElementById('edNat').value,
+            region: document.getElementById('edRegion').value,
+            place: document.getElementById('edPlace').value,
+            job: document.getElementById('edJob').value,
+            contract: document.getElementById('edContract').value,
+            phone: document.getElementById('edPhone').value
+        };
         
-        // تحديث كلمة المرور فقط إذا أدخل المسؤول قيمة جديدة
         const newPass = document.getElementById('edPass').value.trim();
         if(newPass && newPass.length >= 4) {
-            u.pass = newPass;
-            App.addLog(['hr'], `أمان: تم تغيير كلمة المرور للموظف ${u.name}.`);
+            updatedData.pass = newPass;
+            App.addLog(['hr'], `أمان: تم تغيير كلمة المرور للموظف ${updatedData.name}.`);
         }
 
-        App.saveDB();
-        App.addLog(['hr'], `إدارة: تم تحديث بيانات الملف الوظيفي للموظف ${u.name}.`);
-        App.closeModal('hrEditEmpModal');
-        App.renderHr();
+        try {
+            await fetch(`/api/users/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(updatedData)
+            });
+            App.addLog(['hr'], `إدارة: تم تحديث بيانات الملف الوظيفي للموظف ${updatedData.name}.`);
+            App.closeModal('hrEditEmpModal');
+            App.fetchData();
+        } catch(e) { console.error(e); }
     },
 
     filterEmps: (val) => {
@@ -1054,7 +1065,7 @@ const App = {
         });
     },
 
-    // --- إجراءات العودة والقطع وإنذار الـ 48 ساعة ---
+    // 8. إرسال إجراء العودة/القطع للسيرفر
     setupReturn: () => {
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4);
         const select = document.getElementById('retLeave');
@@ -1067,28 +1078,32 @@ const App = {
         }
     },
 
-    submitReturn: () => {
+    submitReturn: async () => {
         const reqId = document.getElementById('retLeave').value;
         const date = document.getElementById('retDate').value;
         const actionType = document.getElementById('retType').value;
         
-        if(!reqId || !date) return alert("خطأ: يرجى استكمال كافة البيانات (اختيار الإجازة وتاريخ التنفيذ).");
+        if(!reqId || !date) return alert("خطأ: يرجى استكمال كافة البيانات.");
         
-        App.db.returnActions.push({ reqId, type: actionType, date, empId: App.curr.id, ts: App.getTimestamp() });
-        App.saveDB();
-        
-        App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
-        alert("تم إرسال الإجراء بنجاح. سيتم توثيقه في كشوفات الشؤون المركزية.");
-        
-        document.getElementById('retDate').value = "";
-        App.showPage('empDash');
+        const returnData = { reqId, type: actionType, date, empId: App.curr.id, ts: App.getTimestamp() };
+
+        try {
+            await fetch('/api/returns', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(returnData)
+            });
+            App.addLog(['hr', 'emp_'+App.curr.id], `سجل الموظف ${App.curr.name} إجراء (${actionType}) بتاريخ تنفيذ: ${date}.`);
+            alert("تم إرسال الإجراء بنجاح. سيتم توثيقه في كشوفات الشؤون المركزية.");
+            document.getElementById('retDate').value = "";
+            App.showPage('empDash');
+        } catch(e) { alert("حدث خطأ."); }
     },
 
     checkOverstays: () => {
         const now = new Date().getTime();
         const acts = App.db.returnActions || [];
         
-        // البحث عن الإجازات التي انتهت منذ أكثر من 48 ساعة ولم يتم تسجيل عودة لها
         const overstays = App.db.requests.filter(r => {
             if(r.stage !== 4) return false;
             const endDate = new Date(r.end).getTime();
@@ -1114,11 +1129,9 @@ const App = {
         }
     },
 
-    // --- التصدير والطباعة (التقارير) ---
     exportToExcel: () => {
         if(App.db.requests.length === 0) return alert("لا توجد بيانات لتصديرها.");
         
-        // بناء المصفوفة لملف الإكسيل
         const expData = App.db.requests.map(r => {
             const e = App.db.users.find(u=>u.id===r.empId) || {};
             const s = r.subId === '0000' ? {name:'مُعفى (بمفرده)', file:'--'} : (App.db.users.find(u=>u.id===r.subId) || {});
@@ -1147,7 +1160,7 @@ const App = {
             XLSX.writeFile(wb, `إحصائية_شؤون_العاملين_الأحمدي_${Date.now()}.xlsx`);
             App.addLog(['hr'], `التقارير: تم تصدير قاعدة بيانات الإجازات إلى ملف Excel.`);
         } catch(e) {
-            alert("حدث خطأ أثناء تصدير الملف. تأكد من اتصالك بالإنترنت لتحميل المكتبة.");
+            alert("حدث خطأ أثناء تصدير الملف.");
         }
     },
 
@@ -1162,7 +1175,6 @@ const App = {
         const area = document.getElementById('printArea');
         const ts = App.getTimestamp();
         
-        // إخفاء الحاوية الرئيسية وعرض منطقة الطباعة
         document.getElementById('mainContainer').style.display = 'none';
         
         area.innerHTML = `
@@ -1209,18 +1221,14 @@ const App = {
             </div>
         `;
         
-        // استدعاء نافذة الطباعة الخاصة بالمتصفح
         window.print();
         
-        // تنظيف وإعادة العرض بعد انتهاء الطباعة (أو الإلغاء)
         area.innerHTML = '';
         document.getElementById('mainContainer').style.display = 'block';
     }
 };
 
-// بدء تشغيل التطبيق عند تحميل الصفحة
 window.onload = App.init;
 </script>
 </body>
 </html>
-
