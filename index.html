@@ -104,6 +104,20 @@
         .data-card-body strong { color: var(--info); text-align: left; }
         .data-card-actions { display: flex; gap: 10px; margin-top: 20px; }
 
+        /* لوحة الإحصائيات والأرشيف */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 4px; }
+        .stat-card.total::before { background: var(--info); }
+        .stat-card.pending::before { background: var(--gold); }
+        .stat-card.approved::before { background: var(--success); }
+        .stat-card.rejected::before { background: var(--danger); }
+        .stat-card h3 { margin: 0; font-size: 32px; color: var(--primary); }
+        .stat-card p { margin: 5px 0 0; color: var(--text-muted); font-weight: 700; font-size: 14px; }
+        
+        .filter-bar { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .filter-bar select, .filter-bar input { flex: 1; min-width: 150px; }
+
         /* لوحة الإشعارات */
         .notifications-panel { background: #f8f9fa; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 25px; max-height: 250px; overflow-y: auto; }
         .notif-item { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
@@ -129,13 +143,29 @@
         @keyframes scan { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
         .pin-input { font-size: 28px; letter-spacing: 15px; text-align: center; width: 100%; max-width: 300px; margin: 0 auto; font-family: monospace; }
 
-        /* إعدادات الطباعة */
+        /* =========================================
+           حلول وتعديلات خاصة لشاشات الموبايل 
+           ========================================= */
+        @media (max-width: 768px) {
+            .compare-grid { grid-template-columns: 1fr; } /* حل مشكلة تداخل الأسماء في نافذة المطابقة */
+            .hr-tabs { flex-wrap: wrap; }
+            .hr-tab { min-width: 45%; font-size: 13px; padding: 10px; }
+            .modal-content { padding: 15px; }
+            .header-content h1 { font-size: 20px; }
+            .stat-card h3 { font-size: 24px; }
+            .filter-bar { flex-direction: column; }
+        }
+
+        /* =========================================
+           حلول جذرية لصفحة الطباعة البيضاء على الموبايل
+           ========================================= */
         @media print {
-            body { background: white; color: black; }
-            .no-print, nav, .top-bar, header, button, .modal-overlay, .notifications-panel, .hr-tabs { display: none !important; }
-            .card { display: block !important; border: none; box-shadow: none; padding: 0; margin: 0; }
-            #printArea { display: block !important; width: 100%; direction: rtl; }
+            body, html { height: auto !important; overflow: visible !important; background: white !important; color: black !important; }
+            .no-print, nav, .top-bar, header, button, .modal-overlay, .notifications-panel, .hr-tabs, .filter-bar { display: none !important; }
+            .card { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            #printArea { display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; background: white !important; }
             #mainContainer { display: none !important; } 
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
@@ -162,7 +192,7 @@
         <h1>دولة الكويت</h1>
         <h1>وزارة الشؤون الإسلامية</h1>
         <p>إدارة مساجد محافظة الأحمدي</p>
-        <p style="font-size: 14px; color: #fff; opacity: 0.9; margin-top: 5px;">برنامج الإجازات</p>
+        <p style="font-size: 14px; color: #fff; opacity: 0.9; margin-top: 5px;">برنامج الإجازات المركزي</p>
     </div>
     <div class="header-logo"><i class="fas fa-book-quran fa-2x"></i></div>
 </header>
@@ -203,7 +233,7 @@
     </div>
 
     <div id="regPage" class="card">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-address-card"></i> إنشاء بطاقة الوظيفية جديدة</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-address-card"></i> إنشاء بطاقة وظيفية جديدة</h3>
         <div class="form-grid">
             <div class="form-group"><label>الاسم الرباعي الكامل</label><input type="text" id="rName" class="form-control" placeholder="تطابق البطاقة المدنية"></div>
             <div class="form-group"><label>الرقم المدني</label><input type="tel" id="rId" class="form-control" maxlength="12" placeholder="12 رقم"></div>
@@ -309,9 +339,27 @@
         <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-mosque"></i> التوجيه الثقافي - الاعتمادات الفنية الشرعية</h3>
         <div class="notifications-panel" id="culNotifs"></div>
         
-        <div style="background:#fff3cd; color:#856404; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:bold; border:1px solid #ffeeba;">
-            <i class="fas fa-info-circle"></i> تظهر هنا فقط الطلبات التي تمت الموافقة عليها مسبقاً من قِبل "البديل" (أو المعفاة من البديل).
+        <div class="filter-bar">
+            <label style="font-weight:bold; color:var(--primary);"><i class="fas fa-filter"></i> أرشيف الطلبات:</label>
+            <select id="culFilterMonth" class="form-control" onchange="App.renderCul()">
+                <option value="all">جميع الشهور</option>
+                <option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option>
+                <option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option>
+                <option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option>
+                <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+            </select>
+            <select id="culFilterYear" class="form-control" onchange="App.renderCul()">
+                <option value="all">جميع السنوات</option>
+                <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+            </select>
+            <select id="culFilterStatus" class="form-control" onchange="App.renderCul()">
+                <option value="all">كل الحالات</option>
+                <option value="pending">طلبات جديدة (تحتاج اعتماد)</option>
+                <option value="done">تم اتخاذ إجراء (مقبول/مرفوض)</option>
+            </select>
         </div>
+
+        <div class="stats-grid" id="culStatsArea"></div>
         
         <div class="data-grid" id="culTbody"></div>
     </div>
@@ -325,14 +373,13 @@
         </div>
         
         <div id="overstayAlerts"></div>
-        
-        <h5 style="color:var(--text-muted); margin-bottom:10px;"><i class="fas fa-list-ul"></i> سجل المراقبة اللحظي للأحداث (System Logs)</h5>
         <div class="notifications-panel" id="hrNotifs"></div>
 
         <div class="hr-tabs">
             <div class="hr-tab active" onclick="App.switchHrTab('reqs', this)"><i class="fas fa-radar"></i> الرادار والاعتمادات</div>
             <div class="hr-tab" onclick="App.switchHrTab('emps', this)"><i class="fas fa-users-cog"></i> إدارة الموظفين</div>
-            <div class="hr-tab" onclick="App.switchHrTab('returns', this)"><i class="fas fa-calendar-check"></i> كشوف المباشرة والقطع</div>
+            <div class="hr-tab" onclick="App.switchHrTab('returns', this)"><i class="fas fa-calendar-check"></i> المباشرة والقطع</div>
+            <div class="hr-tab" onclick="App.switchHrTab('archive', this)"><i class="fas fa-archive"></i> الأرشيف والإحصائيات</div>
         </div>
 
         <div id="hrReqsView" class="data-grid"></div>
@@ -346,6 +393,31 @@
         </div>
 
         <div id="hrReturnsView" style="display:none;" class="data-grid"></div>
+
+        <div id="hrArchiveView" style="display:none;">
+            <div class="filter-bar">
+                <label style="font-weight:bold; color:var(--primary);"><i class="fas fa-filter"></i> فلترة الأرشيف:</label>
+                <select id="hrFilterMonth" class="form-control" onchange="App.renderHrArchive()">
+                    <option value="all">جميع الشهور</option>
+                    <option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option>
+                    <option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option>
+                    <option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option>
+                    <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+                </select>
+                <select id="hrFilterYear" class="form-control" onchange="App.renderHrArchive()">
+                    <option value="all">جميع السنوات</option>
+                    <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+                </select>
+                <select id="hrFilterType" class="form-control" onchange="App.renderHrArchive()">
+                    <option value="all">جميع أنواع الإجازات</option>
+                    <option value="إجازة دورية">إجازة دورية</option>
+                    <option value="إجازة خاصة">إجازة خاصة</option>
+                </select>
+            </div>
+            
+            <div class="stats-grid" id="hrStatsArea"></div>
+            <div class="data-grid" id="hrArchiveTbody"></div>
+        </div>
     </div>
 </main>
 
@@ -355,9 +427,9 @@
         <p id="modalReqTime" style="text-align:center; font-size:13px; color:var(--text-muted); font-weight:bold; margin-bottom:20px;"></p>
         
         <div style="background:linear-gradient(to left, #eef2ff, #f8fafc); padding:20px; border-radius:12px; margin-bottom:25px; text-align:center; border:1px solid #c7d2fe; font-size:16px;">
-            <strong>نوع الإجازة المطلوبة:</strong> <span id="compType" style="color:var(--primary);"></span> &nbsp;|&nbsp; 
-            <strong>الفترة:</strong> <span id="compDates" style="color:var(--danger);"></span> &nbsp;|&nbsp; 
-            <strong>موقف البديل:</strong> <span id="compSubStatus" class="badge status-4" style="font-size:14px;"></span>
+            <strong>نوع الإجازة المطلوبة:</strong> <span id="compType" style="color:var(--primary);"></span> <br>
+            <strong>الفترة:</strong> <span id="compDates" style="color:var(--danger);"></span> <br>
+            <strong>موقف البديل:</strong> <span id="compSubStatus" class="badge status-4" style="font-size:14px; margin-top:5px; display:inline-block;"></span>
         </div>
         
         <div class="compare-grid">
@@ -373,7 +445,7 @@
         
         <input type="hidden" id="compReqId">
         
-        <div style="display:flex; gap:15px; margin-top:30px; border-top:2px solid #eee; padding-top:20px;" id="modalActionButtons">
+        <div style="display:flex; gap:15px; margin-top:30px; border-top:2px solid #eee; padding-top:20px; flex-wrap:wrap;" id="modalActionButtons">
         </div>
     </div>
 </div>
@@ -412,7 +484,7 @@
 <div class="modal-overlay" id="authModal">
     <div class="modal-content" style="max-width: 450px; text-align:center;">
         <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-lock"></i> مصادقة الهوية الأمنية</h3>
-        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">يرجى إدخال رمز PIN السري الخاص بك، أو الضغط على البصمة بعد كتابة الرمز.</p>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">الرجاء إدخال الرمز السري (PIN) الخاص بك أولاً، ثم اضغط على البصمة.</p>
         
         <div class="form-group">
             <input type="password" id="authPin" class="form-control pin-input" placeholder="****">
@@ -465,7 +537,10 @@ const App = {
             } else if (App.curr) {
                 if(App.curr.role === 'emp') App.renderEmp();
                 if(App.curr.role === 'cultural') App.renderCul();
-                if(App.curr.role === 'hr') App.renderHr();
+                if(App.curr.role === 'hr') {
+                    App.renderHr();
+                    App.renderHrArchive(); // تحديث الأرشيف
+                }
                 App.checkNotifications();
             }
         } catch (e) {
@@ -610,7 +685,7 @@ const App = {
         
         if(App.curr.role === 'emp') { document.querySelectorAll('.emp-only').forEach(e=>e.style.display='flex'); App.renderEmp(); App.showPage('empDash'); }
         if(App.curr.role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e=>e.style.display='flex'); App.renderCul(); App.showPage('culturalDash'); }
-        if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.showPage('hrDash'); }
+        if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.renderHrArchive(); App.showPage('hrDash'); }
     },
 
     logout: () => {
@@ -721,7 +796,6 @@ const App = {
         const ts = App.getTimestamp();
         const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`;
 
-        // تحديد المرحلة الافتراضية بناءً على اختيار الموظف
         let initialStage = 1;
         let initialStatus = 'بانتظار موافقة البديل';
 
@@ -756,11 +830,10 @@ const App = {
                 document.querySelector('.btn-wa').style.display = 'inline-flex';
                 document.querySelector('#waLinkArea p').innerText = "الخطوة التالية: يجب إبلاغ البديل ليدخل النظام ويوافق إلكترونياً لكي ينتقل الطلب للتوجيه الثقافي.";
             } else {
-                // رسالة واضحة للموظف أنه تم تخطي البديل بنجاح
                 document.querySelector('.btn-wa').style.display = 'none';
                 document.querySelector('#waLinkArea h4').innerHTML = '<i class="fas fa-check-double"></i> تم الإرسال للتوجيه الثقافي بنجاح!';
                 document.querySelector('#waLinkArea p').innerText = "تم إعفاؤك من البديل. طلبك الآن قيد المراجعة في التوجيه الثقافي مباشرة.";
-                App.fetchData(); // تحديث فوري ليظهر الطلب عند التوجيه
+                App.fetchData(); 
             }
         } catch(e) { alert("حدث خطأ أثناء إرسال الطلب للسيرفر."); }
     },
@@ -837,21 +910,54 @@ const App = {
         `).join('');
     },
 
+    // --- نظام الأرشيف المتطور للتوجيه الثقافي ---
     renderCul: () => {
         App.renderLogs('culNotifs', 'cultural');
-        const reqs = App.db.requests.filter(r => r.stage === 2);
         
+        const filterMonth = document.getElementById('culFilterMonth').value;
+        const filterYear = document.getElementById('culFilterYear').value;
+        const filterStatus = document.getElementById('culFilterStatus').value;
+
+        let reqs = App.db.requests.filter(r => r.stage >= 2 || (r.stage === 0 && r.status.includes('التوجيه'))); // جلب ما يخص التوجيه
+
+        // تطبيق الفلتر
+        reqs = reqs.filter(r => {
+            const reqDate = new Date(r.start);
+            const rMonth = String(reqDate.getMonth() + 1).padStart(2, '0');
+            const rYear = String(reqDate.getFullYear());
+            
+            let passMonth = (filterMonth === 'all' || filterMonth === rMonth);
+            let passYear = (filterYear === 'all' || filterYear === rYear);
+            let passStatus = true;
+            if(filterStatus === 'pending') passStatus = (r.stage === 2);
+            if(filterStatus === 'done') passStatus = (r.stage > 2 || r.stage === 0);
+
+            return passMonth && passYear && passStatus;
+        });
+
+        // إحصائيات سريعة
+        const total = reqs.length;
+        const pending = reqs.filter(r => r.stage === 2).length;
+        const approved = reqs.filter(r => r.stage > 2).length;
+        
+        document.getElementById('culStatsArea').innerHTML = `
+            <div class="stat-card total"><h3>${total}</h3><p>إجمالي الطلبات بالفترة</p></div>
+            <div class="stat-card pending"><h3>${pending}</h3><p>طلبات جديدة (تحتاج اعتماد)</p></div>
+            <div class="stat-card approved"><h3>${approved}</h3><p>طلبات تم اعتمادها</p></div>
+        `;
+
         if(reqs.length === 0) {
-            document.getElementById('culTbody').innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#fff; border-radius:15px; border:1px dashed #ccc;">لا توجد طلبات معلقة تتطلب الاعتماد الفني حالياً.</div>';
+            document.getElementById('culTbody').innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#fff; border-radius:15px; border:1px dashed #ccc;">لا توجد طلبات في هذا الأرشيف.</div>';
             return;
         }
 
-        document.getElementById('culTbody').innerHTML = reqs.map(r => {
+        document.getElementById('culTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId);
             const subName = r.subId === '0000' ? 'لا يوجد (بمفرده)' : (App.db.users.find(u=>u.id===r.subId)?.name || '--');
+            const isPending = r.stage === 2;
             return `
             <div class="data-card" style="border-top:4px solid var(--info);">
-                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-user-tie"></i> ${emp.name}</span> <span class="badge status-2">موافق كبديل</span></div>
+                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-user-tie"></i> ${emp.name}</span> <span class="badge status-${r.stage}">${r.status}</span></div>
                 <div class="data-card-body">
                     <p><span>المسجد:</span> <strong>${emp.place}</strong></p>
                     <p><span>البديل المكلف:</span> <strong>${subName}</strong></p>
@@ -865,35 +971,43 @@ const App = {
     },
 
     switchHrTab: (tab, el) => {
-        ['hrReqsView', 'hrEmpsView', 'hrReturnsView'].forEach(v => document.getElementById(v).style.display='none');
-        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display='grid';
+        ['hrReqsView', 'hrEmpsView', 'hrReturnsView', 'hrArchiveView'].forEach(v => document.getElementById(v).style.display='none');
+        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display = (tab === 'reqs' || tab === 'archive' || tab === 'returns') ? 'grid' : 'block';
+        if(tab === 'emps') document.getElementById('hrEmpsView').style.display='block';
         document.querySelectorAll('.hr-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
+        if(tab === 'archive') App.renderHrArchive();
     },
 
     renderHr: () => {
         App.renderLogs('hrNotifs', 'hr');
-        const reqs = App.db.requests.slice().reverse();
-        document.getElementById('hrReqsView').innerHTML = reqs.map(r => {
-            const emp = App.db.users.find(u=>u.id===r.empId) || {};
-            const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
-            const isPendingHr = r.stage === 3;
-            return `
-            <div class="data-card" style="${isPendingHr ? 'border:2px solid var(--primary); box-shadow:0 0 15px rgba(27,69,50,0.2); transform:scale(1.02);' : ''}">
-                <div class="data-card-header">
-                    <span class="data-card-title" style="font-size:14px;"><i class="fas fa-hashtag"></i> ${r.id}</span>
-                    <span class="badge status-${r.stage}">${r.status}</span>
-                </div>
-                <div class="data-card-body">
-                    <p><span>مقدم الطلب:</span> <strong>${emp.name || 'محذوف'}</strong></p>
-                    <p><span>البديل:</span> <strong>${sub.name || '--'}</strong></p>
-                    <p><span>النوع:</span> <strong>${r.type}</strong></p>
-                    <p><span>الفترة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
-                </div>
-                <div class="data-card-actions">
-                    <button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-balance-scale"></i> ${isPendingHr ? 'فتح للاعتماد النهائي' : 'تفاصيل ومطابقة'}</button>
-                </div>
-            </div>`;
-        }).join('');
+        
+        // الرادار يعرض فقط الطلبات التي تنتظر الشؤون أو الجديدة للتو
+        const reqs = App.db.requests.filter(r => r.stage === 3).reverse();
+        
+        if (reqs.length === 0) {
+            document.getElementById('hrReqsView').innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#fff; border-radius:15px; border:1px dashed #ccc;">الرادار خالي حالياً. لا توجد طلبات جديدة بانتظار الاعتماد الإداري.</div>';
+        } else {
+            document.getElementById('hrReqsView').innerHTML = reqs.map(r => {
+                const emp = App.db.users.find(u=>u.id===r.empId) || {};
+                const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
+                return `
+                <div class="data-card" style="border:2px solid var(--primary); box-shadow:0 0 15px rgba(27,69,50,0.2); transform:scale(1.02);">
+                    <div class="data-card-header">
+                        <span class="data-card-title" style="font-size:14px;"><i class="fas fa-hashtag"></i> ${r.id}</span>
+                        <span class="badge status-${r.stage}">${r.status}</span>
+                    </div>
+                    <div class="data-card-body">
+                        <p><span>مقدم الطلب:</span> <strong>${emp.name || 'محذوف'}</strong></p>
+                        <p><span>البديل:</span> <strong>${sub.name || '--'}</strong></p>
+                        <p><span>النوع:</span> <strong>${r.type}</strong></p>
+                        <p><span>الفترة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
+                    </div>
+                    <div class="data-card-actions">
+                        <button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-balance-scale"></i> فتح للاعتماد النهائي</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
         const emps = App.db.users.filter(u=>u.role==='emp');
         document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
@@ -930,6 +1044,67 @@ const App = {
                     <p><span>الإجازة الأصلية:</span> <strong>${req.type || '--'}</strong></p>
                     <p><span>فترة الإجازة:</span> <strong style="direction:ltr;">${req.start || '--'} ➝ ${req.end || '--'}</strong></p>
                     <p><span>وقت التسجيل:</span> <strong>${a.ts?.greg || '--'} ${a.ts?.time || ''}</strong></p>
+                </div>
+            </div>`;
+        }).join('');
+    },
+
+    // --- نظام الأرشيف والإحصائيات المتطور للشؤون ---
+    renderHrArchive: () => {
+        const filterMonth = document.getElementById('hrFilterMonth').value;
+        const filterYear = document.getElementById('hrFilterYear').value;
+        const filterType = document.getElementById('hrFilterType').value;
+
+        let reqs = App.db.requests.slice(); // جميع الطلبات في النظام
+
+        // تطبيق الفلتر
+        reqs = reqs.filter(r => {
+            const reqDate = new Date(r.start);
+            const rMonth = String(reqDate.getMonth() + 1).padStart(2, '0');
+            const rYear = String(reqDate.getFullYear());
+            
+            let passMonth = (filterMonth === 'all' || filterMonth === rMonth);
+            let passYear = (filterYear === 'all' || filterYear === rYear);
+            let passType = (filterType === 'all' || filterType === r.type);
+
+            return passMonth && passYear && passType;
+        });
+
+        // إحصائيات شاملة
+        const total = reqs.length;
+        const pending = reqs.filter(r => r.stage < 4 && r.stage > 0).length;
+        const approved = reqs.filter(r => r.stage === 4).length;
+        const rejected = reqs.filter(r => r.stage === 0).length;
+        
+        document.getElementById('hrStatsArea').innerHTML = `
+            <div class="stat-card total"><h3>${total}</h3><p>إجمالي الطلبات المُقدمة</p></div>
+            <div class="stat-card pending"><h3>${pending}</h3><p>قيد الإجراء (لم تنتهِ)</p></div>
+            <div class="stat-card approved"><h3>${approved}</h3><p>مُعتمدة ومُنتهية</p></div>
+            <div class="stat-card rejected"><h3>${rejected}</h3><p>مرفوضة أو ملغية</p></div>
+        `;
+
+        if(reqs.length === 0) {
+            document.getElementById('hrArchiveTbody').innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#fff; border-radius:15px; border:1px dashed #ccc;">لا توجد بيانات مطابقة في الأرشيف المختار.</div>';
+            return;
+        }
+
+        document.getElementById('hrArchiveTbody').innerHTML = reqs.reverse().map(r => {
+            const emp = App.db.users.find(u=>u.id===r.empId) || {};
+            const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
+            return `
+            <div class="data-card">
+                <div class="data-card-header">
+                    <span class="data-card-title" style="font-size:14px;"><i class="fas fa-hashtag"></i> ${r.id}</span>
+                    <span class="badge status-${r.stage}">${r.status}</span>
+                </div>
+                <div class="data-card-body">
+                    <p><span>مقدم الطلب:</span> <strong>${emp.name || 'محذوف'}</strong></p>
+                    <p><span>البديل:</span> <strong>${sub.name || '--'}</strong></p>
+                    <p><span>النوع:</span> <strong>${r.type}</strong></p>
+                    <p><span>الفترة:</span> <strong style="direction:ltr;">${r.start} ➝ ${r.end}</strong></p>
+                </div>
+                <div class="data-card-actions">
+                    <button class="btn btn-print" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-folder-open"></i> استعراض السجل</button>
                 </div>
             </div>`;
         }).join('');
@@ -1226,10 +1401,12 @@ const App = {
             </div>
         `;
         
-        window.print();
-        
-        area.innerHTML = '';
-        document.getElementById('mainContainer').style.display = 'block';
+        // مهلة بسيطة لضمان تحميل الصفحة قبل الطباعة على الموبايل
+        setTimeout(() => {
+            window.print();
+            area.innerHTML = '';
+            document.getElementById('mainContainer').style.display = 'block';
+        }, 300);
     }
 };
 
