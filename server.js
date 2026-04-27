@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -42,7 +43,7 @@ if (!fs.existsSync(DB_FILE)) {
             { id: "333333333333", name: "الموجه الثقافي", role: "cultural", status: "active", pass: "1234", place: "إدارة التوجيه", file: "CUL-001", nationality: "كويتي", region: "الأحمدي", job: "موجه فني", contract: "عامة", phone: "--" }
         ],
         requests: [],
-        returnActions: [], // تم تعديل الاسم ليتطابق مع الواجهة
+        returnActions: [], 
         logs: []
     });
 }
@@ -132,13 +133,13 @@ app.post('/api/returns', (req, res) => {
 // 9. إضافة سجل للإشعارات (Logs)
 app.post('/api/logs', (req, res) => {
     const db = readDB();
-    db.logs.unshift(req.body); // الإضافة في البداية ليكون الأحدث أولاً
+    db.logs.unshift(req.body); 
     writeDB(db);
     res.json({ success: true });
 });
 
-// 10. توجيه جميع المسارات الأخرى إلى ملف HTML (هام جداً لعمل الموقع)
-app.get('*', (req, res) => {
+// 10. توجيه جميع المسارات الأخرى إلى ملف HTML (تم التعديل لتتوافق مع Express 5 على Render)
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
