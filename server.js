@@ -52,12 +52,10 @@ if (!fs.existsSync(DB_FILE)) {
 // مسارات الـ API (الروابط التي يتصل بها المتصفح)
 // ==========================================
 
-// 1. جلب كافة البيانات (يستخدمه المتصفح للمزامنة الدائمة)
 app.get('/api/data', (req, res) => {
     res.json(readDB());
 });
 
-// 2. تسجيل الدخول
 app.post('/api/login', (req, res) => {
     const { id, pass, role } = req.body;
     const db = readDB();
@@ -69,7 +67,6 @@ app.post('/api/login', (req, res) => {
     res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة أو الرتبة خاطئة" });
 });
 
-// 3. إضافة مستخدم جديد (موظف)
 app.post('/api/users', (req, res) => {
     const db = readDB();
     if (db.users.find(u => u.id === req.body.id)) {
@@ -80,7 +77,6 @@ app.post('/api/users', (req, res) => {
     res.json({ success: true });
 });
 
-// 4. تعديل بيانات موظف أو (تجميد/تفعيل) الحساب
 app.put('/api/users/:id', (req, res) => {
     const db = readDB();
     const index = db.users.findIndex(u => u.id === req.params.id);
@@ -93,7 +89,6 @@ app.put('/api/users/:id', (req, res) => {
     }
 });
 
-// 5. حذف موظف نهائياً (صلاحية الشؤون)
 app.delete('/api/users/:id', (req, res) => {
     const db = readDB();
     db.users = db.users.filter(u => u.id !== req.params.id);
@@ -101,7 +96,6 @@ app.delete('/api/users/:id', (req, res) => {
     res.json({ success: true });
 });
 
-// 6. تقديم طلب إجازة جديد
 app.post('/api/requests', (req, res) => {
     const db = readDB();
     db.requests.push(req.body);
@@ -109,7 +103,6 @@ app.post('/api/requests', (req, res) => {
     res.json({ success: true });
 });
 
-// 7. تحديث حالة الطلب (الموافقات والاعتمادات)
 app.put('/api/requests/:id', (req, res) => {
     const db = readDB();
     const index = db.requests.findIndex(r => r.id === req.params.id);
@@ -122,7 +115,6 @@ app.put('/api/requests/:id', (req, res) => {
     }
 });
 
-// 8. تسجيل طلبات القطع والعودة
 app.post('/api/returns', (req, res) => {
     const db = readDB();
     db.returnActions.push(req.body);
@@ -130,7 +122,6 @@ app.post('/api/returns', (req, res) => {
     res.json({ success: true });
 });
 
-// 9. إضافة سجل للإشعارات (Logs)
 app.post('/api/logs', (req, res) => {
     const db = readDB();
     db.logs.unshift(req.body); 
@@ -138,9 +129,13 @@ app.post('/api/logs', (req, res) => {
     res.json({ success: true });
 });
 
-// 10. توجيه جميع المسارات الأخرى إلى ملف HTML (تم التعديل لتتوافق مع Express 5 على Render)
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// 10. الحل النهائي والجذري لمشكلة Render (بدون استخدام علامة النجمة)
+app.use((req, res) => {
+    if (req.method === 'GET') {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    } else {
+        res.status(404).json({ success: false, message: "المسار غير موجود" });
+    }
 });
 
 // تشغيل الخادم
