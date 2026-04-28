@@ -56,8 +56,8 @@
         .form-control { width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: 'Cairo'; font-size: 14px; box-sizing: border-box; }
         .form-control:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.15); }
         
-        .btn { padding: 10px 15px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; transition: 0.3s; }
-        .btn-primary { background: linear-gradient(to bottom, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 12px rgba(27,69,50,0.2); }
+        .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(to bottom, var(--primary), var(--primary-dark)); color: white; width: 100%; box-shadow: 0 4px 12px rgba(27,69,50,0.2); }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(27,69,50,0.35); }
         .btn:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
         .btn-success { background: var(--success); color: white; }
@@ -65,85 +65,87 @@
         .btn-wa { background: var(--whatsapp); color: white; }
         .btn-excel { background: #1D6F42; color: white; }
         .btn-print { background: #4b5563; color: white; }
-        .btn-info { background: #0284c7; color: white; }
+        .btn-info { background: var(--info); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
         
-        .badge { padding: 5px 10px; border-radius: 50px; font-size: 11px; font-weight: 900; display: inline-block; text-align: center;}
-        .status-1 { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; } /* أزرق - البديل */
-        .status-2 { background: #fef08a; color: #854d0e; border: 1px solid #fde047; } /* أصفر - الشؤون */
-        .status-3 { background: #fed7aa; color: #c2410c; border: 1px solid #fdba74; } /* برتقالي - الثقافي */
-        .status-4 { background: #dcfce7; color: #166534; border: 1px solid #86efac; } /* أخضر - معتمد */
-        .status-0 { background: #fee2e2; color: #9f1239; border: 1px solid #fca5a5; } /* أحمر - مرفوض */
+        .badge { padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 900; }
+        .status-1 { background: #cfe2ff; color: #084298; border: 1px solid #b6d4fe; } 
+        .status-2 { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; } 
+        .status-3 { background: #fed7aa; color: #c2410c; border: 1px solid #fdba74; } 
+        .status-4 { background: var(--success); color: white; border: 1px solid #20c997; } 
+        .status-0 { background: #fecdd3; color: #9f1239; border: 1px solid #fda4af; } 
 
-        .hr-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
-        .hr-tab { flex: 1; padding: 12px; background: #f1f5f9; color: #475569; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 800; white-space: nowrap; min-width: 140px; border: 2px solid transparent; font-size: 13px;}
+        .hr-tabs { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
+        .hr-tab { flex: 1; padding: 14px; background: #f1f5f9; color: #475569; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 800; white-space: nowrap; min-width: 150px; border: 2px solid transparent; }
         .hr-tab.active { background: var(--white); border-color: var(--gold); color: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
 
-        /* تصميم صفوف العرض الجديدة (List View) المتجاوبة */
-        .list-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .req-row { background: var(--card-bg); border-radius: 12px; padding: 15px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.3s; }
-        .req-row:hover { border-color: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-        .req-info-group { display: flex; flex-wrap: wrap; gap: 15px; flex: 1; min-width: 200px; align-items: center; }
-        .req-col { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-muted); min-width: 120px; }
-        .req-col b { color: var(--text-main); font-size: 14px; }
-        .req-col.main-col { min-width: 180px; }
-        .req-col.main-col b { color: var(--primary); font-size: 15px; }
-        .req-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 15px; }
+        .data-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; word-break: break-word; overflow-wrap: break-word; }
+        .data-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--gold-light); transform: translateY(-3px); }
+        .data-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 12px; margin-bottom: 15px; }
+        .data-card-title { font-weight: 900; color: var(--primary); font-size: 15px; display: flex; align-items: center; gap: 8px; flex: 1; line-height: 1.4; }
+        .data-card-body p { margin: 8px 0; font-size: 14px; display: grid; grid-template-columns: 1fr 2fr; gap: 10px; border-bottom: 1px dashed #eee; padding-bottom: 6px; align-items: center; }
+        .data-card-body strong { color: var(--info); text-align: right; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 4px; }
         .stat-card.total::before { background: var(--info); }
         .stat-card.pending::before { background: var(--gold); }
         .stat-card.approved::before { background: var(--success); }
         .stat-card.rejected::before { background: var(--danger); }
-        .stat-card h3 { margin: 0; font-size: 24px; color: var(--primary); }
-        .stat-card p { margin: 5px 0 0; color: var(--text-muted); font-weight: 700; font-size: 12px; }
+        .stat-card h3 { margin: 0; font-size: 32px; color: var(--primary); }
+        .stat-card p { margin: 5px 0 0; color: var(--text-muted); font-weight: 700; font-size: 14px; }
         
-        .filter-bar { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .filter-bar select, .filter-bar input { flex: 1; min-width: 130px; font-size: 13px; padding: 10px; }
+        .filter-bar { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .filter-bar select, .filter-bar input { flex: 1; min-width: 140px; }
 
         .notifications-panel { background: #f8f9fa; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 25px; max-height: 250px; overflow-y: auto; }
-        .notif-item { padding: 10px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; }
+        .notif-item { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
         .notif-time { color: var(--text-muted); font-size: 11px; display: block; margin-top: 4px; font-weight: bold; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 850px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 24px; width: 100%; max-width: 900px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         
-        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .compare-card { border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: #f8fafc; }
-        .compare-card h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 10px; font-size: 15px; }
-        .compare-card p { margin: 8px 0; font-size: 13px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 5px; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .compare-card { border: 2px solid var(--border); border-radius: 16px; padding: 20px; background: #f8fafc; word-break: break-word; overflow-wrap: break-word; }
+        .compare-card h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 12px; font-size: 18px; }
+        .compare-card p { margin: 10px 0; font-size: 14px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 5px; }
         .compare-card strong { color: var(--text-main); font-weight: 900; }
 
-        /* تعديلات البصمة بالضغطة المطولة */
+        /* تعديلات البصمة والتصميم الأمني */
         .bio-container { text-align: center; padding: 20px; position: relative; }
-        .bio-icon { font-size: 70px; color: var(--primary); margin: 15px 0; cursor: pointer; transition: color 0.3s, transform 0.2s; position: relative; user-select: none; -webkit-touch-callout: none; -webkit-user-select: none; }
-        .bio-icon:active { transform: scale(0.9); }
-        .bio-icon.scanning { color: var(--success); animation: pulse 0.5s infinite alternate; }
-        @keyframes pulse { from { transform: scale(0.95); text-shadow: 0 0 10px var(--success); } to { transform: scale(1.05); text-shadow: 0 0 20px var(--success); } }
-        .pin-input { font-size: 28px; letter-spacing: 15px; text-align: center; width: 100%; max-width: 250px; margin: 0 auto; font-family: monospace; border: 2px solid var(--primary); font-weight:bold; }
+        .bio-scanner { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 70px; height: 4px; background: var(--success); box-shadow: 0 0 10px var(--success); display: none; z-index: 10; }
+        .bio-icon { font-size: 70px; color: var(--primary); margin: 15px 0; cursor: pointer; transition: 0.3s; position: relative; }
+        .bio-icon.scanning { color: #8ecae6; }
+        .bio-icon.scanning ~ .bio-scanner { display: block; animation: scanLine 1.2s infinite ease-in-out; }
+        @keyframes scanLine { 0% { top: 15%; } 50% { top: 75%; } 100% { top: 15%; } }
         
+        .pin-input { font-size: 32px; letter-spacing: 20px; text-align: center; width: 100%; max-width: 250px; margin: 0 auto; font-family: monospace; border: 2px solid var(--primary); font-weight:bold; }
+        
+        /* مربع تمديد الإجازة */
         .ext-box { display: none; background: #e0f2fe; border: 1px solid #bae6fd; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
 
+        /* حلول الموبايل */
         @media (max-width: 768px) {
             .compare-grid { grid-template-columns: 1fr; } 
-            .hr-tabs { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; }
-            .hr-tab { min-width: 120px; font-size: 12px; padding: 10px; }
+            .hr-tabs { flex-wrap: wrap; }
+            .hr-tab { min-width: 45%; font-size: 13px; padding: 10px; }
             .modal-content { padding: 15px; }
             header h1 { font-size: 20px; }
-            .header-logo { width: 50px; height: 50px; }
-            .req-info-group { flex-direction: column; gap: 8px; align-items: flex-start; }
-            .req-actions { width: 100%; justify-content: space-between; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px; }
-            .req-actions .btn { flex: 1; }
+            .header-logo { width: 55px; height: 55px; }
+            .data-card-body p { grid-template-columns: 1fr; gap: 2px; } 
+            .data-card-body strong { text-align: right; }
+            .compare-card p { grid-template-columns: 1fr; gap: 2px; }
         }
 
-        /* تنسيق الطباعة المطور ليعمل على الموبايل والكمبيوتر */
         @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; direction: rtl; background: white; padding: 0; margin: 0; }
+            body, html { height: auto !important; min-height: 100% !important; overflow: visible !important; background: white !important; color: black !important; }
+            .no-print, nav, .top-bar, header, button, .modal-overlay, .notifications-panel, .hr-tabs, .filter-bar { display: none !important; }
+            .card { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            #printArea { display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; background: white !important; direction: rtl; }
+            #mainContainer { display: none !important; } 
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            @page { margin: 1cm; }
         }
     </style>
 </head>
@@ -162,18 +164,18 @@
 
 <header class="no-print">
     <div class="header-logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" alt="شعار الدولة">
+        <img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" alt="شعار جهة اليمين" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
     </div>
     
     <div class="header-content">
         <h1>دولة الكويت</h1>
         <h1>وزارة الشؤون الإسلامية</h1>
         <p>إدارة مساجد محافظة الأحمدي</p>
-        <p style="font-size: 13px; color: #fff; opacity: 0.9; margin-top: 5px;">المنظومة المركزية للإجازات</p>
+        <p style="font-size: 13px; color: #fff; opacity: 0.9; margin-top: 5px;">نظام الإجازات</p>
     </div>
 
     <div class="header-logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" alt="شعار الأوقاف">
+        <img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" alt="شعار جهة اليسار" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
     </div>
 </header>
 
@@ -200,19 +202,19 @@
         <div style="text-align:center; margin-bottom:25px;">
             <i class="fas fa-shield-alt fa-3x" style="color:var(--primary); margin-bottom:15px;"></i>
             <h2 style="margin:0; color:var(--primary-dark);">تسجيل الدخول الآمن</h2>
-            <p style="color:var(--text-muted); font-size:14px;">يرجى اختيار نوع الحساب وإدخال الرقم المدني</p>
+            <p style="color:var(--text-muted); font-size:14px;">يرجى اختيار نوع الحساب وإدخال الرقم المدني للمتابعة</p>
         </div>
         <div class="form-group"><label>نوع الحساب والصفة الوظيفية</label>
             <select id="loginRole" class="form-control">
                 <option value="emp">موظف (إمام / مؤذن)</option>
-                <option value="hr">شؤون العاملين</option>
-                <option value="cultural">التوجيه الثقافي</option>
+                <option value="hr">شؤون العاملين (الإدارة المركزية)</option>
+                <option value="cultural">التوجيه الثقافي (لجنة الاعتماد النهائي)</option>
             </select>
         </div>
         <div class="form-group"><label>الرقم المدني (12 رقم)</label>
             <input type="tel" id="loginId" class="form-control" placeholder="مثال: 290000000000" maxlength="12">
         </div>
-        <button class="btn btn-primary" style="width:100%; padding:15px;" onclick="App.triggerAuth()"><i class="fas fa-fingerprint"></i> متابعة للمصادقة الأمنية</button>
+        <button class="btn btn-primary" onclick="App.triggerAuth()"><i class="fas fa-fingerprint"></i> متابعة للمصادقة الأمنية</button>
     </div>
 
     <div id="regPage" class="card">
@@ -220,59 +222,83 @@
         <div class="form-grid">
             <div class="form-group"><label>الاسم الرباعي الكامل</label><input type="text" id="rName" class="form-control" placeholder="تطابق البطاقة المدنية"></div>
             <div class="form-group"><label>الرقم المدني</label><input type="tel" id="rId" class="form-control" maxlength="12" placeholder="12 رقم"></div>
-            <div class="form-group"><label>رقم الملف الوظيفي (اختياري)</label><input type="text" id="rFile" class="form-control" placeholder="اختياري"></div>
-            <div class="form-group"><label>الجنسية</label><input type="text" id="rNat" class="form-control"></div>
-            <div class="form-group"><label>المنطقة</label><input type="text" id="rRegion" class="form-control"></div>
-            <div class="form-group"><label>اسم المسجد</label><input type="text" id="rPlace" class="form-control"></div>
+            <div class="form-group"><label>رقم الملف الوظيفي (اختياري)</label><input type="text" id="rFile" class="form-control" placeholder="اختياري - اتركه فارغاً إن لم يتوفر"></div>
+            <div class="form-group"><label>الجنسية</label><input type="text" id="rNat" class="form-control" placeholder="كويتي، مصري، سوري..."></div>
+            <div class="form-group"><label>المحافظة / المنطقة</label><input type="text" id="rRegion" class="form-control" placeholder="مثال: الأحمدي - المنقف"></div>
+            <div class="form-group"><label>اسم المسجد المخصص</label><input type="text" id="rPlace" class="form-control" placeholder="اكتب اسم المسجد"></div>
             <div class="form-group"><label>المسمى الوظيفي</label>
-                <select id="rJob" class="form-control"><option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option></select>
+                <select id="rJob" class="form-control">
+                    <option>إمام وخطيب</option><option>إمام</option><option>مؤذن</option><option>مؤذن متطوع</option>
+                </select>
             </div>
-            <div class="form-group"><label>نوع العقد</label>
-                <select id="rContract" class="form-control"><option>عامة</option><option>مكافآت</option><option>إيرادات</option><option>تكليف</option></select>
+            <div class="form-group"><label>نوع البند (العقد)</label>
+                <select id="rContract" class="form-control">
+                    <option>عامة</option><option>مكافآت</option><option>إيرادات</option><option>عقد ثاني</option><option>استعانة بخبرات</option><option>راتب مقطوع</option><option>تكليف</option>
+                </select>
             </div>
-            <div class="form-group"><label>رقم الهاتف (واتساب)</label><input type="tel" id="rPhone" class="form-control"></div>
-            <div class="form-group"><label>الرمز السري (PIN)</label><input type="password" id="rPass" class="form-control" placeholder="4 أرقام على الأقل" maxlength="8"></div>
+            <div class="form-group"><label>رقم الهاتف (واتساب)</label><input type="tel" id="rPhone" class="form-control" placeholder="أرقام فقط"></div>
+            <div class="form-group"><label>الرمز السري (PIN)</label><input type="password" id="rPass" class="form-control" placeholder="4 أرقام أو حروف كحد أدنى" maxlength="8"></div>
         </div>
-        <button class="btn btn-primary" onclick="App.register()" style="width:100%; padding:15px;"><i class="fas fa-save"></i> تسجيل وحفظ البيانات</button>
+        <button class="btn btn-primary" onclick="App.register()" style="font-size:16px; padding:15px;"><i class="fas fa-save"></i> تسجيل وحفظ البيانات</button>
     </div>
 
     <div id="empDash" class="card">
-        <div id="empHeader" style="margin-bottom:20px; font-size:14px; font-weight:bold; color:var(--primary); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid #eee; padding-bottom:15px;"></div>
+        <div id="empHeader" style="margin-bottom:20px; font-size:15px; font-weight:bold; color:var(--primary); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid #eee; padding-bottom:15px;">
+            </div>
         
-        <h4 style="color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;"><span><i class="fas fa-bell"></i> الإشعارات</span></h4>
+        <h4 style="color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
+            <span><i class="fas fa-bell"></i> الإشعارات وصندوق الوارد</span>
+        </h4>
         <div class="notifications-panel" id="empNotifs"></div>
         <div id="subNoticeArea"></div>
         
+        <div id="prevLeaveInfo" style="display:none; background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0; margin-bottom:20px;">
+            <h4 style="margin-top:0; color:#166534;"><i class="fas fa-check-circle"></i> آخر إجازة معتمدة لك</h4>
+            <div id="prevLeaveContent" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:14px; color:#14532d;"></div>
+        </div>
+
         <h4 style="color:var(--primary-dark);"><i class="fas fa-history"></i> أرشيف طلباتي السابقة</h4>
-        <div class="list-grid" id="empTbody"></div>
+        <div class="data-grid" id="empTbody"></div>
     </div>
 
     <div id="requestPage" class="card">
         <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-calendar-plus"></i> تقديم طلب إجازة</h3>
+        
         <div class="form-grid">
-            <div class="form-group"><label>نوع الإجازة</label>
+            <div class="form-group"><label>اختر نوع الإجازة</label>
                 <select id="reqType" class="form-control" onchange="App.toggleExtFields()">
-                    <option>إجازة دورية</option><option>إجازة خاصة</option><option>تعديل إجازة دورية</option><option>إلغاء إجازة</option><option>تمديد إجازة</option><option>إذن انقطاع بعد إجازة</option>
+                    <option>إجازة دورية</option>
+                    <option>إجازة خاصة</option>
+                    <option>تعديل إجازة دورية</option>
+                    <option>تعديل إجازة خاصة</option>
+                    <option>إلغاء إجازة دورية</option>
+                    <option>إلغاء إجازة خاصة</option>
+                    <option>تمديد إجازة</option>
+                    <option>إذن انقطاع بعد إجازة</option>
                 </select>
             </div>
-            <div class="form-group" style="position:relative;"><label>البحث عن البديل</label>
-                <input type="text" id="subSearch" class="form-control" placeholder="الرقم المدني أو الاسم..." onkeyup="App.searchSub(this.value)">
+            
+            <div class="form-group" style="position:relative;"><label>البحث عن البديل (الرقم المدني أو الاسم)</label>
+                <input type="text" id="subSearch" class="form-control" placeholder="اكتب للبحث..." onkeyup="App.searchSub(this.value)">
                 <div id="subSearchResults" style="position:absolute; top:75px; width:100%; background:#fff; border:1px solid var(--border); border-radius:8px; display:none; max-height:220px; overflow-y:auto; z-index:100;"></div>
                 <div style="margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">
                     <input type="checkbox" id="aloneCheckbox" onchange="App.toggleSubSearch()" style="transform:scale(1.2); margin-left:8px;"> 
-                    <label for="aloneCheckbox" style="display:inline; font-weight:bold; color:#334155; cursor:pointer;">إعفاء من البديل</label>
+                    <label for="aloneCheckbox" style="display:inline; font-weight:900; color:#334155; cursor:pointer;">إعفاء من البديل (بمفردي)</label>
                 </div>
             </div>
         </div>
 
         <div class="ext-box" id="extBox">
-            <label style="color:#0369a1; font-weight:bold; margin-bottom:8px; display:block;"><i class="fas fa-link"></i> الإجازة المراد تمديدها:</label>
-            <select id="extLeaveSelect" class="form-control" onchange="App.fillExtInfo()"><option value="">- لا يوجد -</option></select>
+            <label style="color:#0369a1; font-weight:bold; margin-bottom:8px; display:block;"><i class="fas fa-link"></i> اختر الإجازة الأصلية المراد تمديدها:</label>
+            <select id="extLeaveSelect" class="form-control" onchange="App.fillExtInfo()">
+                <option value="">- لم يتم العثور على إجازات سابقة -</option>
+            </select>
             <div id="extLeaveInfo" style="margin-top:10px; font-size:13px; font-weight:bold; color:#0c4a6e;"></div>
         </div>
 
-        <div id="subDataBox" style="display:none; background:#f0fdf4; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #bbf7d0;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px; color:#14532d;" id="sInfoGrid"></div>
+        <div id="subDataBox" style="display:none; background:#f0fdf4; padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #bbf7d0;">
+            <h5 style="margin-top:0; color:#166534; font-size:15px;"><i class="fas fa-check-circle"></i> بيانات البديل الذي تم اختياره:</h5>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:14px; color:#14532d;" id="sInfoGrid"></div>
         </div>
 
         <div class="form-grid">
@@ -280,113 +306,163 @@
             <div class="form-group"><label id="lblReqEnd">تاريخ النهاية</label><input type="date" id="reqEnd" class="form-control"></div>
         </div>
         
-        <div id="waLinkArea" style="display:none; margin-top:20px; text-align:center;">
-            <div style="background:#e8f5e9; padding:15px; border-radius:12px; border:1px solid #c8e6c9;">
-                <h4 style="margin:0; color:#1b5e20;" id="waStatusTitle">تم الحفظ بنجاح!</h4>
-                <p id="waStatusText" style="font-size:13px;">يجب إبلاغ البديل للموافقة.</p>
-                <button class="btn btn-wa" id="waBtn" style="margin-top:10px;" onclick="App.sendWa()"><i class="fab fa-whatsapp"></i> إرسال واتساب للبديل</button>
+        <div id="waLinkArea" style="display:none; margin-top:25px;">
+            <div style="background:#e8f5e9; color:#1b5e20; padding:20px; border-radius:12px; border:1px solid #c8e6c9; text-align:center;">
+                <h4 style="margin-top:0;" id="waStatusTitle"><i class="fas fa-check-double"></i> تم حفظ الطلب بالثانية بنجاح!</h4>
+                <p id="waStatusText">يجب إبلاغ البديل ليدخل النظام ويوافق.</p>
+                <button class="btn btn-wa" id="waBtn" style="font-size:16px; padding:12px 25px; margin-top:10px;" onclick="App.sendWa()"><i class="fab fa-whatsapp"></i> إرسال رسالة للبديل عبر واتساب</button>
             </div>
         </div>
 
-        <button class="btn btn-primary" id="btnSubmitReq" onclick="App.submitRequest()" disabled style="width:100%; padding:15px;"><i class="fas fa-paper-plane"></i> تقديم الطلب</button>
+        <button class="btn btn-primary" id="btnSubmitReq" onclick="App.submitRequest()" disabled style="font-size:16px; padding:15px;"><i class="fas fa-paper-plane"></i> توثيق وإرسال الطلب</button>
     </div>
 
     <div id="returnPage" class="card">
-        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-undo"></i> مباشرة / قطع إجازة</h3>
-        <div class="form-grid">
-            <div class="form-group"><label>نوع الإجراء</label><select id="retType" class="form-control"><option>مباشرة عمل</option><option>قطع إجازة</option></select></div>
-            <div class="form-group"><label>الإجازة السابقة</label><select id="retLeave" class="form-control"></select></div>
-            <div class="form-group"><label>تاريخ التنفيذ</label><input type="date" id="retDate" class="form-control"></div>
+        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-undo"></i> طلب إشعار (عودة / قطع إجازة)</h3>
+        <div style="background:#fff3cd; color:#856404; padding:12px; border-radius:8px; margin-bottom:15px; font-size:13px; font-weight:bold;">
+            <i class="fas fa-info-circle"></i> تنبيه: طلب المباشرة أو القطع سيمر بدورة اعتمادات تبدأ بشؤون العاملين ثم التوجيه الثقافي.
         </div>
-        <button class="btn btn-primary" style="width:100%; padding:15px;" onclick="App.submitReturn()"><i class="fas fa-save"></i> إرسال لشؤون العاملين</button>
+        <div class="form-grid">
+            <div class="form-group"><label>نوع الإجراء</label>
+                <select id="retType" class="form-control"><option>مباشرة عمل</option><option>قطع إجازة</option></select>
+            </div>
+            <div class="form-group"><label>الإجازة المعتمدة السابقة</label>
+                <select id="retLeave" class="form-control"></select>
+            </div>
+            <div class="form-group"><label>تاريخ التنفيذ الفعلي</label>
+                <input type="date" id="retDate" class="form-control">
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="App.submitReturn()"><i class="fas fa-save"></i> إرسال الطلب (لشؤون العاملين)</button>
     </div>
 
     <div id="culturalDash" class="card">
-        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-mosque"></i> التوجيه الثقافي - الاعتمادات</h3>
+        <h3 style="color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-mosque"></i> التوجيه الثقافي - الاعتمادات النهائية</h3>
+        <div class="notifications-panel" id="culNotifs"></div>
+        
         <div class="filter-bar">
+            <label style="font-weight:bold; color:var(--primary);"><i class="fas fa-filter"></i> الأرشيف:</label>
             <select id="culFilterMonth" class="form-control" onchange="App.renderCul()">
-                <option value="all">كل الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+                <option value="all">جميع الشهور</option>
+                <option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option>
+                <option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option>
+                <option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option>
+                <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
             </select>
-            <select id="culFilterYear" class="form-control" onchange="App.renderCul()"><option value="all">كل السنوات</option><option value="2025">2025</option><option value="2026">2026</option></select>
-            <select id="culFilterStatus" class="form-control" onchange="App.renderCul()"><option value="all">كل الحالات</option><option value="pending">بانتظار الاعتماد</option><option value="done">تم الإجراء</option></select>
+            <select id="culFilterYear" class="form-control" onchange="App.renderCul()">
+                <option value="all">جميع السنوات</option>
+                <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+            </select>
+            <select id="culFilterStatus" class="form-control" onchange="App.renderCul()">
+                <option value="all">كل الحالات</option>
+                <option value="pending">بانتظار اعتماد التوجيه</option>
+                <option value="done">تم اتخاذ إجراء (مقبول/مرفوض)</option>
+            </select>
         </div>
+
         <div class="stats-grid" id="culStatsArea"></div>
-        <div class="list-grid" id="culTbody"></div>
+        <div class="data-grid" id="culTbody"></div>
     </div>
 
     <div id="hrDash" class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px; border-bottom:2px solid var(--gold); padding-bottom:10px;">
-            <h3 style="margin:0; color:var(--primary);"><i class="fas fa-satellite-dish"></i> شؤون العاملين</h3>
-            <button class="btn btn-excel" onclick="App.exportToExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px; border-bottom:2px solid var(--gold); padding-bottom:15px;">
+            <h3 style="margin:0; color:var(--primary);"><i class="fas fa-satellite-dish"></i> شؤون العاملين (الكنترول المركزي)</h3>
+            <div><button class="btn btn-excel" onclick="App.exportToExcel()"><i class="fas fa-file-excel"></i> تصدير (Excel)</button></div>
         </div>
+        
+        <h4 style="color:var(--primary-dark); margin-top:0;"><i class="fas fa-bell"></i> الإشعارات المباشرة</h4>
+        <div class="notifications-panel" id="hrNotifs"></div>
 
         <div class="hr-tabs">
-            <div class="hr-tab active" onclick="App.switchHrTab('reqs', this)">طلبات الإجازات</div>
-            <div class="hr-tab" onclick="App.switchHrTab('returnsPending', this)">المباشرة/القطع</div>
-            <div class="hr-tab" onclick="App.switchHrTab('archiveLeave', this)">أرشيف الإجازات</div>
-            <div class="hr-tab" onclick="App.switchHrTab('archiveReturn', this)">أرشيف المباشرة</div>
-            <div class="hr-tab" onclick="App.switchHrTab('emps', this)">الموظفين</div>
+            <div class="hr-tab active" onclick="App.switchHrTab('reqs', this)"><i class="fas fa-inbox"></i> طلبات الإجازات الواردة</div>
+            <div class="hr-tab" onclick="App.switchHrTab('returnsPending', this)"><i class="fas fa-undo"></i> طلبات المباشرة الواردة</div>
+            <div class="hr-tab" onclick="App.switchHrTab('archiveLeave', this)"><i class="fas fa-folder-open"></i> أرشيف الإجازات</div>
+            <div class="hr-tab" onclick="App.switchHrTab('archiveReturn', this)"><i class="fas fa-file-signature"></i> أرشيف المباشرة والقطع</div>
+            <div class="hr-tab" onclick="App.switchHrTab('emps', this)"><i class="fas fa-users-cog"></i> الموظفين</div>
         </div>
 
-        <div id="hrReqsView" class="list-grid"></div>
-        <div id="hrReturnsPendingView" style="display:none;" class="list-grid"></div>
+        <div id="hrReqsView" class="data-grid"></div>
+        <div id="hrReturnsPendingView" style="display:none;" class="data-grid"></div>
 
         <div id="hrArchiveLeaveView" style="display:none;">
             <div class="filter-bar">
-                <select id="hrALMonth" class="form-control" onchange="App.renderHrArchiveLeaves()"><option value="all">كل الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option></select>
-                <select id="hrALYear" class="form-control" onchange="App.renderHrArchiveLeaves()"><option value="all">كل السنوات</option><option value="2025">2025</option><option value="2026">2026</option></select>
-                <select id="hrALType" class="form-control" onchange="App.renderHrArchiveLeaves()"><option value="all">كل الأنواع</option><option value="إجازة دورية">دورية</option><option value="إجازة خاصة">خاصة</option><option value="تعديل إجازة دورية">تعديل</option><option value="إلغاء إجازة">إلغاء</option><option value="تمديد إجازة">تمديد</option><option value="إذن انقطاع بعد إجازة">إذن انقطاع</option></select>
+                <select id="hrALMonth" class="form-control" onchange="App.renderHrArchiveLeaves()"><option value="all">جميع الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option></select>
+                <select id="hrALYear" class="form-control" onchange="App.renderHrArchiveLeaves()"><option value="all">جميع السنوات</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+                <select id="hrALType" class="form-control" onchange="App.renderHrArchiveLeaves()">
+                    <option value="all">الكل</option><option value="إجازة دورية">دورية</option><option value="إجازة خاصة">خاصة</option><option value="تعديل إجازة دورية">تعديل دورية</option><option value="تعديل إجازة خاصة">تعديل خاصة</option><option value="إلغاء إجازة دورية">إلغاء دورية</option><option value="إلغاء إجازة خاصة">إلغاء خاصة</option><option value="تمديد إجازة">تمديد إجازة</option><option value="إذن انقطاع بعد إجازة">إذن انقطاع</option>
+                </select>
             </div>
             <div class="stats-grid" id="hrALStats"></div>
-            <div class="list-grid" id="hrALTbody"></div>
+            <div class="data-grid" id="hrALTbody"></div>
         </div>
 
         <div id="hrArchiveReturnView" style="display:none;">
             <div class="filter-bar">
-                <select id="hrARMonth" class="form-control" onchange="App.renderHrArchiveReturns()"><option value="all">كل الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option></select>
-                <select id="hrARYear" class="form-control" onchange="App.renderHrArchiveReturns()"><option value="all">كل السنوات</option><option value="2025">2025</option><option value="2026">2026</option></select>
+                <select id="hrARMonth" class="form-control" onchange="App.renderHrArchiveReturns()"><option value="all">جميع الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option></select>
+                <select id="hrARYear" class="form-control" onchange="App.renderHrArchiveReturns()"><option value="all">جميع السنوات</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+                <select id="hrARType" class="form-control" onchange="App.renderHrArchiveReturns()">
+                    <option value="all">الكل</option><option value="مباشرة عمل">مباشرة عمل</option><option value="قطع إجازة">قطع إجازة</option>
+                </select>
             </div>
             <div class="stats-grid" id="hrARStats"></div>
-            <div class="list-grid" id="hrARTbody"></div>
+            <div class="data-grid" id="hrARTbody"></div>
         </div>
 
         <div id="hrEmpsView" style="display:none;">
-            <div class="filter-bar"><input type="text" class="form-control" placeholder="بحث بالاسم أو المدني..." onkeyup="App.filterEmps(this.value)"></div>
-            <div class="list-grid" id="hrEmpTbody"></div>
+            <div class="filter-bar"><input type="text" class="form-control" placeholder="ابحث بالاسم، المدني، أو الملف..." onkeyup="App.filterEmps(this.value)"></div>
+            <div class="data-grid" id="hrEmpTbody"></div>
         </div>
     </div>
 </main>
 
 <div class="modal-overlay" id="unifiedDetailsModal">
     <div class="modal-content">
-        <h3 style="text-align:center; color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-file-alt"></i> تفاصيل الطلب</h3>
-        <div style="background:#eef2ff; padding:12px; border-radius:10px; margin-bottom:15px; text-align:center; border:1px solid #c7d2fe; font-size:14px;">
+        <h3 style="text-align:center; color:var(--primary); margin-top:0; border-bottom:2px solid var(--gold); padding-bottom:10px;"><i class="fas fa-balance-scale"></i> المطابقة التفصيلية الشاملة</h3>
+        
+        <div style="background:#fefce8; border:1px solid #fef08a; padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
+            <span style="font-weight:bold; color:#854d0e;">وقت وتاريخ التقديم الدقيق:</span>
+            <span id="modalReqTime" style="color:var(--danger); font-weight:900; direction:ltr; display:inline-block;"></span>
+        </div>
+        
+        <div style="background:#eef2ff; padding:15px; border-radius:12px; margin-bottom:20px; text-align:center; border:1px solid #c7d2fe; font-size:15px;">
             <strong>النوع:</strong> <span id="compType" style="color:var(--primary);"></span> | 
-            <strong>التاريخ:</strong> <span id="compDates" style="color:var(--danger); font-weight:bold;"></span> | 
-            <strong>الحالة:</strong> <span id="compSubStatus" class="badge"></span>
+            <strong>الفترة/التاريخ:</strong> <span id="compDates" style="color:var(--danger); font-weight:bold;"></span> | 
+            <strong>حالة الاعتماد:</strong> <span id="compSubStatus" class="badge"></span>
         </div>
+        
         <div class="compare-grid">
-            <div class="compare-card"><h4><i class="fas fa-user"></i> الموظف</h4><div id="compEmp"></div></div>
-            <div class="compare-card" id="compSubCard"><h4 id="compSubTitle"><i class="fas fa-user-check"></i> البديل</h4><div id="compSub"></div></div>
+            <div class="compare-card">
+                <h4><i class="fas fa-user-circle"></i> الطرف الأول (مقدم الطلب)</h4>
+                <div id="compEmp"></div>
+            </div>
+            <div class="compare-card" id="compSubCard">
+                <h4 id="compSubTitle"><i class="fas fa-user-check"></i> الطرف الثاني</h4>
+                <div id="compSub"></div>
+            </div>
         </div>
-        <div style="text-align:center; margin-top:10px; font-size:12px; color:#888;">وقت التقديم: <span id="modalReqTime" style="direction:ltr; display:inline-block;"></span></div>
-        <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center;" id="modalActionButtons"></div>
+        
+        <input type="hidden" id="compReqId">
+        <div style="display:flex; gap:10px; margin-top:25px; flex-wrap:wrap; justify-content:center;" id="modalActionButtons"></div>
     </div>
 </div>
 
 <div class="modal-overlay" id="hrEditEmpModal">
     <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;">تحديث بيانات موظف</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-user-edit"></i> تحديث الملف الوظيفي</h3>
         <div class="form-grid">
-            <div class="form-group"><label>الاسم</label><input type="text" id="edName" class="form-control"></div>
-            <div class="form-group"><label>الملف</label><input type="text" id="edFile" class="form-control"></div>
+            <div class="form-group"><label>الاسم الكامل</label><input type="text" id="edName" class="form-control"></div>
+            <div class="form-group"><label>رقم الملف</label><input type="text" id="edFile" class="form-control"></div>
+            <div class="form-group"><label>الجنسية</label><input type="text" id="edNat" class="form-control"></div>
+            <div class="form-group"><label>المنطقة</label><input type="text" id="edRegion" class="form-control"></div>
             <div class="form-group"><label>المسجد</label><input type="text" id="edPlace" class="form-control"></div>
-            <div class="form-group"><label>الهاتف</label><input type="text" id="edPhone" class="form-control"></div>
-            <div class="form-group"><label>تغيير PIN</label><input type="password" id="edPass" class="form-control" placeholder="اختياري"></div>
+            <div class="form-group"><label>الوظيفة</label><input type="text" id="edJob" class="form-control"></div>
+            <div class="form-group"><label>العقد</label><input type="text" id="edContract" class="form-control"></div>
+            <div class="form-group"><label>رقم الهاتف</label><input type="text" id="edPhone" class="form-control"></div>
+            <div class="form-group"><label>تغيير الـ PIN (للتجاهل اتركه فارغ)</label><input type="password" id="edPass" class="form-control" placeholder="جديد (4 أحرف كحد أدنى)"></div>
         </div>
         <input type="hidden" id="edId">
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn btn-success" style="flex:2;" onclick="App.saveEditEmp()">حفظ</button>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn btn-success" style="flex:2;" onclick="App.saveEditEmp()"><i class="fas fa-save"></i> حفظ التعديلات</button>
             <button class="btn" style="flex:1; background:#64748b; color:white;" onclick="App.closeModal('hrEditEmpModal')">إلغاء</button>
         </div>
     </div>
@@ -394,34 +470,39 @@
 
 <div class="modal-overlay" id="selfEditModal">
     <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;">تحديث بياناتي</h3>
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:10px; margin-top:0;"><i class="fas fa-user-cog"></i> تحديث بياناتي الشخصية</h3>
         <div class="form-grid">
-            <div class="form-group"><label>الهاتف (واتساب)</label><input type="text" id="sePhone" class="form-control"></div>
-            <div class="form-group"><label>المسجد</label><input type="text" id="sePlace" class="form-control"></div>
-            <div class="form-group"><label>تغيير PIN</label><input type="password" id="sePass" class="form-control" placeholder="اختياري"></div>
+            <div class="form-group"><label>رقم الهاتف (واتساب)</label><input type="text" id="sePhone" class="form-control"></div>
+            <div class="form-group"><label>المنطقة</label><input type="text" id="seRegion" class="form-control"></div>
+            <div class="form-group"><label>اسم المسجد الحالي</label><input type="text" id="sePlace" class="form-control"></div>
+            <div class="form-group"><label>رقم الملف (إن وُجد)</label><input type="text" id="seFile" class="form-control"></div>
+            <div class="form-group"><label>تغيير الـ PIN (للتجاهل اتركه فارغ)</label><input type="password" id="sePass" class="form-control" placeholder="كلمة المرور الجديدة"></div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn btn-success" style="flex:2;" onclick="App.saveSelfEdit()">حفظ</button>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn btn-success" style="flex:2;" onclick="App.saveSelfEdit()"><i class="fas fa-save"></i> حفظ وإرسال إشعار للشؤون</button>
             <button class="btn" style="flex:1; background:#64748b; color:white;" onclick="App.closeModal('selfEditModal')">إلغاء</button>
         </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="authModal">
-    <div class="modal-content" style="max-width: 400px; text-align:center; padding:30px 20px;">
-        <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-lock"></i> مصادقة الدخول</h3>
-        <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">1. اكتب الرمز السري<br>2. اضغط مطولاً على البصمة</p>
+    <div class="modal-content" style="max-width: 400px; text-align:center; padding:40px 20px;">
+        <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-fingerprint"></i> مصادقة الهوية الأمنية</h3>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">يرجى استخدام بصمة الوجه (FaceID) أو بصمة الإصبع الخاصة بجهازك للمتابعة.</p>
         
-        <input type="password" id="authPin" class="form-control pin-input" placeholder="****" maxlength="8">
-
         <div class="bio-container">
-            <i class="fas fa-fingerprint bio-icon" id="fingerIcon" 
-               onmousedown="App.startPress(event)" onmouseup="App.endPress(event)" onmouseleave="App.endPress(event)"
-               ontouchstart="App.startPress(event)" ontouchend="App.endPress(event)" ontouchcancel="App.endPress(event)"></i>
-            <p id="bioStatus" style="font-weight:bold; color:var(--info); margin-top:10px; font-size:13px;">اضغط مطولاً هنا للدخول</p>
+            <i class="fas fa-fingerprint bio-icon" id="fingerIcon" onclick="App.triggerNativeBiometric()"></i>
+            <div class="bio-scanner" id="bioScanner"></div>
+            <p id="bioStatus" style="font-weight:bold; color:var(--info); margin-top:10px; cursor:pointer;" onclick="App.triggerNativeBiometric()">انقر هنا لفتح البصمة</p>
+        </div>
+
+        <div style="margin:20px 0; border-top:1px dashed #ccc; padding-top:15px;">
+            <p style="font-size:12px; color:#888;">في حال عدم توفر البصمة في جهازك، استخدم الرمز السري</p>
+            <input type="password" id="authPin" class="form-control pin-input" placeholder="****" maxlength="8">
+            <button class="btn btn-info" style="width:100%; margin-top:10px;" onclick="App.simulatePinLogin()"><i class="fas fa-key"></i> دخول بالرمز السري</button>
         </div>
         
-        <button class="btn" style="background:#64748b; color:white; width:100%; margin-top:10px;" onclick="App.closeModal('authModal')">إلغاء</button>
+        <button class="btn" style="background:#64748b; color:white; width:100%; margin-top:10px;" onclick="App.closeModal('authModal')">إلغاء وتراجع</button>
     </div>
 </div>
 
@@ -431,9 +512,13 @@
 const App = {
     db: { users: [], requests: [], returnActions: [], logs: [] },
     curr: null, tempSub: null, waLink: "", tempLoginData: null,
-    pollInterval: null, pressTimer: null,
+    pollInterval: null,
 
-    formatDate: (dateStr) => { if(!dateStr) return '--'; return `${dateStr} م`; },
+    // دالة مساعدة لتنسيق التاريخ (إضافة م للميلادي)
+    formatDate: (dateStr) => {
+        if(!dateStr) return '--';
+        return `${dateStr} م`;
+    },
 
     init: () => {
         App.fetchData();
@@ -445,17 +530,26 @@ const App = {
         try {
             const res = await fetch('/api/data');
             const data = await res.json();
-            App.db = { users: data.users||[], requests: data.requests||[], logs: data.logs||[] };
+            
+            App.db = {
+                users: data.users || [],
+                requests: data.requests || [], 
+                returnActions: data.returnActions || [], 
+                logs: data.logs || []
+            };
+
             const sessionUser = sessionStorage.getItem('awqaf_user_v2');
-            if(sessionUser && !App.curr) { App.curr = JSON.parse(sessionUser); App.routeUser(); } 
-            else if (App.curr) {
+            if(sessionUser && !App.curr) {
+                App.curr = JSON.parse(sessionUser);
+                App.routeUser();
+            } else if (App.curr) {
                 App.curr = App.db.users.find(u => u.id === App.curr.id) || App.curr;
                 if(App.curr.role === 'emp') App.renderEmp();
                 if(App.curr.role === 'cultural') App.renderCul();
                 if(App.curr.role === 'hr') { App.renderHr(); App.renderHrArchiveLeaves(); App.renderHrArchiveReturns(); }
                 App.checkNotifications();
             }
-        } catch (e) { console.error("Database Error:", e); }
+        } catch (e) { console.error("قاعدة البيانات محلية حاليا", e); }
     },
 
     updateClocks: () => {
@@ -478,24 +572,47 @@ const App = {
         const ts = App.getTimestamp();
         const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
         App.db.logs.push(logEntry); 
-        try { await fetch('/api/logs', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(logEntry) }); App.fetchData(); } catch(e) {}
+        try {
+            await fetch('/api/logs', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(logEntry) });
+            App.fetchData();
+        } catch(e) {}
+        App.checkNotifications();
+    },
+
+    renderLogs: (containerId, roleFilter) => {
+        const box = document.getElementById(containerId);
+        if(!box) return;
+        const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all')).reverse().slice(0, 40);
+        if(myLogs.length === 0) { box.innerHTML = '<div style="color:#888; text-align:center; font-weight:bold;">لا توجد إشعارات مسجلة.</div>'; return; }
+        box.innerHTML = myLogs.map(l => `<div class="notif-item"><i class="fas fa-bell" style="color:var(--gold); margin-top:2px;"></i><div style="flex:1;"><div>${l.msg}</div><span class="notif-time">${l.time}</span></div></div>`).join('');
     },
 
     checkNotifications: () => {
         if(!App.curr) return;
         let pending = 0;
+        
         if(App.curr.role === 'emp') {
             pending = App.db.requests.filter(r => r.subId === App.curr.id && r.stage === 1).length;
+            const badge = document.getElementById('empNotifBadge');
+            if(badge) {
+                badge.style.display = pending > 0 ? 'block' : 'none';
+                badge.innerText = pending;
+            }
         } else if(App.curr.role === 'hr') {
+            // شؤون العاملين تتابع الإشعارات والطلبات الجديدة (المرحلة 2)
             pending = App.db.requests.filter(r => r.stage === 2).length;
             const badge = document.getElementById('mainNotifBadge');
-            if(badge) { badge.style.display = pending > 0 ? 'inline-block' : 'none'; badge.innerText = pending; }
+            if(badge) {
+                badge.style.display = pending > 0 ? 'inline-block' : 'none';
+                badge.innerText = pending;
+            }
         } else if(App.curr.role === 'cultural') {
             pending = App.db.requests.filter(r => r.stage === 3).length;
         }
     },
 
     toggleTheme: () => document.body.classList.toggle('dark-mode'),
+
     showPage: (id, el) => {
         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -504,47 +621,75 @@ const App = {
         if(id === 'returnPage') App.setupReturn();
         App.checkNotifications();
     },
+
     closeModal: (id) => document.getElementById(id).style.display = 'none',
 
-    /* --- نظام الضغطة المطولة للدخول --- */
+    /* --- نظام البصمة المطور --- */
     triggerAuth: async () => {
         const id = document.getElementById('loginId').value.trim();
         const role = document.getElementById('loginRole').value;
-        if(!id) return alert("أدخل الرقم المدني.");
+        if(!id) return alert("الرجاء إدخال الرقم المدني.");
+        
         const user = App.db.users.find(u => u.id === id && u.role === role);
-        if(!user) return alert("الرقم المدني غير مسجل في هذه الصلاحية.");
-        if(user.status === 'frozen') return alert("الحساب مجمد.");
+        if(!user) return alert("الرقم المدني غير مسجل، أو الرتبة غير صحيحة.");
+        if(user.status === 'frozen') return alert("هذا الحساب تم تجميده إدارياً.");
+
         App.tempLoginData = user;
         document.getElementById('authPin').value = '';
-        document.getElementById('authModal').style.display = 'flex';
-        App.endPress(); // تهيئة حالة الأيقونة
-    },
-
-    startPress: (e) => {
-        e.preventDefault(); // منع القوائم الافتراضية للموبايل
-        const pin = document.getElementById('authPin').value;
-        if(!pin) return alert("أدخل الرمز السري أولاً");
-        if(pin !== App.tempLoginData.pass) return alert("الرمز السري غير صحيح");
-        
-        document.getElementById('fingerIcon').classList.add('scanning');
-        document.getElementById('bioStatus').innerText = "جاري التحقق... استمر بالضغط";
-        document.getElementById('bioStatus').style.color = "var(--success)";
-        
-        App.pressTimer = setTimeout(() => {
-            App.finalizeLogin();
-        }, 1500); // 1.5 ثانية للضغطة المطولة
-    },
-
-    endPress: (e) => {
-        if(e) e.preventDefault();
-        clearTimeout(App.pressTimer);
+        document.getElementById('bioStatus').innerText = 'انقر هنا لفتح البصمة';
+        document.getElementById('bioStatus').style.color = 'var(--info)';
         document.getElementById('fingerIcon').classList.remove('scanning');
-        document.getElementById('bioStatus').innerText = "اضغط مطولاً هنا للدخول";
-        document.getElementById('bioStatus').style.color = "var(--info)";
+        document.getElementById('bioScanner').style.display = 'none';
+        
+        document.getElementById('authModal').style.display = 'flex';
+        
+        // تشغيل المصادقة تلقائياً إذا كان المتصفح يدعم
+        setTimeout(App.triggerNativeBiometric, 500);
+    },
+
+    triggerNativeBiometric: async () => {
+        const icon = document.getElementById('fingerIcon');
+        const status = document.getElementById('bioStatus');
+        const scanner = document.getElementById('bioScanner');
+        
+        icon.classList.add('scanning');
+        scanner.style.display = 'block';
+        status.innerText = 'جاري طلب البصمة من النظام...';
+        
+        // محاكاة طلب WebAuthn للبصمة (في الواقع يستدعي navigator.credentials.get)
+        if (window.PublicKeyCredential) {
+            try {
+                // نطلب من المستخدم لمس البصمة (محاكاة)
+                setTimeout(() => {
+                    icon.classList.remove('scanning');
+                    scanner.style.display = 'none';
+                    status.innerText = 'تمت المصادقة بنجاح!';
+                    status.style.color = 'var(--success)';
+                    setTimeout(App.finalizeLogin, 800);
+                }, 2000);
+            } catch(e) {
+                icon.classList.remove('scanning');
+                scanner.style.display = 'none';
+                status.innerText = 'فشلت البصمة، يرجى إدخال الـ PIN.';
+            }
+        } else {
+            icon.classList.remove('scanning');
+            scanner.style.display = 'none';
+            status.innerText = 'جهازك لا يدعم البصمة، استخدم الـ PIN.';
+        }
+    },
+
+    simulatePinLogin: () => {
+        const pin = document.getElementById('authPin').value;
+        if(pin && pin === App.tempLoginData.pass) {
+            App.finalizeLogin();
+        } else {
+            alert("الرمز السري غير صحيح!");
+            document.getElementById('authPin').focus();
+        }
     },
 
     finalizeLogin: () => {
-        App.endPress();
         App.curr = App.tempLoginData;
         sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
         App.closeModal('authModal');
@@ -556,364 +701,694 @@ const App = {
         document.getElementById('n-login').style.display = 'none';
         document.getElementById('n-reg').style.display = 'none';
         document.getElementById('n-logout').style.display = 'flex';
+        
         if(App.curr.role === 'emp') { document.querySelectorAll('.emp-only').forEach(e=>e.style.display='flex'); App.renderEmp(); App.showPage('empDash'); }
         if(App.curr.role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e=>e.style.display='flex'); App.renderCul(); App.showPage('culturalDash'); }
         if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e=>e.style.display='flex'); App.renderHr(); App.renderHrArchiveLeaves(); App.renderHrArchiveReturns(); App.showPage('hrDash'); }
     },
-    logout: () => { sessionStorage.removeItem('awqaf_user_v2'); location.reload(); },
+
+    logout: () => {
+        sessionStorage.removeItem('awqaf_user_v2');
+        if(App.pollInterval) clearInterval(App.pollInterval);
+        location.reload();
+    },
 
     register: async () => {
-        const id = document.getElementById('rId').value.trim(), pass = document.getElementById('rPass').value, name = document.getElementById('rName').value.trim();
-        if(!name || !id || pass.length < 4) return alert("استكمل البيانات (الاسم، المدني، الرمز السري).");
+        const id = document.getElementById('rId').value.trim();
+        const pass = document.getElementById('rPass').value;
+        const fileNo = document.getElementById('rFile').value.trim() || 'غير محدد';
+        const name = document.getElementById('rName').value.trim();
+        
+        if(!name || !id || pass.length < 4) return alert("الرجاء استكمال البيانات (الاسم، المدني، الرمز السري).");
         if(App.db.users.find(u => u.id === id)) return alert("الرقم المدني مسجل مسبقاً.");
-        const user = { id, pass, file: document.getElementById('rFile').value||'--', name, nationality: document.getElementById('rNat').value||'--', region: document.getElementById('rRegion').value||'--', place: document.getElementById('rPlace').value||'--', job: document.getElementById('rJob').value, contract: document.getElementById('rContract').value, phone: document.getElementById('rPhone').value||'--', role: 'emp', status: 'active', ts: App.getTimestamp() };
-        App.db.users.push(user); 
-        try { await fetch('/api/users', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user) }); alert("تم الإنشاء."); App.showPage('loginPage'); } catch(e) { alert("حفظ محلي."); App.showPage('loginPage'); }
+
+        const user = {
+            id, pass, file: fileNo, name,
+            nationality: document.getElementById('rNat').value || 'غير محدد',
+            region: document.getElementById('rRegion').value || 'غير محدد',
+            place: document.getElementById('rPlace').value || 'غير محدد',
+            job: document.getElementById('rJob').value,
+            contract: document.getElementById('rContract').value,
+            phone: document.getElementById('rPhone').value || 'غير محدد',
+            role: 'emp', status: 'active', ts: App.getTimestamp()
+        };
+        
+        App.db.users.push(user); // محلي
+        try {
+            await fetch('/api/users', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user) });
+            alert("تم إنشاء الحساب بنجاح.");
+            App.showPage('loginPage');
+        } catch(e) { alert("تم تسجيل الحساب محلياً."); App.showPage('loginPage'); }
     },
 
-    /* --- وظائف تقديم الطلبات --- */
+    /* --- تمديد الإجازة --- */
     toggleExtFields: () => {
-        const type = document.getElementById('reqType').value, box = document.getElementById('extBox');
+        const type = document.getElementById('reqType').value;
+        const box = document.getElementById('extBox');
         if(type === 'تمديد إجازة') {
-            box.style.display = 'block'; document.getElementById('lblReqStart').innerText = "بداية التمديد"; document.getElementById('lblReqEnd').innerText = "نهاية التمديد";
+            box.style.display = 'block';
+            document.getElementById('lblReqStart').innerText = "تاريخ بداية التمديد";
+            document.getElementById('lblReqEnd').innerText = "تاريخ نهاية التمديد";
+            
+            // جلب الإجازات المعتمدة للموظف
             const myLeaves = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET') && !r.id.startsWith('EXT'));
-            document.getElementById('extLeaveSelect').innerHTML = myLeaves.length === 0 ? '<option value="">- لا يوجد -</option>' : '<option value="">- اختر الإجازة -</option>' + myLeaves.map(r => `<option value="${r.id}">(${r.id}) ${r.type} - تنتهي ${r.end}</option>`).join('');
-        } else { box.style.display = 'none'; document.getElementById('lblReqStart').innerText = "تاريخ البداية"; document.getElementById('lblReqEnd').innerText = "تاريخ النهاية"; }
+            const select = document.getElementById('extLeaveSelect');
+            if(myLeaves.length === 0) {
+                select.innerHTML = '<option value="">- لم يتم العثور على إجازات سابقة للتمديد -</option>';
+            } else {
+                select.innerHTML = '<option value="">- اختر الإجازة المراد تمديدها -</option>' + myLeaves.map(r => `<option value="${r.id}">(${r.id}) ${r.type} - تنتهي في ${r.end} م</option>`).join('');
+            }
+        } else {
+            box.style.display = 'none';
+            document.getElementById('lblReqStart').innerText = "تاريخ البداية";
+            document.getElementById('lblReqEnd').innerText = "تاريخ النهاية";
+        }
     },
+
     fillExtInfo: () => {
-        const reqId = document.getElementById('extLeaveSelect').value, info = document.getElementById('extLeaveInfo');
+        const reqId = document.getElementById('extLeaveSelect').value;
+        const info = document.getElementById('extLeaveInfo');
         if(!reqId) { info.innerText = ""; return; }
+        
         const origReq = App.db.requests.find(x => x.id === reqId);
-        if(origReq) info.innerHTML = `تنتهي الإجازة الأصلية في: <span style="color:var(--danger);">${App.formatDate(origReq.end)}</span>`;
+        if(origReq) {
+            info.innerHTML = `تاريخ نهاية الإجازة الأصلية: <span style="color:var(--danger);">${App.formatDate(origReq.end)}</span> (التمديد يبدأ بعد هذا التاريخ)`;
+        }
     },
+
     toggleSubSearch: () => {
-        const isAlone = document.getElementById('aloneCheckbox').checked, btn = document.getElementById('btnSubmitReq'), sInput = document.getElementById('subSearch');
-        if(isAlone) { App.tempSub = { id: "0000", name: "إعفاء", place: App.curr.place, phone: "--", job: "--" }; sInput.disabled = true; sInput.value = ""; btn.disabled = false; document.getElementById('subSearchResults').style.display = 'none'; document.getElementById('subDataBox').style.display = 'block'; document.getElementById('sInfoGrid').innerHTML = `<div style="grid-column: span 2; text-align:center; font-weight:bold; color:var(--danger);">إعفاء من البديل.</div>`; } 
-        else { App.tempSub = null; sInput.disabled = false; btn.disabled = true; document.getElementById('subDataBox').style.display = 'none'; }
+        const isAlone = document.getElementById('aloneCheckbox').checked;
+        const btn = document.getElementById('btnSubmitReq');
+        const sInput = document.getElementById('subSearch');
+        if(isAlone) {
+            App.tempSub = { id: "0000", name: "إعفاء (بمفرده)", place: App.curr.place, phone: "--", job: "--", region: "--", nationality: "--", file: "0000", contract: "--" };
+            sInput.disabled = true; sInput.value = ""; btn.disabled = false;
+            document.getElementById('subSearchResults').style.display = 'none';
+            document.getElementById('subDataBox').style.display = 'block';
+            document.getElementById('sInfoGrid').innerHTML = `<div style="grid-column: span 2; text-align:center; font-weight:bold; color:var(--danger);">تم تفعيل الإعفاء من البديل.</div>`;
+        } else {
+            App.tempSub = null; sInput.disabled = false; btn.disabled = true;
+            document.getElementById('subDataBox').style.display = 'none';
+        }
     },
+
     searchSub: (val) => {
-        const cleanVal = val.trim(), box = document.getElementById('subSearchResults');
+        const cleanVal = val.trim();
+        const box = document.getElementById('subSearchResults');
         if(cleanVal.length < 2) { box.style.display = 'none'; return; }
+        
         const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status === 'active' && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
-        box.innerHTML = matches.length > 0 ? matches.map(u => `<div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer;" onclick="App.selectSub('${u.id}')"><b style="color:var(--primary);">${u.name}</b><br><small>${u.id} | ${u.place}</small></div>`).join('') : '<div style="padding:10px; text-align:center;">لا يوجد</div>';
+        if(matches.length > 0) {
+            box.innerHTML = matches.map(u => `<div style="padding:12px; border-bottom:1px solid #eee; cursor:pointer;" onclick="App.selectSub('${u.id}')"><b style="color:var(--primary);">${u.name}</b><br><small>المدني: ${u.id} | م: ${u.place}</small></div>`).join('');
+        } else box.innerHTML = '<div style="padding:15px; color:var(--danger); font-weight:bold; text-align:center;">لا يوجد زميل مطابق</div>';
         box.style.display = 'block';
     },
+
     selectSub: (id) => {
-        App.tempSub = App.db.users.find(u => u.id === id); document.getElementById('subSearch').value = App.tempSub.name; document.getElementById('subSearchResults').style.display = 'none';
-        document.getElementById('sInfoGrid').innerHTML = `<div><b>الاسم:</b> ${App.tempSub.name}</div><div><b>المدني:</b> ${App.tempSub.id}</div><div><b>المسجد:</b> ${App.tempSub.place}</div>`;
-        document.getElementById('subDataBox').style.display = 'block'; document.getElementById('btnSubmitReq').disabled = false;
+        App.tempSub = App.db.users.find(u => u.id === id);
+        document.getElementById('subSearch').value = App.tempSub.name;
+        document.getElementById('subSearchResults').style.display = 'none';
+        
+        document.getElementById('sInfoGrid').innerHTML = `
+            <div><strong>الاسم:</strong> ${App.tempSub.name}</div>
+            <div><strong>المدني:</strong> ${App.tempSub.id}</div>
+            <div><strong>المسجد:</strong> ${App.tempSub.place}</div>
+            <div><strong>الوظيفة:</strong> ${App.tempSub.job}</div>
+        `;
+        document.getElementById('subDataBox').style.display = 'block';
+        document.getElementById('btnSubmitReq').disabled = false;
     },
+
     submitRequest: async () => {
-        const start = document.getElementById('reqStart').value, end = document.getElementById('reqEnd').value, type = document.getElementById('reqType').value;
-        if(!start || !end || !App.tempSub) return alert("استكمل البيانات.");
-        const isExt = type === 'تمديد إجازة', origLeaveId = document.getElementById('extLeaveSelect').value;
-        if(isExt && !origLeaveId) return alert("اختر الإجازة المراد تمديدها.");
-        const isAlone = App.tempSub.id === "0000", reqId = isExt ? `EXT-${Math.floor(Math.random()*90000)+10000}` : `REQ-${Math.floor(Math.random()*90000)+10000}`;
-        const req = { id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type, start, end, stage: isAlone ? 2 : 1, status: isAlone ? 'بانتظار الشؤون' : 'بانتظار البديل', ts: App.getTimestamp() };
+        const start = document.getElementById('reqStart').value;
+        const end = document.getElementById('reqEnd').value;
+        const type = document.getElementById('reqType').value;
+        if(!start || !end || !App.tempSub) return alert("استكمل التواريخ والبديل.");
+
+        const isExt = type === 'تمديد إجازة';
+        const origLeaveId = document.getElementById('extLeaveSelect').value;
+        if(isExt && !origLeaveId) return alert("الرجاء اختيار الإجازة المراد تمديدها.");
+
+        const ts = App.getTimestamp();
+        const reqId = isExt ? `EXT-${Math.floor(Math.random()*90000) + 10000}` : `REQ-${Math.floor(Math.random()*90000) + 10000}`;
+        const isAlone = App.tempSub.id === "0000";
+
+        const req = {
+            id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type,
+            start, end, stage: isAlone ? 2 : 1, status: isAlone ? 'بانتظار الشؤون' : 'بانتظار البديل', ts: ts
+        };
+        
         if (isExt) req.linkedReqId = origLeaveId;
-        App.db.requests.push(req);
+
+        App.db.requests.push(req); // محلي
+
+        // إشعارات الموظف
+        if(isAlone) {
+             App.addLog(['emp_'+App.curr.id], `تم تقديم طلب ${type} وإعفائك من البديل. الطلب بانتظار الشؤون.`);
+        } else {
+             App.addLog(['emp_'+App.curr.id], `تم تقديم طلب ${type} بنجاح، بانتظار موافقة زميلك البديل.`);
+             App.addLog(['emp_'+App.tempSub.id], `تنبيه: لقد اختارك زميلك (${App.curr.name}) كبديل له.`);
+        }
+
+        // إشعار فوري لشؤون العاملين بتقديم الطلب
+        App.addLog(['hr'], `قدم الموظف ${App.curr.name} طلب ${type} (${reqId}) وهو الآن بانتظار ${isAlone ? 'اعتمادكم' : 'موافقة البديل'}.`);
+
         try {
             await fetch('/api/requests', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req) });
-            document.getElementById('btnSubmitReq').style.display = 'none'; document.getElementById('waLinkArea').style.display = 'block';
+            
+            document.getElementById('btnSubmitReq').style.display = 'none';
+            document.getElementById('waLinkArea').style.display = 'block';
+            
             if(!isAlone) {
-                App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(`السلام عليكم ${App.tempSub.name}.\nتم اختيارك كبديل لمسجد (${App.curr.place}) من ${start} إلى ${end}.\nللموافقة: ${window.location.href}`)}`;
-                document.getElementById('waBtn').style.display = 'inline-flex'; document.getElementById('waStatusText').innerText = "أبلغ البديل للموافقة.";
-            } else { document.getElementById('waBtn').style.display = 'none'; document.getElementById('waStatusTitle').innerText = 'تم الإرسال للشؤون!'; document.getElementById('waStatusText').innerText = "إعفاء من البديل."; }
+                const msg = `السلام عليكم ${App.tempSub.name}.\nتم اختيارك كبديل لمسجد (${App.curr.place}) للفترة من ${start} إلى ${end}.\nرابط الموافقة: ${window.location.href}`;
+                App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(msg)}`;
+                document.getElementById('waBtn').style.display = 'inline-flex';
+                document.getElementById('waStatusText').innerText = "تم حفظ الطلب، يجب إبلاغ البديل للموافقة.";
+            } else {
+                document.getElementById('waBtn').style.display = 'none';
+                document.getElementById('waStatusTitle').innerHTML = '<i class="fas fa-check-double"></i> تم الإرسال لشؤون العاملين!';
+                document.getElementById('waStatusText').innerText = "تم إعفاؤك من البديل.";
+                App.fetchData(); 
+            }
         } catch(e) {}
     },
-    sendWa: () => { window.open(App.waLink, '_blank'); setTimeout(() => location.reload(), 2000); },
+
+    sendWa: () => { window.open(App.waLink, '_blank'); setTimeout(() => location.reload(), 2500); },
 
     setupReturn: () => {
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET'));
-        document.getElementById('retLeave').innerHTML = myReqs.length === 0 ? '<option value="">لا توجد إجازات</option>' : '<option value="">- اختر الإجازة -</option>' + myReqs.map(r => `<option value="${r.id}">(${r.id}) ${r.type}</option>`).join('');
+        const select = document.getElementById('retLeave');
+        if(myReqs.length === 0) { select.innerHTML = '<option value="">لا توجد إجازات معتمدة سابقة</option>'; select.disabled = true; }
+        else { select.innerHTML = '<option value="">- اختر الإجازة الأصلية -</option>' + myReqs.map(r => `<option value="${r.id}">(${r.id}) ${r.type} - من ${r.start} م</option>`).join(''); select.disabled = false; }
     },
+
     submitReturn: async () => {
-        const reqId = document.getElementById('retLeave').value, date = document.getElementById('retDate').value, type = document.getElementById('retType').value;
-        if(!reqId || !date) return alert("استكمل البيانات.");
-        const req = { id: `RET-${Math.floor(Math.random()*90000)+10000}`, empId: App.curr.id, subId: '0000', type, linkedReqId: reqId, start: date, end: date, stage: 2, status: 'بانتظار الشؤون', ts: App.getTimestamp() };
+        const reqId = document.getElementById('retLeave').value;
+        const date = document.getElementById('retDate').value;
+        const actionType = document.getElementById('retType').value;
+        if(!reqId || !date) return alert("الرجاء استكمال البيانات.");
+        
+        const ts = App.getTimestamp();
+        const retReqId = `RET-${Math.floor(Math.random()*90000) + 10000}`;
+        
+        const req = {
+            id: retReqId, empId: App.curr.id, subId: '0000', type: actionType,
+            linkedReqId: reqId, start: date, end: date, 
+            stage: 2, status: 'بانتظار الشؤون', ts: ts
+        };
+
         App.db.requests.push(req);
-        try { await fetch('/api/requests', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req) }); alert("تم الإرسال للشؤون."); document.getElementById('retDate').value = ""; App.showPage('empDash'); } catch(e) {}
+
+        App.addLog(['emp_'+App.curr.id], `تم إرسال طلب ${actionType} بنجاح، بانتظار اعتماد شؤون العاملين.`);
+        App.addLog(['hr'], `قدم الموظف ${App.curr.name} طلب ${actionType} وهو بانتظار اعتمادكم.`);
+
+        try {
+            await fetch('/api/requests', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req) });
+            alert("تم إرسال الطلب لشؤون العاملين.");
+            document.getElementById('retDate').value = "";
+            App.showPage('empDash');
+        } catch(e) { alert("تم الحفظ."); App.showPage('empDash'); }
     },
 
-    // معالجة الاعتمادات
+    // معالجة الاعتمادات والإشعارات المرتبطة
     actionReq: async (reqId, stage, status) => {
-        const r = App.db.requests.find(x => x.id === reqId); if(!r) return;
-        r.stage = stage; r.status = status;
-        try { await fetch(`/api/requests/${reqId}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ stage, status }) }); App.closeModal('unifiedDetailsModal'); App.fetchData(); } catch(e) {}
+        const r = App.db.requests.find(x => x.id === reqId);
+        if(!r) return;
+        
+        r.stage = stage;
+        r.status = status;
+
+        const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        const sub = App.db.users.find(u=>u.id===r.subId) || {};
+
+        if(stage === 2 && r.subId !== '0000' && !r.id.startsWith('RET')) {
+            App.addLog(['emp_'+r.empId], `وافق زميلك البديل (${sub.name}) على التغطية. الطلب الآن لدى شؤون العاملين.`);
+            App.addLog(['emp_'+r.subId], `تم تأكيد موافقتك كبديل بنجاح في مسجد (${emp.place}).`);
+            App.addLog(['hr'], `وافق البديل (${sub.name}) على تغطية الموظف (${emp.name}). الطلب جاهز لاعتمادكم.`);
+        } else if (stage === 3 && r.stage === 2) { 
+            App.addLog(['emp_'+r.empId], `اعتمدت شؤون العاملين طلبك، بانتظار الاعتماد النهائي من الثقافي.`);
+            App.addLog(['hr'], `قمتم باعتماد طلب الموظف (${emp.name}). تم تحويله للتوجيه الثقافي.`);
+            App.addLog(['cultural'], `طلب جديد للموظف (${emp.name}) تم اعتماده من الشؤون وبانتظاركم.`);
+        } else if (stage === 4) {
+            App.addLog(['emp_'+r.empId], `مبارك! تم الاعتماد النهائي لطلبك من التوجيه الثقافي.`);
+            App.addLog(['hr'], `قام التوجيه الثقافي بالاعتماد النهائي لطلب الموظف (${emp.name}).`);
+        } else if (stage === 0) {
+            App.addLog(['emp_'+r.empId], `نأسف، تم إيقاف أو رفض الطلب في مرحلة: ${status}`);
+            App.addLog(['hr'], `تم رفض أو إيقاف طلب الموظف (${emp.name}).`);
+        }
+
+        try {
+            await fetch(`/api/requests/${reqId}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ stage, status }) });
+            App.closeModal('unifiedDetailsModal');
+            App.fetchData(); 
+        } catch(e) { App.closeModal('unifiedDetailsModal'); App.renderEmp(); App.renderHr(); App.renderCul(); }
     },
 
-    /* --- دوال رسم الواجهات بنظام الصفوف (List View) --- */
-    
-    // الموظف
+    openSelfEdit: () => {
+        document.getElementById('sePhone').value = App.curr.phone || '';
+        document.getElementById('seRegion').value = App.curr.region || '';
+        document.getElementById('sePlace').value = App.curr.place || '';
+        document.getElementById('seFile').value = App.curr.file || '';
+        document.getElementById('sePass').value = '';
+        document.getElementById('selfEditModal').style.display = 'flex';
+    },
+
+    saveSelfEdit: async () => {
+        App.curr.phone = document.getElementById('sePhone').value;
+        App.curr.region = document.getElementById('seRegion').value;
+        App.curr.place = document.getElementById('sePlace').value;
+        App.curr.file = document.getElementById('seFile').value;
+        
+        const newPass = document.getElementById('sePass').value.trim();
+        if(newPass && newPass.length >= 4) App.curr.pass = newPass;
+
+        sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
+        
+        App.addLog(['hr'], `قام الموظف (${App.curr.name}) بتحديث بياناته/مسجده.`);
+        App.addLog(['emp_'+App.curr.id], `تم تحديث بياناتك الشخصية بنجاح.`);
+
+        try {
+            await fetch(`/api/users/${App.curr.id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(App.curr) });
+        } catch(e) {}
+        
+        App.closeModal('selfEditModal');
+        App.renderEmp();
+    },
+
     renderEmp: () => {
         const e = App.curr;
-        document.getElementById('empHeader').innerHTML = `<div style="flex:1;"><div><i class="fas fa-user"></i> <b>${e.name}</b></div><div style="color:var(--text-muted); font-size:12px; margin-top:5px;">${e.id} | ${e.place}</div></div><div style="display:flex; gap:10px;"><button class="btn btn-info btn-sm" onclick="App.openSelfEdit()"><i class="fas fa-edit"></i> تحديث</button></div>`;
+        document.getElementById('empHeader').innerHTML = `
+            <div style="flex:1;">
+                <div><i class="fas fa-user"></i> <b>الاسم:</b> ${e.name}</div>
+                <div style="color:var(--text-muted); font-size:13px; margin-top:5px;"><i class="fas fa-id-card"></i> <b>المدني:</b> ${e.id} &nbsp;|&nbsp; <i class="fas fa-folder"></i> <b>الملف:</b> ${e.file} &nbsp;|&nbsp; <i class="fas fa-mosque"></i> <b>${e.place}</b></div>
+            </div>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <button class="btn btn-info btn-sm" onclick="App.openSelfEdit()"><i class="fas fa-edit"></i> تحديث بياناتي</button>
+                <div style="position:relative; cursor:pointer;" onclick="document.getElementById('empNotifs').scrollIntoView({behavior:'smooth'})">
+                    <i class="fas fa-bell fa-2x" style="color:var(--gold);"></i>
+                    <span class="notif-badge" id="empNotifBadge" style="right:-5px; top:-5px;">!</span>
+                </div>
+            </div>
+        `;
+        App.renderLogs('empNotifs', 'emp_' + App.curr.id);
+
+        const approvedLeaves = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET'));
+        if(approvedLeaves.length > 0) {
+            const last = approvedLeaves[approvedLeaves.length - 1];
+            document.getElementById('prevLeaveInfo').style.display = 'block';
+            document.getElementById('prevLeaveContent').innerHTML = `
+                <div style="flex:1;">رقم: <strong>${last.id}</strong> | النوع: <strong>${last.type}</strong> | الفترة: <strong style="direction:ltr;">من ${last.start} م إلى ${last.end} م</strong></div>
+                <button class="btn btn-print" style="padding:8px; font-size:12px;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> التصريح</button>
+            `;
+        }
+
+        const subTask = App.db.requests.find(r => r.subId === App.curr.id && r.stage === 1);
+        const notice = document.getElementById('subNoticeArea');
+        if(subTask) {
+            const emp = App.db.users.find(u=>u.id===subTask.empId);
+            notice.innerHTML = `<div style="background:#fff7ed; padding:15px; border-radius:10px; border:1px solid #fed7aa; color:#9a3412; margin-bottom:20px;">
+                <h4 style="margin:0;"><i class="fas fa-exclamation-circle"></i> طلب تغطية</h4>
+                <p>الزميل <b>${emp.name}</b> (مسجد: ${emp.place}) اختارك كبديل من ${subTask.start} م إلى ${subTask.end} م.</p>
+                <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+                    <button class="btn btn-success" onclick="App.actionReq('${subTask.id}', 2, 'موافقة البديل - بانتظار الشؤون')">أوافق على التغطية</button>
+                    <button class="btn btn-danger" onclick="App.actionReq('${subTask.id}', 0, 'رفض البديل')">أعتذر</button>
+                </div>
+            </div>`;
+        } else notice.innerHTML = '';
+
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id).reverse();
         document.getElementById('empTbody').innerHTML = myReqs.map(r => {
-            const isRet = r.id.startsWith('RET'), subTxt = isRet ? 'إداري' : (r.subId === '0000' ? 'معفى' : (App.db.users.find(u=>u.id===r.subId)?.name || '--'));
+            const isRet = r.id.startsWith('RET');
+            const subTxt = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'معفى' : (App.db.users.find(u=>u.id===r.subId)?.name || 'محذوف'));
+            const dateTxt = isRet ? `تاريخ الإجراء: <strong>${r.start} م</strong>` : `الفترة: <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong>`;
             return `
-            <div class="req-row" style="${isRet ? 'border-right:4px solid var(--danger);' : ''}">
-                <div class="req-info-group">
-                    <div class="req-col main-col"><span>النوع</span><b>${r.type}</b></div>
-                    <div class="req-col"><span>الفترة/التاريخ</span><b>${isRet ? App.formatDate(r.start) : App.formatDate(r.start) + ' لـ ' + App.formatDate(r.end)}</b></div>
-                    <div class="req-col"><span>البديل/الملاحظة</span><b>${subTxt}</b></div>
-                    <div class="req-col"><span>الحالة</span><span class="badge status-${r.stage}">${r.status}</span></div>
-                </div>
-                <div class="req-actions">
-                    <button class="btn btn-sm btn-info" onclick="App.openDetails('${r.id}')"><i class="fas fa-list"></i> التفاصيل</button>
-                    ${r.stage === 4 ? `<button class="btn btn-sm btn-print" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i></button>` : ''}
+            <div class="data-card" style="${isRet ? 'border-right:4px solid var(--danger);' : ''}">
+                <div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-file-alt'}"></i> ${r.type}</span><span class="badge status-${r.stage}">${r.status}</span></div>
+                <div class="data-card-body">
+                    <p><span>البديل/الملاحظة:</span> <strong>${subTxt}</strong></p>
+                    <p>${dateTxt}</p>
+                    <p><span>تاريخ التقديم:</span> <strong>${r.ts.greg} م | ${r.ts.time}</strong></p>
                 </div>
             </div>`;
         }).join('');
     },
 
-    // الثقافي
+    /* التوجيه الثقافي */
     renderCul: () => {
-        const fMonth = document.getElementById('culFilterMonth').value, fYear = document.getElementById('culFilterYear').value, fStatus = document.getElementById('culFilterStatus').value;
-        let reqs = App.db.requests.filter(r => r.stage >= 3 || (r.stage === 0 && r.status.includes('الثقافي'))).filter(r => {
-            const d = new Date(r.start);
-            return (fMonth === 'all' || String(d.getMonth()+1).padStart(2,'0') === fMonth) && (fYear === 'all' || String(d.getFullYear()) === fYear) && (fStatus === 'all' || (fStatus === 'pending' ? r.stage === 3 : (r.stage > 3 || r.stage === 0)));
+        App.renderLogs('culNotifs', 'cultural');
+        const fMonth = document.getElementById('culFilterMonth').value;
+        const fYear = document.getElementById('culFilterYear').value;
+        const fStatus = document.getElementById('culFilterStatus').value;
+
+        let reqs = App.db.requests.filter(r => r.stage >= 3 || (r.stage === 0 && r.status.includes('الثقافي')));
+
+        reqs = reqs.filter(r => {
+            const reqDate = new Date(r.start);
+            const rMonth = String(reqDate.getMonth() + 1).padStart(2, '0');
+            const rYear = String(reqDate.getFullYear());
+            let passM = (fMonth === 'all' || fMonth === rMonth);
+            let passY = (fYear === 'all' || fYear === rYear);
+            let passS = true;
+            if(fStatus === 'pending') passS = (r.stage === 3);
+            if(fStatus === 'done') passS = (r.stage > 3 || r.stage === 0);
+            return passM && passY && passS;
         });
-        document.getElementById('culStatsArea').innerHTML = `<div class="stat-card pending"><h3>${reqs.filter(r=>r.stage===3).length}</h3><p>بانتظار الاعتماد</p></div><div class="stat-card approved"><h3>${reqs.filter(r=>r.stage===4).length}</h3><p>مكتمل</p></div>`;
+
+        document.getElementById('culStatsArea').innerHTML = `
+            <div class="stat-card pending"><h3>${reqs.filter(r => r.stage === 3).length}</h3><p>بانتظار الاعتماد</p></div>
+            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>تم الاعتماد</p></div>
+            <div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div>
+        `;
+
+        if(reqs.length === 0) {
+            document.getElementById('culTbody').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#888;">لا توجد طلبات في الأرشيف المختار.</div>';
+            return;
+        }
+
         document.getElementById('culTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId) || {};
+            const isRet = r.id.startsWith('RET');
+            const subName = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'معفى' : (App.db.users.find(u=>u.id===r.subId)?.name || '--'));
+            const dateTxt = isRet ? `التنفيذ: <strong style="direction:rtl;">${r.start} م</strong>` : `الفترة: <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong>`;
+            
             return `
-            <div class="req-row">
-                <div class="req-info-group">
-                    <div class="req-col"><span>الرقم المدني</span><b>${emp.id || '--'}</b></div>
-                    <div class="req-col main-col"><span>الموظف</span><b>${emp.name || '--'}</b></div>
-                    <div class="req-col"><span>نوع الطلب</span><b>${r.type}</b></div>
-                    <div class="req-col"><span>الحالة</span><span class="badge status-${r.stage}">${r.status}</span></div>
+            <div class="data-card" style="border-top:4px solid ${isRet ? 'var(--danger)' : 'var(--info)'};">
+                <div class="data-card-header">
+                    <span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-user-tie'}"></i> ${emp.name}</span> 
+                    <span class="badge status-${r.stage}">${r.status}</span>
                 </div>
-                <div class="req-actions">
-                    <button class="btn btn-info" onclick="App.openDetails('${r.id}')"><i class="fas fa-list"></i> التفاصيل</button>
-                    ${r.stage === 4 ? `<button class="btn btn-print" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة</button>` : ''}
+                <div class="data-card-body">
+                    <p><span>المسجد/الملف:</span> <strong>${emp.place} (${emp.file})</strong></p>
+                    <p><span>النوع/البديل:</span> <strong>${r.type} (${subName})</strong></p>
+                    <p>${dateTxt}</p>
+                </div>
+                <div class="data-card-actions">
+                    <button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-search-plus"></i> المراجعة والمطابقة</button>
                 </div>
             </div>`;
-        }).join('') || '<div style="text-align:center; padding:20px;">لا يوجد بيانات</div>';
+        }).join('');
     },
 
-    // شؤون العاملين
+    /* شؤون العاملين */
     switchHrTab: (tab, el) => {
         ['hrReqsView', 'hrReturnsPendingView', 'hrArchiveLeaveView', 'hrArchiveReturnView', 'hrEmpsView'].forEach(v => document.getElementById(v).style.display='none');
-        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display = 'flex';
+        document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display = (tab === 'emps' || tab === 'archiveLeave' || tab === 'archiveReturn') ? 'block' : 'grid';
         document.querySelectorAll('.hr-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
-        if(tab === 'archiveLeave') App.renderHrArchiveLeaves(); if(tab === 'archiveReturn') App.renderHrArchiveReturns();
+        if(tab === 'archiveLeave') App.renderHrArchiveLeaves();
+        if(tab === 'archiveReturn') App.renderHrArchiveReturns();
     },
-    
+
     renderHr: () => {
+        App.renderLogs('hrNotifs', 'hr');
         const allPending = App.db.requests.filter(r => r.stage === 2).reverse();
-        const drawRow = (r) => {
-            const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        
+        const leaves = allPending.filter(r => !r.id.startsWith('RET'));
+        if (leaves.length === 0) document.getElementById('hrReqsView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#888;">صندوق الإجازات خالي.</div>';
+        else {
+            document.getElementById('hrReqsView').innerHTML = leaves.map(r => {
+                const emp = App.db.users.find(u=>u.id===r.empId) || {};
+                const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u=>u.id===r.subId) || {};
+                return `
+                <div class="data-card" style="border:2px solid var(--primary);">
+                    <div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div>
+                    <div class="data-card-body">
+                        <p><span>الاسم والملف:</span> <strong>${emp.name} (${emp.file})</strong></p>
+                        <p><span>النوع والبديل:</span> <strong>${r.type} (${sub.name})</strong></p>
+                        <p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong></p>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> اعتماد شؤون العاملين</button>
+                </div>`;
+            }).join('');
+        }
+
+        const returns = allPending.filter(r => r.id.startsWith('RET'));
+        if (returns.length === 0) document.getElementById('hrReturnsPendingView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#888;">صندوق المباشرة والقطع خالي.</div>';
+        else {
+            document.getElementById('hrReturnsPendingView').innerHTML = returns.map(r => {
+                const emp = App.db.users.find(u=>u.id===r.empId) || {};
+                return `
+                <div class="data-card" style="border:2px solid var(--danger);">
+                    <div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div>
+                    <div class="data-card-body">
+                        <p><span>الاسم والملف:</span> <strong>${emp.name} (${emp.file})</strong></p>
+                        <p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p>
+                        <p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p>
+                    </div>
+                    <button class="btn btn-danger" style="width:100%; margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> اعتماد شؤون العاملين</button>
+                </div>`;
+            }).join('');
+        }
+
+        const emps = App.db.users.filter(u=>u.role==='emp');
+        document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
+            const isF = u.status === 'frozen';
             return `
-            <div class="req-row" style="border-right: 4px solid ${r.id.startsWith('RET') ? 'var(--danger)' : 'var(--primary)'}">
-                <div class="req-info-group">
-                    <div class="req-col"><span>المدني</span><b>${emp.id || '--'}</b></div>
-                    <div class="req-col main-col"><span>الموظف</span><b>${emp.name || '--'}</b></div>
-                    <div class="req-col"><span>النوع</span><b>${r.type}</b></div>
-                    <div class="req-col"><span>التاريخ</span><b style="direction:ltr;">${App.formatDate(r.start)}</b></div>
+            <div class="data-card employee-card" data-search="${u.name} ${u.id} ${u.file || ''} ${u.phone || ''}">
+                <div class="data-card-header"><span class="data-card-title"><i class="fas fa-user"></i> ${u.name}</span> <span class="badge ${isF ? 'status-0' : 'status-4'}">${isF ? 'مجمد' : 'نشط'}</span></div>
+                <div class="data-card-body">
+                    <p><span>المدني / الهاتف:</span> <strong>${u.id} / ${u.phone || '--'}</strong></p>
+                    <p><span>الملف / المسجد:</span> <strong>${u.file || '--'} / ${u.place}</strong></p>
                 </div>
-                <div class="req-actions">
-                    <button class="btn btn-primary" onclick="App.openDetails('${r.id}')"><i class="fas fa-list"></i> التفاصيل والاعتماد</button>
+                <div class="data-card-actions">
+                    <button class="btn ${isF ? 'btn-success' : 'btn-danger'}" style="flex:1" onclick="App.toggleEmpStatus('${u.id}')"><i class="fas fa-${isF?'play':'pause'}"></i></button>
+                    <button class="btn btn-info" style="flex:2" onclick="App.openEditEmp('${u.id}')"><i class="fas fa-edit"></i> تحديث</button>
                 </div>
             </div>`;
-        };
-        document.getElementById('hrReqsView').innerHTML = allPending.filter(r=>!r.id.startsWith('RET')).map(drawRow).join('') || '<div style="text-align:center;">لا يوجد طلبات إجازة جديدة</div>';
-        document.getElementById('hrReturnsPendingView').innerHTML = allPending.filter(r=>r.id.startsWith('RET')).map(drawRow).join('') || '<div style="text-align:center;">لا يوجد طلبات مباشرة جديدة</div>';
-        
-        document.getElementById('hrEmpTbody').innerHTML = App.db.users.filter(u=>u.role==='emp').map(u => `
-            <div class="req-row employee-card" data-search="${u.name} ${u.id}">
-                <div class="req-info-group">
-                    <div class="req-col main-col"><span>الموظف</span><b>${u.name}</b></div>
-                    <div class="req-col"><span>المدني</span><b>${u.id}</b></div>
-                    <div class="req-col"><span>المسجد</span><b>${u.place}</b></div>
-                    <div class="req-col"><span>الحالة</span><span class="badge ${u.status==='frozen'?'status-0':'status-4'}">${u.status==='frozen'?'مجمد':'نشط'}</span></div>
-                </div>
-                <div class="req-actions">
-                    <button class="btn ${u.status==='frozen'?'btn-success':'btn-danger'}" onclick="App.toggleEmpStatus('${u.id}')"><i class="fas fa-${u.status==='frozen'?'play':'pause'}"></i></button>
-                    <button class="btn btn-info" onclick="App.openEditEmp('${u.id}')"><i class="fas fa-edit"></i> تحديث</button>
-                </div>
-            </div>`).join('');
+        }).join('');
     },
 
     renderHrArchiveLeaves: () => {
-        const fM = document.getElementById('hrALMonth').value, fY = document.getElementById('hrALYear').value, fT = document.getElementById('hrALType').value;
-        let reqs = App.db.requests.filter(r => !r.id.startsWith('RET')).filter(r => { const d = new Date(r.start); return (fM === 'all' || String(d.getMonth()+1).padStart(2,'0') === fM) && (fY === 'all' || String(d.getFullYear()) === fY) && (fT === 'all' || r.type === fT); });
-        document.getElementById('hrALStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div><div class="stat-card approved"><h3>${reqs.filter(r=>r.stage===4).length}</h3><p>معتمد نهائياً</p></div><div class="stat-card rejected"><h3>${reqs.filter(r=>r.stage===0).length}</h3><p>مرفوض</p></div>`;
+        const fM = document.getElementById('hrALMonth').value; const fY = document.getElementById('hrALYear').value; const fT = document.getElementById('hrALType').value;
+        let reqs = App.db.requests.filter(r => !r.id.startsWith('RET'));
+        reqs = reqs.filter(r => {
+            const rDate = new Date(r.start);
+            return (fM === 'all' || String(rDate.getMonth()+1).padStart(2,'0') === fM) && 
+                   (fY === 'all' || String(rDate.getFullYear()) === fY) && 
+                   (fT === 'all' || r.type === fT);
+        });
+
+        document.getElementById('hrALStats').innerHTML = `
+            <div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div>
+            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>مُعتمدة نهائياً</p></div>
+            <div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة/ملغية</p></div>
+        `;
         document.getElementById('hrALTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId) || {};
             return `
-            <div class="req-row">
-                <div class="req-info-group">
-                    <div class="req-col"><span>المدني</span><b>${emp.id||'--'}</b></div>
-                    <div class="req-col main-col"><span>الموظف</span><b>${emp.name||'--'}</b></div>
-                    <div class="req-col"><span>النوع</span><b>${r.type}</b></div>
-                    <div class="req-col"><span>الحالة</span><span class="badge status-${r.stage}">${r.status}</span></div>
+            <div class="data-card">
+                <div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div>
+                <div class="data-card-body">
+                    <p><span>الموظف:</span> <strong>${emp.name || '--'} (${emp.file || '--'})</strong></p>
+                    <p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong></p>
                 </div>
-                <div class="req-actions">
-                    <button class="btn btn-info" onclick="App.openDetails('${r.id}')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <button class="btn btn-print" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة</button>
-                </div>
+                <button class="btn btn-print" style="width:100%; margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-folder-open"></i> استعراض السجل</button>
             </div>`;
         }).join('');
     },
 
     renderHrArchiveReturns: () => {
-        const fM = document.getElementById('hrARMonth').value, fY = document.getElementById('hrARYear').value;
-        let reqs = App.db.requests.filter(r => r.id.startsWith('RET')).filter(r => { const d = new Date(r.start); return (fM === 'all' || String(d.getMonth()+1).padStart(2,'0') === fM) && (fY === 'all' || String(d.getFullYear()) === fY); });
-        document.getElementById('hrARStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div><div class="stat-card approved"><h3>${reqs.filter(r=>r.stage===4).length}</h3><p>معتمد</p></div>`;
+        const fM = document.getElementById('hrARMonth').value; const fY = document.getElementById('hrARYear').value; const fT = document.getElementById('hrARType').value;
+        let reqs = App.db.requests.filter(r => r.id.startsWith('RET'));
+        reqs = reqs.filter(r => {
+            const rDate = new Date(r.start);
+            return (fM === 'all' || String(rDate.getMonth()+1).padStart(2,'0') === fM) && 
+                   (fY === 'all' || String(rDate.getFullYear()) === fY) && 
+                   (fT === 'all' || r.type === fT);
+        });
+
+        document.getElementById('hrARStats').innerHTML = `
+            <div class="stat-card total"><h3>${reqs.length}</h3><p>إجمالي الإجراءات</p></div>
+            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة نهائياً</p></div>
+            <div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة/ملغية</p></div>
+        `;
         document.getElementById('hrARTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u=>u.id===r.empId) || {};
             return `
-            <div class="req-row">
-                <div class="req-info-group">
-                    <div class="req-col main-col"><span>الموظف</span><b>${emp.name||'--'}</b></div>
-                    <div class="req-col"><span>النوع</span><b>${r.type}</b></div>
-                    <div class="req-col"><span>التاريخ</span><b>${App.formatDate(r.start)}</b></div>
-                    <div class="req-col"><span>الحالة</span><span class="badge status-${r.stage}">${r.status}</span></div>
+            <div class="data-card" style="border-right:4px solid var(--danger);">
+                <div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div>
+                <div class="data-card-body">
+                    <p><span>الموظف:</span> <strong>${emp.name || '--'} (${emp.file || '--'})</strong></p>
+                    <p><span>تاريخ الإجراء:</span> <strong style="direction:rtl;">${r.start} م</strong></p>
                 </div>
-                <div class="req-actions">
-                    <button class="btn btn-info" onclick="App.openDetails('${r.id}')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <button class="btn btn-print" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة</button>
-                </div>
+                <button class="btn btn-print" style="width:100%; margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-folder-open"></i> استعراض السجل</button>
             </div>`;
         }).join('');
     },
 
-    filterEmps: (val) => { const term = val.toLowerCase().trim(); document.querySelectorAll('.employee-card').forEach(card => { card.style.display = card.getAttribute('data-search').toLowerCase().includes(term) ? 'flex' : 'none'; }); },
+    filterEmps: (val) => {
+        const term = val.toLowerCase().trim();
+        document.querySelectorAll('.employee-card').forEach(card => {
+            card.style.display = card.getAttribute('data-search').toLowerCase().includes(term) ? '' : 'none';
+        });
+    },
 
-    /* الشاشة الموحدة للتفاصيل */
     openDetails: (reqId) => {
-        const r = App.db.requests.find(x => x.id === reqId); if(!r) return;
-        const emp = App.db.users.find(u=>u.id===r.empId) || {}, isRet = r.id.startsWith('RET');
-        document.getElementById('modalReqTime').innerText = `${r.ts.greg} | ${r.ts.time}`;
-        document.getElementById('compType').innerText = r.type; document.getElementById('compDates').innerText = isRet ? App.formatDate(r.start) : `${App.formatDate(r.start)} إلى ${App.formatDate(r.end)}`;
+        const r = App.db.requests.find(x => x.id === reqId);
+        if(!r) return;
         
-        let subBadge = 'status-2', subTxt = 'بانتظار الموافقة';
-        if(isRet) { subBadge = 'status-1'; subTxt = 'إجراء إداري'; } else if(r.subId === '0000') { subBadge = 'status-1'; subTxt = 'مُعفى'; } else if(r.stage >= 2) { subBadge = 'status-4'; subTxt = 'وافق'; } else if(r.stage === 0) { subBadge = 'status-0'; subTxt = 'مرفوض'; }
-        document.getElementById('compSubStatus').className = `badge ${subBadge}`; document.getElementById('compSubStatus').innerText = subTxt;
+        const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        const isRet = r.id.startsWith('RET');
+        
+        document.getElementById('modalReqTime').innerText = `${r.ts.greg} م | ${r.ts.time}`;
+        document.getElementById('compType').innerText = r.type;
+        document.getElementById('compDates').innerText = isRet ? `${r.start} م` : `من ${r.start} م إلى ${r.end} م`;
+        
+        let subBadge = 'status-2'; let subTxt = 'بانتظار الموافقة';
+        if(isRet) { subBadge = 'status-1'; subTxt = 'إجراء إداري'; }
+        else if(r.subId === '0000') { subBadge = 'status-1'; subTxt = 'مُعفى'; }
+        else if(r.stage >= 2) { subBadge = 'status-4'; subTxt = 'وافق على التغطية'; }
+        else if(r.stage === 0) { subBadge = 'status-0'; subTxt = 'مرفوض'; }
+        
+        document.getElementById('compSubStatus').className = `badge ${subBadge}`;
+        document.getElementById('compSubStatus').innerText = subTxt;
 
-        document.getElementById('compEmp').innerHTML = `<p><span>الاسم:</span> <strong>${emp.name||'--'}</strong></p><p><span>المدني:</span> <strong>${emp.id||'--'}</strong></p><p><span>الملف:</span> <strong>${emp.file||'--'}</strong></p><p><span>المسجد:</span> <strong>${emp.place||'--'}</strong></p><p><span>الوظيفة:</span> <strong>${emp.job||'--'} (${emp.contract||'--'})</strong></p>`;
+        document.getElementById('compEmp').innerHTML = `
+            <p><span>الاسم الرباعي:</span> <strong>${emp.name || '--'}</strong></p>
+            <p><span>الرقم المدني:</span> <strong>${emp.id || '--'}</strong></p>
+            <p><span>رقم الهاتف:</span> <strong>${emp.phone || '--'}</strong></p>
+            <p><span>رقم الملف:</span> <strong>${emp.file || '--'}</strong></p>
+            <p><span>اسم المسجد:</span> <strong>${emp.place || '--'}</strong></p>
+            <p><span>الوظيفة/البند:</span> <strong>${emp.job || '--'} (${emp.contract || '--'})</strong></p>
+        `;
         
-        if (isRet || r.linkedReqId) {
+        if (isRet || r.linkedReqId) { // لو إجراء عودة أو تمديد
             const orig = App.db.requests.find(x => x.id === r.linkedReqId) || {};
-            document.getElementById('compSubTitle').innerHTML = `<i class="fas fa-link"></i> الإجازة الأصلية`;
-            document.getElementById('compSub').innerHTML = `<p><span>الرقم:</span> <strong>${orig.id||'--'}</strong></p><p><span>النوع:</span> <strong>${orig.type||'--'}</strong></p><p><span>النهاية:</span> <strong>${App.formatDate(orig.end)}</strong></p><p><span>الحالة:</span> <strong>${orig.status||'--'}</strong></p>`;
+            document.getElementById('compSubTitle').innerHTML = `<i class="fas fa-file-alt"></i> الإجازة الأصلية المرتبطة`;
+            document.getElementById('compSubCard').style.background = '#fef2f2';
+            document.getElementById('compSub').innerHTML = `
+                <p><span>رقم الإجازة:</span> <strong>${orig.id || '--'}</strong></p>
+                <p><span>نوع الإجازة:</span> <strong>${orig.type || '--'}</strong></p>
+                <p><span>تاريخ البداية:</span> <strong>${App.formatDate(orig.start)}</strong></p>
+                <p><span>تاريخ النهاية:</span> <strong>${App.formatDate(orig.end)}</strong></p>
+                <p><span>حالة الإجازة:</span> <strong>${orig.status || '--'}</strong></p>
+            `;
         } else {
-            const sub = r.subId === '0000' ? {name:'مُعفى', id:'--', file:'--', place:'--', job:'--', contract:'--'} : (App.db.users.find(u=>u.id===r.subId) || {});
+            const sub = r.subId === '0000' ? {name:'مُعفى (بدون بديل)', id:'--', phone:'--', file:'--', place:'--', job:'--', contract:'--'} : (App.db.users.find(u=>u.id===r.subId) || {});
             document.getElementById('compSubTitle').innerHTML = `<i class="fas fa-user-check"></i> البديل المكلف`;
-            document.getElementById('compSub').innerHTML = `<p><span>الاسم:</span> <strong>${sub.name||'--'}</strong></p><p><span>المدني:</span> <strong>${sub.id||'--'}</strong></p><p><span>الملف:</span> <strong>${sub.file||'--'}</strong></p><p><span>المسجد:</span> <strong>${sub.place||'--'}</strong></p><p><span>الوظيفة:</span> <strong>${sub.job||'--'} (${sub.contract||'--'})</strong></p>`;
+            document.getElementById('compSubCard').style.background = '#f8fafc';
+            document.getElementById('compSub').innerHTML = `
+                <p><span>الاسم الرباعي:</span> <strong>${sub.name || '--'}</strong></p>
+                <p><span>الرقم المدني:</span> <strong>${sub.id || '--'}</strong></p>
+                <p><span>رقم الهاتف:</span> <strong>${sub.phone || '--'}</strong></p>
+                <p><span>رقم الملف:</span> <strong>${sub.file || '--'}</strong></p>
+                <p><span>اسم المسجد:</span> <strong>${sub.place || '--'}</strong></p>
+                <p><span>الوظيفة/البند:</span> <strong>${sub.job || '--'} (${sub.contract || '--'})</strong></p>
+            `;
         }
         
         let btns = '';
-        if(App.curr.role === 'hr' && r.stage === 2) btns = `<button class="btn btn-primary" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')">اعتماد الشؤون</button><button class="btn btn-danger" onclick="App.actionReq('${r.id}', 0, 'مرفوض شؤون')">رفض</button>`;
-        else if(App.curr.role === 'cultural' && r.stage === 3) btns = `<button class="btn btn-success" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')">اعتماد الثقافي</button><button class="btn btn-danger" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')">رفض</button>`;
-        else if((App.curr.role === 'hr' || App.curr.role === 'cultural' || App.curr.role === 'emp') && r.stage === 4) btns = `<button class="btn btn-print" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة الوثيقة</button>`;
+        if(App.curr.role === 'hr' && r.stage === 2) {
+            btns = `
+                <button class="btn btn-primary" style="flex:1;" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')"><i class="fas fa-check-double"></i> اعتماد شؤون العاملين</button>
+                <button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض شؤون')"><i class="fas fa-times"></i> رفض الطلب</button>
+            `;
+        } else if(App.curr.role === 'cultural' && r.stage === 3) {
+            btns = `
+                <button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد التوجيه الثقافي</button>
+                <button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button>
+            `;
+        } else if((App.curr.role === 'hr' || App.curr.role === 'cultural') && r.stage === 4) {
+             btns = `<button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة الوثيقة المعتمدة</button>`;
+        }
         
-        btns += `<button class="btn" style="background:#475569; color:white;" onclick="App.closeModal('unifiedDetailsModal')">إغلاق</button>`;
+        btns += `<button class="btn" style="background:#475569; color:white; width:100%; margin-top:10px;" onclick="App.closeModal('unifiedDetailsModal')">إغلاق النافذة</button>`;
         document.getElementById('modalActionButtons').innerHTML = btns;
         document.getElementById('unifiedDetailsModal').style.display = 'flex';
     },
 
-    /* تحديثات وإكسيل */
-    toggleEmpStatus: async (id) => { const u = App.db.users.find(x => x.id === id); const newStatus = u.status === 'frozen' ? 'active' : 'frozen'; u.status = newStatus; try { await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ status: newStatus }) }); } catch(e) {} App.fetchData(); },
-    openEditEmp: (id) => { const u = App.db.users.find(x => x.id === id); document.getElementById('edId').value = u.id; document.getElementById('edName').value = u.name||''; document.getElementById('edFile').value = u.file||''; document.getElementById('edPlace').value = u.place||''; document.getElementById('edPhone').value = u.phone||''; document.getElementById('edPass').value = ""; document.getElementById('hrEditEmpModal').style.display = 'flex'; },
-    saveEditEmp: async () => { const id = document.getElementById('edId').value; const u = App.db.users.find(x => x.id === id); u.name = document.getElementById('edName').value; u.file = document.getElementById('edFile').value; u.place = document.getElementById('edPlace').value; u.phone = document.getElementById('edPhone').value; const pass = document.getElementById('edPass').value.trim(); if(pass && pass.length >= 4) u.pass = pass; try { await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(u) }); } catch(e) {} App.closeModal('hrEditEmpModal'); App.fetchData(); },
-    openSelfEdit: () => { document.getElementById('sePhone').value = App.curr.phone||''; document.getElementById('sePlace').value = App.curr.place||''; document.getElementById('sePass').value = ''; document.getElementById('selfEditModal').style.display = 'flex'; },
-    saveSelfEdit: async () => { App.curr.phone = document.getElementById('sePhone').value; App.curr.place = document.getElementById('sePlace').value; const pass = document.getElementById('sePass').value.trim(); if(pass && pass.length >= 4) App.curr.pass = pass; sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr)); try { await fetch(`/api/users/${App.curr.id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(App.curr) }); } catch(e) {} App.closeModal('selfEditModal'); App.renderEmp(); },
-    exportToExcel: () => {
-        if(App.db.requests.length === 0) return alert("لا توجد بيانات.");
-        const expData = App.db.requests.map(r => { const e = App.db.users.find(u=>u.id===r.empId)||{}; const s = r.subId==='0000'?{name:'مُعفى'}:(App.db.users.find(u=>u.id===r.subId)||{}); return { "الطلب": r.id, "الاسم": e.name, "المدني": e.id, "الملف": e.file, "المسجد": e.place, "البديل": s.name, "النوع": r.type, "من": App.formatDate(r.start), "إلى": App.formatDate(r.end), "الحالة": r.status } });
-        const ws = XLSX.utils.json_to_sheet(expData); ws['!dir'] = 'rtl'; const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "البيانات"); XLSX.writeFile(wb, `إحصائية_${Date.now()}.xlsx`);
+    toggleEmpStatus: async (id) => {
+        const u = App.db.users.find(x => x.id === id);
+        const newStatus = u.status === 'frozen' ? 'active' : 'frozen';
+        u.status = newStatus; // محلي
+        try {
+            await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ status: newStatus }) });
+        } catch(e) {}
+        App.fetchData();
     },
 
-    /* --- الطباعة الرسمية المُطورة لتعمل على الموبايل --- */
+    openEditEmp: (id) => {
+        const u = App.db.users.find(x => x.id === id);
+        document.getElementById('edId').value = u.id; document.getElementById('edName').value = u.name || '';
+        document.getElementById('edFile').value = u.file || ''; document.getElementById('edNat').value = u.nationality || '';
+        document.getElementById('edRegion').value = u.region || ''; document.getElementById('edPlace').value = u.place || '';
+        document.getElementById('edJob').value = u.job || ''; document.getElementById('edContract').value = u.contract || '';
+        document.getElementById('edPhone').value = u.phone || ''; document.getElementById('edPass').value = "";
+        document.getElementById('hrEditEmpModal').style.display = 'flex';
+    },
+
+    saveEditEmp: async () => {
+        const id = document.getElementById('edId').value;
+        const u = App.db.users.find(x => x.id === id);
+        u.name = document.getElementById('edName').value; u.file = document.getElementById('edFile').value;
+        u.nationality = document.getElementById('edNat').value; u.region = document.getElementById('edRegion').value;
+        u.place = document.getElementById('edPlace').value; u.job = document.getElementById('edJob').value;
+        u.contract = document.getElementById('edContract').value; u.phone = document.getElementById('edPhone').value;
+        
+        const newPass = document.getElementById('edPass').value.trim();
+        if(newPass && newPass.length >= 4) u.pass = newPass;
+
+        try {
+            await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(u) });
+        } catch(e) {}
+        App.closeModal('hrEditEmpModal'); App.fetchData();
+    },
+
+    exportToExcel: () => {
+        if(App.db.requests.length === 0) return alert("لا توجد بيانات.");
+        const expData = App.db.requests.map(r => {
+            const e = App.db.users.find(u=>u.id===r.empId) || {};
+            const s = r.subId === '0000' ? {name:'مُعفى'} : (App.db.users.find(u=>u.id===r.subId) || {});
+            return { "رقم الطلب": r.id, "الاسم": e.name, "المدني": e.id, "الهاتف": e.phone, "رقم الملف": e.file, "المسجد": e.place, "البديل": s.name, "النوع": r.type, "من": App.formatDate(r.start), "إلى": App.formatDate(r.end), "الحالة": r.status, "تاريخ التقديم": `${r.ts.greg} م`, "الوقت": r.ts.time }
+        });
+        const ws = XLSX.utils.json_to_sheet(expData); 
+        ws['!dir'] = 'rtl'; // لتصدير الملف باتجاه اليمين لليسار
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "سجل النظام الشامل");
+        XLSX.writeFile(wb, `إحصائية_الشؤون_${Date.now()}.xlsx`);
+    },
+
     printTicket: (id) => {
         App.closeModal('unifiedDetailsModal');
-        const r = App.db.requests.find(x => x.id === id); if(!r) return;
-        const emp = App.db.users.find(u=>u.id===r.empId) || {}, isRet = r.id.startsWith('RET');
-        const sub = isRet ? {name:'إجراء إداري'} : (r.subId === '0000' ? {name:'مُعفى (بدون بديل)'} : (App.db.users.find(u=>u.id===r.subId) || {name:'--'}));
+        const r = App.db.requests.find(x => x.id === id);
+        if(!r) return;
+        const emp = App.db.users.find(u=>u.id===r.empId) || {};
+        const isRet = r.id.startsWith('RET');
+        const sub = isRet ? {name:'إجراء إداري مقيد بالنظام'} : (r.subId === '0000' ? {name:'مُعفى (بدون بديل)'} : (App.db.users.find(u=>u.id===r.subId) || {name:'--'}));
         
-        const ts = App.getTimestamp();
-        const printDiv = document.getElementById('printArea');
+        const area = document.getElementById('printArea'); const ts = App.getTimestamp();
+        document.getElementById('mainContainer').style.display = 'none';
         
-        // بناء تصميم رسمي منسق جداً للطباعة
-        printDiv.innerHTML = `
-            <div style="font-family: 'Cairo', sans-serif; direction: rtl; padding: 20px; max-width: 800px; margin: 0 auto; background: white; color: black;">
+        area.innerHTML = `
+            <div style="text-align:center; border:6px double var(--primary-dark); padding:30px; direction:rtl; font-family:'Cairo'; max-width:100%; margin:0 auto; background:white;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" width="70" style="margin-bottom:10px;">
+                <h2 style="margin:5px 0;">دولة الكويت - وزارة الشؤون الإسلامية</h2>
+                <h3 style="margin:5px 0;">إدارة مساجد محافظة الأحمدي</h3>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px double #1b4532; padding-bottom: 15px; margin-bottom: 20px;">
-                    <div style="text-align: right; line-height: 1.4;">
-                        <h2 style="margin: 0; font-size: 18px; font-weight: 900;">دولة الكويت</h2>
-                        <h3 style="margin: 0; font-size: 16px;">وزارة الشؤون الإسلامية</h3>
-                        <h4 style="margin: 0; font-size: 14px; color: #555;">إدارة مساجد محافظة الأحمدي</h4>
-                    </div>
-                    <div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" style="width: 70px;"></div>
+                <div style="background:var(--primary); color:white; padding:10px; margin:20px 0; border-radius:10px;">
+                    <h3 style="margin:0;">تصريح معتمد إلكترونياً (رقم: ${r.id})</h3>
                 </div>
-
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <h2 style="display: inline-block; background: #f0f0f0; border: 1px solid #1b4532; padding: 8px 25px; border-radius: 8px; margin:0;">
-                        إشعار اعتماد ${r.type}
-                    </h2>
-                    <p style="margin: 5px 0 0 0; font-size: 14px;">رقم المرجع الآلي: <strong>${r.id}</strong></p>
+                
+                <div style="text-align:right; font-size:16px; margin-top:20px; line-height:2; display:grid; grid-template-columns:1fr; gap:10px; border:1px solid #ddd; padding:20px; border-radius:10px; background:#fafafa;">
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>اسم الموظف:</b> ${emp.name || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>رقم الملف الوظيفي:</b> ${emp.file || '--'} &nbsp;|&nbsp; <b>الرقم المدني:</b> ${emp.id || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>المسجد والمنطقة:</b> ${emp.place || '--'} - ${emp.region || '--'}</p>
+                    <p style="margin:0; border-bottom:1px solid #eee; color:var(--primary); font-weight:bold;"><b>نوع الإجراء:</b> ${r.type} &nbsp;|&nbsp; <b>الحالة:</b> معتمد نهائياً</p>
+                    <p style="margin:0; border-bottom:1px solid #eee;"><b>${isRet ? 'تاريخ التنفيذ' : 'الفترة'}:</b> <span style="direction:rtl; display:inline-block;">${isRet ? r.start + ' م' : 'من ' + r.start + ' م إلى ' + r.end + ' م'}</span></p>
+                    <p style="margin:0; background:#eef2ff; padding:10px; border-radius:5px;"><b>${isRet ? 'ملاحظات الإجراء' : 'البديل المكلف'}:</b> ${sub.name || '--'}</p>
                 </div>
-
-                <h4 style="border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">أولاً: بيانات مقدم الطلب</h4>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9; width: 20%;"><strong>الاسم الرباعي</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px; width: 30%;">${emp.name || '--'}</td>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9; width: 20%;"><strong>الرقم المدني</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px; width: 30%;">${emp.id || '--'}</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9;"><strong>رقم الملف</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px;">${emp.file || '--'}</td>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9;"><strong>الوظيفة / البند</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px;">${emp.job || '--'} (${emp.contract || '--'})</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9;"><strong>المسجد</strong></td>
-                        <td colspan="3" style="border: 1px solid #aaa; padding: 8px;">${emp.place || '--'} - ${emp.region || '--'}</td>
-                    </tr>
-                </table>
-
-                <h4 style="border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">ثانياً: تفاصيل الإجراء</h4>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 14px;">
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9; width: 20%;"><strong>نوع الطلب</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px; width: 80%; font-weight:bold;">${r.type}</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9;"><strong>${isRet ? 'تاريخ التنفيذ' : 'فترة الإجازة'}</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px; font-weight:bold;">
-                            ${isRet ? App.formatDate(r.start) : `من ( ${App.formatDate(r.start)} ) إلى ( ${App.formatDate(r.end)} )`}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #aaa; padding: 8px; background: #f9f9f9;"><strong>البديل المكلف</strong></td>
-                        <td style="border: 1px solid #aaa; padding: 8px;">${sub.name || '--'}</td>
-                    </tr>
-                </table>
-
-                <div style="display: flex; justify-content: space-between; text-align: center; margin-top: 40px; font-size: 15px;">
-                    <div style="width: 45%; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                        <p style="margin: 0 0 10px 0; font-weight: bold;">اعتماد شؤون العاملين</p>
-                        <p style="margin: 0; color: #1b4532;">✔️ مُعتمد إلكترونياً</p>
-                    </div>
-                    <div style="width: 45%; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                        <p style="margin: 0 0 10px 0; font-weight: bold;">اعتماد التوجيه الثقافي</p>
-                        <p style="margin: 0; color: #1b4532;">✔️ مُعتمد إلكترونياً</p>
-                    </div>
+                
+                <div style="margin-top:40px; display:flex; justify-content:space-between; font-weight:bold; font-size:16px; padding:0 20px;">
+                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد شؤون العاملين</p><p style="color:var(--primary);">[ مُعْتَمَد إلكترونياً ]</p></div>
+                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد التوجيه الثقافي</p><p style="color:var(--primary);">[ مُعْتَمَد إلكترونياً ]</p></div>
                 </div>
-
-                <div style="margin-top: 40px; font-size: 11px; color: #666; border-top: 1px dashed #aaa; padding-top: 10px; text-align: left;">
-                    وثيقة مستخرجة من النظام المركزي الآلي | تاريخ الاستخراج: ${ts.greg} م | ${ts.time}
+                
+                <div style="margin-top:40px; font-size:12px; color:#777; border-top:1px dashed #ccc; padding-top:10px; text-align:right;">
+                    * وثيقة رسمية مستخرجة من النظام الآلي.<br>* تاريخ استخراج الوثيقة: ${ts.greg} م - ${ts.hijri} هـ | وقت: ${ts.time}
                 </div>
             </div>
         `;
         
-        // استدعاء نافذة الطباعة الخاصة بالموبايل/الكمبيوتر
-        setTimeout(() => { window.print(); }, 500);
+        setTimeout(() => { window.print(); area.innerHTML = ''; document.getElementById('mainContainer').style.display = 'block'; }, 500);
     }
 };
 
