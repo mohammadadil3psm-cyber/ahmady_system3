@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -8,14 +7,18 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // إعداد مسار قاعدة البيانات ليتوافق مع (Render Disk) أو التشغيل المحلي
+// إذا كان مجلد /data موجوداً (كما في إعدادات Render)، سيتم استخدامه لضمان عدم ضياع البيانات
 const DB_DIR = fs.existsSync('/data') ? '/data' : __dirname;
 const DB_FILE = path.join(DB_DIR, 'database.json');
 
 app.use(cors());
 app.use(express.json());
+// تقديم ملفات الواجهة الأمامية (HTML, CSS, JS)
 app.use(express.static(__dirname));
 
+// ==========================================
 // وظائف مساعدة للقراءة والكتابة الآمنة
+// ==========================================
 const readDB = () => {
     try {
         if (!fs.existsSync(DB_FILE)) return { users: [], requests: [], returnActions: [], logs: [] };
@@ -43,7 +46,7 @@ if (!fs.existsSync(DB_FILE)) {
             { id: "333333333333", name: "الموجه الثقافي", role: "cultural", status: "active", pass: "1234", place: "إدارة التوجيه", file: "CUL-001", nationality: "كويتي", region: "الأحمدي", job: "موجه فني", contract: "عامة", phone: "--" }
         ],
         requests: [],
-        returnActions: [], 
+        returnActions: [], // تم الإبقاء عليه لدعم البيانات القديمة إن وجدت
         logs: []
     });
 }
@@ -52,21 +55,12 @@ if (!fs.existsSync(DB_FILE)) {
 // مسارات الـ API (الروابط التي يتصل بها المتصفح)
 // ==========================================
 
+// 1. جلب جميع البيانات (تستخدمها الواجهة عند التحميل)
 app.get('/api/data', (req, res) => {
     res.json(readDB());
 });
 
-app.post('/api/login', (req, res) => {
-    const { id, pass, role } = req.body;
-    const db = readDB();
-    const user = db.users.find(u => u.id === id && u.pass === pass && u.role === role);
-    
-    if (user) {
-        return res.json({ success: true, user });
-    }
-    res.status(401).json({ success: false, message: "بيانات الدخول غير صحيحة أو الرتبة خاطئة" });
-});
-
+// 2. تسجيل مستخدم جديد
 app.post('/api/users', (req, res) => {
     const db = readDB();
     if (db.users.find(u => u.id === req.body.id)) {
@@ -77,6 +71,7 @@ app.post('/api/users', (req, res) => {
     res.json({ success: true });
 });
 
+// 3. تحديث بيانات مستخدم (تغيير حالة، أو تحديث بيانات شخصية)
 app.put('/api/users/:id', (req, res) => {
     const db = readDB();
     const index = db.users.findIndex(u => u.id === req.params.id);
@@ -89,13 +84,7 @@ app.put('/api/users/:id', (req, res) => {
     }
 });
 
-app.delete('/api/users/:id', (req, res) => {
-    const db = readDB();
-    db.users = db.users.filter(u => u.id !== req.params.id);
-    writeDB(db);
-    res.json({ success: true });
-});
-
+// 4. تقديم طلب جديد (إجازة، مباشرة، قطع، أو إذن انقطاع)
 app.post('/api/requests', (req, res) => {
     const db = readDB();
     db.requests.push(req.body);
@@ -103,6 +92,7 @@ app.post('/api/requests', (req, res) => {
     res.json({ success: true });
 });
 
+// 5. تحديث حالة الطلب (نقل الطلب من البديل -> الشؤون -> الثقافي)
 app.put('/api/requests/:id', (req, res) => {
     const db = readDB();
     const index = db.requests.findIndex(r => r.id === req.params.id);
@@ -115,21 +105,19 @@ app.put('/api/requests/:id', (req, res) => {
     }
 });
 
-app.post('/api/returns', (req, res) => {
-    const db = readDB();
-    db.returnActions.push(req.body);
-    writeDB(db);
-    res.json({ success: true });
-});
-
+// 6. تسجيل الإشعارات الذكية (Logs)
 app.post('/api/logs', (req, res) => {
     const db = readDB();
-    db.logs.unshift(req.body); 
+    db.logs.unshift(req.body); // إضافة الإشعار الأحدث في البداية
+    // الاحتفاظ بآخر 500 إشعار فقط لتخفيف حجم قاعدة البيانات
+    if (db.logs.length > 500) db.logs = db.logs.slice(0, 500);
     writeDB(db);
     res.json({ success: true });
 });
 
-// 10. الحل النهائي والجذري لمشكلة Render (بدون استخدام علامة النجمة)
+// ==========================================
+// الحل النهائي والجذري لمشكلة التوجيه في Render (SPA Fallback)
+// ==========================================
 app.use((req, res) => {
     if (req.method === 'GET') {
         res.sendFile(path.join(__dirname, 'index.html'));
@@ -141,4 +129,5 @@ app.use((req, res) => {
 // تشغيل الخادم
 app.listen(PORT, () => {
     console.log(`✅ الخادم يعمل بنجاح على المنفذ ${PORT}`);
+    console.log(`📂 مسار قاعدة البيانات الحالي: ${DB_FILE}`);
 });
