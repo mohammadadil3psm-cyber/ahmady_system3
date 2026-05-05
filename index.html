@@ -351,7 +351,6 @@
                 <li>لا يُقبل <b>أي تمديد</b> للإجازة، والتأخير لمدة (7) أيام يعد <b>انقطاعاً عن العمل</b>.</li>
                 <li>يجب أن يكون البديل من <b>نفس المسجد</b> وسيطلب منه الموافقة.</li>
                 <li>لا يحق للبديل التقدم بطلب إجازة إلا بعد <b>عودة زميله المجاز</b>.</li>
-                <li>للعاملين (العقد الثاني، الاستعانة): يجب تسجيل الإجازة ببرنامج الديوان وإرفاق صورة التسجيل.</li>
                 <li>يراعى أن يكون الفارق بين إجازة الإمام والمؤذن <b>ثلاثة أيام</b> على الأقل.</li>
                 <li>آخر موعد لتقديم إجازات الصيف هو <b>2026/05/21م</b> ولن تقبل أي إجازة بعد هذا التاريخ.</li>
             </ul>
@@ -382,11 +381,6 @@
         <div class="form-grid">
             <div class="form-group"><label id="lblReqStart">بداية الفترة</label><input type="date" id="reqStart" class="form-control"></div>
             <div class="form-group"><label id="lblReqEnd">نهاية الفترة</label><input type="date" id="reqEnd" class="form-control"></div>
-            
-            <div class="form-group" id="diwanUploadGroup" style="display:none; grid-column: 1 / -1; margin-top:10px;">
-                <label style="color:var(--danger);"><i class="fas fa-file-upload"></i> صورة تسجيل الإجازة ببرنامج الديوان (إلزامي لعقدك)</label>
-                <input type="file" id="diwanFile" class="form-control" accept="image/*,.pdf">
-            </div>
         </div>
         
         <div id="waLinkArea" style="display:none; margin-top:15px;">
@@ -683,17 +677,6 @@ const App = {
         
         if(id === 'returnPage') App.setupReturn();
         
-        if(id === 'requestPage' && App.curr) {
-            const contract = App.curr.contract;
-            const diwanGroup = document.getElementById('diwanUploadGroup');
-            if(diwanGroup) {
-                if(contract === 'عقد ثاني' || contract === 'استعانة') {
-                    diwanGroup.style.display = 'block';
-                } else {
-                    diwanGroup.style.display = 'none';
-                }
-            }
-        }
         App.checkNotifications();
     },
 
@@ -801,12 +784,6 @@ const App = {
         const diffDays = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
         if(diffDays < 7) {
             return alert("عفواً، يجب تقديم طلب الإجازة قبل (7) أيام من بدايتها على الأقل.");
-        }
-
-        const isContractSpecial = App.curr.contract === 'عقد ثاني' || App.curr.contract === 'استعانة';
-        const diwanFile = document.getElementById('diwanFile').value;
-        if(isContractSpecial && !diwanFile) {
-            return alert("نظراً لطبيعة عقدك، إلزامي إرفاق صورة من تسجيل الإجازة على برنامج الديوان.");
         }
 
         const isAlone = App.tempSub.id === "0000";
