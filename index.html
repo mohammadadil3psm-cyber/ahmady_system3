@@ -464,6 +464,7 @@
 
         <div id="hrArchiveLeaveView" style="display:none;">
             <div class="filter-bar">
+                <input type="text" id="hrALSearch" class="form-control" placeholder="بحث (اسم، مدني، طلب)..." onkeyup="App.renderHrArchiveLeaves()">
                 <select id="hrALMonth" class="form-control" onchange="App.renderHrArchiveLeaves()">
                     <option value="all">كل الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
                 </select>
@@ -480,6 +481,7 @@
 
         <div id="hrArchiveReturnView" style="display:none;">
             <div class="filter-bar">
+                <input type="text" id="hrARSearch" class="form-control" placeholder="بحث (اسم، مدني، طلب)..." onkeyup="App.renderHrArchiveReturns()">
                 <select id="hrARMonth" class="form-control" onchange="App.renderHrArchiveReturns()">
                     <option value="all">كل الشهور</option><option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option><option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option><option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
                 </select>
@@ -1001,31 +1003,67 @@ const App = {
         }).join('');
     },
 
+    // تم تحديث الدالة لتدعم البحث النصي لأرشيف الإجازات
     renderHrArchiveLeaves: function() {
-        const fM = document.getElementById('hrALMonth').value; const fY = document.getElementById('hrALYear').value; const fT = document.getElementById('hrALType').value;
+        const fM = document.getElementById('hrALMonth').value; 
+        const fY = document.getElementById('hrALYear').value; 
+        const fT = document.getElementById('hrALType').value;
+        const sText = document.getElementById('hrALSearch').value.toLowerCase().trim(); // الكلمة المفتاحية للبحث
+
         let reqs = App.db.requests.filter(r => !r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
-            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && (fY === 'all' || String(rD.getFullYear()) === fY) && (fT === 'all' || r.type === fT);
+            const emp = App.db.users.find(u => u.id === r.empId) || {};
+            
+            const matchM = (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM);
+            const matchY = (fY === 'all' || String(rD.getFullYear()) === fY);
+            const matchT = (fT === 'all' || r.type === fT);
+            
+            // تحقق البحث: يطابق رقم الطلب أو اسم الموظف أو المدني
+            const matchS = sText === '' || 
+                           r.id.toLowerCase().includes(sText) || 
+                           (emp.name && emp.name.toLowerCase().includes(sText)) || 
+                           (emp.id && emp.id.includes(sText));
+
+            return matchM && matchY && matchT && matchS;
         });
 
         document.getElementById('hrALStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div><div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div><div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>`;
+        
         document.getElementById('hrALTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
+    // تم تحديث الدالة لتدعم البحث النصي لأرشيف المباشرة
     renderHrArchiveReturns: function() {
-        const fM = document.getElementById('hrARMonth').value; const fY = document.getElementById('hrARYear').value; const fT = document.getElementById('hrARType').value;
+        const fM = document.getElementById('hrARMonth').value; 
+        const fY = document.getElementById('hrARYear').value; 
+        const fT = document.getElementById('hrARType').value;
+        const sText = document.getElementById('hrARSearch').value.toLowerCase().trim(); // الكلمة المفتاحية للبحث
+
         let reqs = App.db.requests.filter(r => r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
-            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && (fY === 'all' || String(rD.getFullYear()) === fY) && (fT === 'all' || r.type === fT);
+            const emp = App.db.users.find(u => u.id === r.empId) || {};
+            
+            const matchM = (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM);
+            const matchY = (fY === 'all' || String(rD.getFullYear()) === fY);
+            const matchT = (fT === 'all' || r.type === fT);
+
+            // تحقق البحث: يطابق رقم الطلب أو اسم الموظف أو المدني
+            const matchS = sText === '' || 
+                           r.id.toLowerCase().includes(sText) || 
+                           (emp.name && emp.name.toLowerCase().includes(sText)) || 
+                           (emp.id && emp.id.includes(sText));
+
+            return matchM && matchY && matchT && matchS;
         });
 
         document.getElementById('hrARStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>إجمالي المباشرة</p></div><div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div><div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>`;
+        
         document.getElementById('hrARTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
