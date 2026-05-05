@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        /* المتغيرات والألوان الأساسية */
         :root {
             --primary: #1b4532; 
             --primary-dark: #0a2b1f; 
@@ -29,7 +28,6 @@
             --border: #e5e7eb;
         }
 
-        /* الوضع الليلي */
         body.dark-mode {
             --primary: #2d6a4f; 
             --primary-dark: #1b4532; 
@@ -41,7 +39,6 @@
             --white: #1f2937;
         }
 
-        /* التنسيقات العامة */
         body { 
             font-family: 'Cairo', sans-serif; 
             background: var(--bg); 
@@ -53,7 +50,6 @@
             line-height: 1.6; 
         }
         
-        /* الشريط العلوي */
         .top-bar { 
             background: var(--primary-dark); 
             color: var(--gold); 
@@ -83,7 +79,6 @@
             font-weight: bold; 
         }
 
-        /* الهيدر (الشعارات والعنوان) */
         header { 
             background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
             padding: 20px 15px; 
@@ -104,110 +99,33 @@
             opacity: 0.05; 
             pointer-events: none; 
         }
-        .header-logo { 
-            width: 60px; 
-            height: 60px;  
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 2;  
-        }
+        .header-logo { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .header-logo img { width: 100%; height: 100%; object-fit: contain; }
         .header-content { text-align: center; z-index: 2; flex-grow: 1; padding: 0 10px; }
         header h1 { font-family: 'Amiri', serif; margin: 0; font-size: 20px; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         header p { margin: 4px 0 0; font-weight: 700; color: var(--gold-light); font-size: 14px; }
         
-        /* شريط التنقل */
         nav { 
-            display: flex; 
-            background: var(--card-bg); 
-            overflow-x: auto; 
-            padding: 10px; 
-            gap: 8px; 
-            border-bottom: 1px solid var(--border); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-            scrollbar-width: none; 
+            display: flex; background: var(--card-bg); overflow-x: auto; padding: 10px; gap: 8px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); scrollbar-width: none; 
         }
         nav::-webkit-scrollbar { display: none; }
         .nav-item { 
-            padding: 10px 15px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            font-weight: 700; 
-            background: #f3f4f6; 
-            font-size: 13px; 
-            color: #4b5563; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            transition: all 0.3s; 
-            border: 1px solid transparent; 
+            padding: 10px 15px; border-radius: 10px; cursor: pointer; white-space: nowrap; font-weight: 700; background: #f3f4f6; font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 6px; transition: all 0.3s; border: 1px solid transparent; 
         }
-        .nav-item.active-nav { 
-            background: var(--primary); 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(27,69,50,0.2); 
-            border-color: var(--gold); 
-        }
+        .nav-item.active-nav { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(27,69,50,0.2); border-color: var(--gold); }
 
-        /* المحتوى الرئيسي والكروت */
         main { padding: 20px 15px; max-width: 1200px; margin: auto; min-height: 70vh; }
-        .card { 
-            background: var(--card-bg); 
-            border-radius: 16px; 
-            padding: 20px; 
-            box-shadow: var(--shadow); 
-            border: 1px solid var(--border); 
-            margin-bottom: 25px; 
-            display: none; 
-            animation: fadeIn 0.4s ease-out; 
-        }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 25px; display: none; animation: fadeIn 0.4s ease-out; }
         .card.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* النماذج والإدخالات */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--primary); font-size: 13px; }
-        .form-control { 
-            width: 100%; 
-            padding: 10px 12px; 
-            border-radius: 10px; 
-            border: 1.5px solid var(--border); 
-            background: var(--bg); 
-            color: var(--text-main); 
-            font-family: 'Cairo'; 
-            font-size: 13px; 
-            box-sizing: border-box; 
-            transition: 0.3s; 
-        }
-        .form-control:focus { 
-            border-color: var(--gold); 
-            outline: none; 
-            background: var(--card-bg); 
-            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); 
-        }
+        .form-control { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text-main); font-family: 'Cairo'; font-size: 13px; box-sizing: border-box; transition: 0.3s; }
+        .form-control:focus { border-color: var(--gold); outline: none; background: var(--card-bg); box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); }
         
-        /* الأزرار */
-        .btn { 
-            padding: 10px 16px; 
-            border-radius: 10px; 
-            border: none; 
-            font-weight: 800; 
-            cursor: pointer; 
-            font-family: 'Cairo'; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            font-size: 13px; 
-            transition: all 0.2s; 
-            text-align: center; 
-        }
+        .btn { padding: 10px 16px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; font-family: 'Cairo'; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; transition: all 0.2s; text-align: center; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 100%; box-shadow: 0 4px 10px rgba(27,69,50,0.2); }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(27,69,50,0.3); }
         .btn:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; box-shadow: none; transform: none; }
@@ -220,7 +138,6 @@
         .btn-info { background: var(--info); color: white; }
         .btn-sm { padding: 6px 10px; font-size: 12px; }
         
-        /* الشارات (البادجات) */
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-block; }
         .status-1 { background: #dbeafe; color: #1e40af; } 
         .status-2 { background: #fef3c7; color: #b45309; } 
@@ -228,24 +145,12 @@
         .status-4 { background: #d1fae5; color: #065f46; } 
         .status-0 { background: #fee2e2; color: #b91c1c; } 
 
-        /* تبويبات شؤون العاملين */
         .hr-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
         .hr-tab { flex: 1; padding: 12px; background: #e5e7eb; color: #4b5563; border-radius: 10px; text-align: center; cursor: pointer; font-weight: 800; white-space: nowrap; min-width: 130px; font-size: 13px; transition: 0.3s; }
         .hr-tab.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(27,69,50,0.2); }
 
-        /* شبكات عرض البيانات (الكروت) */
         .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        .data-card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 15px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
-            transition: transform 0.2s, box-shadow 0.2s; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
+        .data-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
         .data-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: var(--gold-light); }
         .data-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; }
         .data-card-title { font-weight: 900; color: var(--primary); font-size: 14px; display: flex; align-items: center; gap: 6px; }
@@ -256,7 +161,6 @@
         .data-card-body strong { color: var(--text-main); font-weight: 800; text-align: right; max-width: 60%; word-wrap: break-word; }
         .data-card-actions { margin-top: 12px; display: flex; gap: 8px; }
         
-        /* الإحصائيات */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .stat-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px; }
@@ -267,22 +171,18 @@
         .stat-card h3 { margin: 0; font-size: 24px; color: var(--primary); }
         .stat-card p { margin: 4px 0 0; color: var(--text-muted); font-weight: 700; font-size: 12px; }
         
-        /* شريط الفلتر */
         .filter-bar { background: var(--bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .filter-bar select, .filter-bar input { flex: 1; min-width: 120px; padding: 8px; font-size: 12px; }
 
-        /* لوحة الإشعارات */
         .notifications-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
         .notif-item { padding: 10px 8px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; font-size: 12px; }
         .notif-item:last-child { border-bottom: none; }
         .notif-time { color: var(--text-muted); font-size: 10px; display: block; margin-top: 2px; font-weight: bold; }
 
-        /* النوافذ المنبثقة (Modals) */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 10px; }
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 16px; width: 100%; max-width: 700px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; position: relative; }
         .modal-close { position: absolute; top: 15px; left: 15px; cursor: pointer; color: var(--danger); font-size: 20px; }
         
-        /* المقارنة في التفاصيل */
         .compare-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
         .compare-card { border: 1px solid var(--border); border-radius: 12px; padding: 15px; background: var(--bg); }
         .compare-card h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 8px; font-size: 15px; margin-bottom: 12px; }
@@ -291,11 +191,8 @@
         .compare-card span { color: var(--text-muted); font-weight: 600; }
         .compare-card strong { color: var(--text-main); font-weight: 800; text-align: left; }
 
-        @media (min-width: 600px) {
-            .compare-grid { grid-template-columns: 1fr 1fr; }
-        }
+        @media (min-width: 600px) { .compare-grid { grid-template-columns: 1fr 1fr; } }
 
-        /* نظام المصادقة والبصمة */
         .bio-container { text-align: center; padding: 20px; position: relative; }
         .bio-scanner { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: var(--success); box-shadow: 0 0 8px var(--success); display: none; z-index: 10; }
         .bio-icon { font-size: 60px; color: var(--primary); margin: 10px 0; cursor: pointer; transition: 0.3s; position: relative; }
@@ -304,10 +201,7 @@
         @keyframes scanLine { 0% { top: 15%; } 50% { top: 75%; } 100% { top: 15%; } }
         
         .pin-input { font-size: 24px; letter-spacing: 15px; text-align: center; width: 100%; max-width: 200px; margin: 0 auto; font-family: monospace; border: 2px solid var(--primary); font-weight:bold; }
-        
-        .ext-box { display: none; background: #e0f2fe; border: 1px solid #bae6fd; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
 
-        /* تعديلات الموبايل الأساسية */
         @media (max-width: 768px) {
             .top-bar { font-size: 11px; padding: 8px 10px; }
             header { padding: 15px 10px; }
@@ -324,7 +218,6 @@
             .stats-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* تنسيقات الطباعة (تعمل بشكل ممتاز على تحويل الموبايل لـ PDF) */
         @media print {
             @page { size: auto; margin: 0mm; }
             body, html { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
@@ -450,51 +343,28 @@
     <div id="requestPage" class="card">
         <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-top:0; font-size:16px;"><i class="fas fa-calendar-plus"></i> تقديم طلب جديد</h3>
         
-                <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:15px; border-radius:10px; margin-bottom:20px; font-size:13px; line-height:1.8; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
-            <h4 style="margin-top:0; margin-bottom:10px; color:#b45309; border-bottom:1px dashed #fcd34d; padding-bottom:8px; font-size:14px;">
-                <i class="fas fa-exclamation-triangle"></i> تعميم إداري هام
-            </h4>
-            <p style="margin:0 0 10px 0; font-weight:bold;">تنويه من الإدارة، نرجو من الأخوة الأفاضل الأئمة والخطباء والمؤذنين مراعاة الآتي:</p>
-            <ol style="margin:0; padding-right:20px; list-style-type: arabic-indic;">
-                <li><strong>أولاً:</strong> عند تقديم طلب الإجازة يكون قبل سبعة أيام من بدايتها على الأقل.</li>
-                <li><strong>ثانياً:</strong> عدم القيام بأية إجراءات للسفر (حجز تذاكر - موعد مسبق خارج البلاد) دون اعتماد الإجازة رسمياً.</li>
-                <li><strong>ثالثاً:</strong> عدم قبول أي تمديد للإجازة، وعند التأخير لمدة (7) أيام يعد انقطاعاً عن العمل.</li>
-                <li><strong>رابعاً:</strong> ضرورة توقيع البديل (موافقته بالنظام) على نموذج الإجازة، ولابد أن يكون البديل من نفس المسجد.</li>
-                <li><strong>خامساً:</strong> يتم تسجيل الإجازة على برنامج الديوان للعاملين على بند العقد الثاني والاستعانة وإرسال صورة من التسجيل.</li>
-                <li><strong>سادساً:</strong> لا يحق للبديل التقدم بطلب إجازة إلا بعد عودة زميله المجاز من إجازته.</li>
-                <li><strong>سابعاً:</strong> يراعى عند تقديم إجازة (الإمام أو المؤذن) أن يكون الفارق بين الإجازتين ثلاثة أيام على الأقل.</li>
-                <li><strong>ثامناً:</strong> آخر موعد لتقديم إجازات الصيف هو <strong style="color:var(--danger);">2026/05/21م</strong>، ولن تقبل أي إجازة بعد هذا التاريخ.</li>
-            </ol>
+        <div style="background:#fffbeb; color:#92400e; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #fde68a; font-size:13px;">
+            <h4 style="margin:0 0 10px 0; color:#b45309;"><i class="fas fa-exclamation-triangle"></i> تعليمات وتنبيهات هامة للإجازات:</h4>
+            <ul style="margin:0; padding-right:20px; line-height:1.8;">
+                <li>يجب تقديم طلب الإجازة قبل <b>سبعة أيام</b> من بدايتها على الأقل.</li>
+                <li>يمنع القيام بأية إجراءات للسفر أو الحجز قبل <b>اعتماد الإجازة رسمياً</b>.</li>
+                <li>لا يُقبل <b>أي تمديد</b> للإجازة، والتأخير لمدة (7) أيام يعد <b>انقطاعاً عن العمل</b>.</li>
+                <li>يجب أن يكون البديل من <b>نفس المسجد</b> وسيطلب منه الموافقة.</li>
+                <li>لا يحق للبديل التقدم بطلب إجازة إلا بعد <b>عودة زميله المجاز</b>.</li>
+                <li>للعاملين (العقد الثاني، الاستعانة): يجب تسجيل الإجازة ببرنامج الديوان وإرفاق صورة التسجيل.</li>
+                <li>يراعى أن يكون الفارق بين إجازة الإمام والمؤذن <b>ثلاثة أيام</b> على الأقل.</li>
+                <li>آخر موعد لتقديم إجازات الصيف هو <b>2026/05/21م</b> ولن تقبل أي إجازة بعد هذا التاريخ.</li>
+            </ul>
         </div>
-        ```
-
-### كيف سيبدو التعديل في الكود الخاص بك:
-عند إضافته، سيصبح قسم تقديم الطلب كالتالي:
-```html
-    <div id="requestPage" class="card">
-        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-top:0; font-size:16px;"><i class="fas fa-calendar-plus"></i> تقديم طلب جديد</h3>
         
-        <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:15px; border-radius:10px; margin-bottom:20px; font-size:13px; line-height:1.8; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
-            <h4 style="margin-top:0; margin-bottom:10px; color:#b45309; border-bottom:1px dashed #fcd34d; padding-bottom:8px; font-size:14px;">
-                <i class="fas fa-exclamation-triangle"></i> تعميم إداري هام
-            </h4>
-            </div>
         <div class="form-grid">
             <div class="form-group"><label>نوع الطلب</label>
-                <select id="reqType" class="form-control" onchange="App.toggleExtFields()">
-                    <option>إجازة دورية</option><option>إجازة خاصة</option>
-                    ```
-
-هذا التنسيق يستخدم ألواناً تحذيرية هادئة (الأصفر/البرتقالي) تتناسب مع نظامك، وستلفت انتباه الموظف مباشرة قبل اختيار "نوع الطلب" أو "تحديد التواريخ".
-
-        <div class="form-grid">
-            <div class="form-group"><label>نوع الطلب</label>
-                <select id="reqType" class="form-control" onchange="App.toggleExtFields()">
-                    <option>إجازة دورية</option><option>إجازة خاصة</option><option>تعديل دورية</option><option>تعديل خاصة</option><option>إلغاء دورية</option><option>إلغاء خاصة</option><option>تمديد إجازة</option><option>إذن انقطاع</option>
+                <select id="reqType" class="form-control">
+                    <option>إجازة دورية</option><option>إجازة خاصة</option><option>تعديل دورية</option><option>تعديل خاصة</option><option>إلغاء دورية</option><option>إلغاء خاصة</option><option>إذن انقطاع</option>
                 </select>
             </div>
             
-            <div class="form-group" style="position:relative;"><label>البحث عن البديل</label>
+            <div class="form-group" style="position:relative;"><label>البحث عن البديل (من نفس مسجدي)</label>
                 <input type="text" id="subSearch" class="form-control" placeholder="الاسم أو المدني..." onkeyup="App.searchSub(this.value)">
                 <div id="subSearchResults" style="position:absolute; top:65px; width:100%; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; display:none; max-height:200px; overflow-y:auto; z-index:100; box-shadow:var(--shadow);"></div>
                 <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
@@ -502,14 +372,6 @@
                     <label for="aloneCheckbox" style="margin:0; font-weight:bold; color:var(--text-main); font-size:12px; cursor:pointer;">إعفاء من البديل (بمفردي)</label>
                 </div>
             </div>
-        </div>
-
-        <div class="ext-box" id="extBox">
-            <label style="color:#0369a1; font-weight:bold; margin-bottom:5px; font-size:12px;"><i class="fas fa-link"></i> الإجازة الأصلية:</label>
-            <select id="extLeaveSelect" class="form-control" onchange="App.fillExtInfo()">
-                <option value="">- لا يوجد إجازات -</option>
-            </select>
-            <div id="extLeaveInfo" style="margin-top:5px; font-size:12px; font-weight:bold; color:#0c4a6e;"></div>
         </div>
 
         <div id="subDataBox" style="display:none; background:#f0fdf4; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #bbf7d0;">
@@ -520,6 +382,11 @@
         <div class="form-grid">
             <div class="form-group"><label id="lblReqStart">بداية الفترة</label><input type="date" id="reqStart" class="form-control"></div>
             <div class="form-group"><label id="lblReqEnd">نهاية الفترة</label><input type="date" id="reqEnd" class="form-control"></div>
+            
+            <div class="form-group" id="diwanUploadGroup" style="display:none; grid-column: 1 / -1; margin-top:10px;">
+                <label style="color:var(--danger);"><i class="fas fa-file-upload"></i> صورة تسجيل الإجازة ببرنامج الديوان (إلزامي لعقدك)</label>
+                <input type="file" id="diwanFile" class="form-control" accept="image/*,.pdf">
+            </div>
         </div>
         
         <div id="waLinkArea" style="display:none; margin-top:15px;">
@@ -610,7 +477,7 @@
                     <option value="all">كل السنوات</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
                 </select>
                 <select id="hrALType" class="form-control" onchange="App.renderHrArchiveLeaves()">
-                    <option value="all">الكل</option><option value="إجازة دورية">دورية</option><option value="إجازة خاصة">خاصة</option><option value="تعديل دورية">تعديل دورية</option><option value="تعديل خاصة">تعديل خاصة</option><option value="إلغاء دورية">إلغاء دورية</option><option value="إلغاء خاصة">إلغاء خاصة</option><option value="تمديد إجازة">تمديد</option><option value="إذن انقطاع">انقطاع</option>
+                    <option value="all">الكل</option><option value="إجازة دورية">دورية</option><option value="إجازة خاصة">خاصة</option><option value="تعديل دورية">تعديل دورية</option><option value="تعديل خاصة">تعديل خاصة</option><option value="إلغاء دورية">إلغاء دورية</option><option value="إلغاء خاصة">إلغاء خاصة</option><option value="إذن انقطاع">انقطاع</option>
                 </select>
             </div>
             <div class="stats-grid" id="hrALStats"></div>
@@ -730,80 +597,43 @@
 <div id="printArea"></div>
 
 <script>
-// الكائن الأساسي للتطبيق
 const App = {
-    db: { 
-        users: [], 
-        requests: [], 
-        returnActions: [], 
-        logs: [] 
-    },
-    curr: null, 
-    tempSub: null, 
-    waLink: "", 
-    tempLoginData: null,
-    pollInterval: null,
+    db: { users: [], requests: [], returnActions: [], logs: [] },
+    curr: null, tempSub: null, waLink: "", tempLoginData: null, pollInterval: null,
 
-    // دالة تنسيق التاريخ
-    formatDate: function(dateStr) { 
-        if(!dateStr) return '--'; 
-        return `${dateStr} م`; 
-    },
+    formatDate: function(dateStr) { return !dateStr ? '--' : `${dateStr} م`; },
 
-    // دالة التهيئة عند تحميل الصفحة
-    init: function() { 
-        App.fetchData(); 
-        App.updateClocks(); 
-        setInterval(App.updateClocks, 1000); 
-    },
+    init: function() { App.fetchData(); App.updateClocks(); setInterval(App.updateClocks, 1000); },
 
-    // جلب البيانات من الخادم أو استخدام البيانات المحلية
     fetchData: async function() {
         try {
             const res = await fetch('/api/data'); 
             const data = await res.json();
-            
-            App.db = { 
-                users: data.users || [], 
-                requests: data.requests || [], 
-                returnActions: data.returnActions || [], 
-                logs: data.logs || [] 
-            };
-            
+            App.db = { users: data.users || [], requests: data.requests || [], returnActions: data.returnActions || [], logs: data.logs || [] };
             const sessionUser = sessionStorage.getItem('awqaf_user_v2');
             
-            if(sessionUser && !App.curr) { 
-                App.curr = JSON.parse(sessionUser); 
-                App.routeUser(); 
-            } else if (App.curr) {
+            if(sessionUser && !App.curr) { App.curr = JSON.parse(sessionUser); App.routeUser(); } 
+            else if (App.curr) {
                 App.curr = App.db.users.find(u => u.id === App.curr.id) || App.curr;
-                if(App.curr.role === 'emp') {
-                    App.renderEmp();
-                }
-                if(App.curr.role === 'cultural') {
-                    App.renderCul();
-                }
-                if(App.curr.role === 'hr') { 
-                    App.renderHr(); 
-                    App.renderHrArchiveLeaves(); 
-                    App.renderHrArchiveReturns(); 
-                }
+                if(App.curr.role === 'emp') App.renderEmp();
+                if(App.curr.role === 'cultural') App.renderCul();
+                if(App.curr.role === 'hr') { App.renderHr(); App.renderHrArchiveLeaves(); App.renderHrArchiveReturns(); }
                 App.checkNotifications();
             }
-        } catch (e) { 
-            console.error("Database Local Mode"); 
-        }
+        } catch (e) { } // Local mode
     },
 
-    // تحديث الساعة والتاريخ
     updateClocks: function() {
         const now = new Date();
-        document.getElementById('clock').innerText = now.toLocaleTimeString('ar-KW');
-        document.getElementById('hijriDate').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(now);
-        document.getElementById('gregDate').innerText = now.toLocaleDateString('ar-KW', {day:'numeric', month:'long', year:'numeric'});
+        const clockElem = document.getElementById('clock');
+        const hijriElem = document.getElementById('hijriDate');
+        const gregElem = document.getElementById('gregDate');
+        
+        if(clockElem) clockElem.innerText = now.toLocaleTimeString('ar-KW');
+        if(hijriElem) hijriElem.innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(now);
+        if(gregElem) gregElem.innerText = now.toLocaleDateString('ar-KW', {day:'numeric', month:'long', year:'numeric'});
     },
 
-    // الحصول على الطابع الزمني للعمليات
     getTimestamp: function() {
         const now = new Date();
         return {
@@ -813,365 +643,143 @@ const App = {
         };
     },
 
-    // إضافة سجل (إشعار) جديد
     addLog: async function(roles, msg) {
         const ts = App.getTimestamp();
-        const logEntry = { 
-            id: Date.now().toString(), 
-            roles: roles, 
-            msg: msg, 
-            time: `${ts.greg} - ${ts.time}` 
-        };
-        
+        const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
         App.db.logs.push(logEntry); 
-        
-        try { 
-            await fetch('/api/logs', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(logEntry) 
-            }); 
-            App.fetchData(); 
-        } catch(e) {
-            // تجاهل في حالة العمل محلياً
-        }
+        try { await fetch('/api/logs', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(logEntry) }); App.fetchData(); } catch(e) {}
         App.checkNotifications();
     },
 
-    // عرض الإشعارات
     renderLogs: function(containerId, roleFilter) {
-        const box = document.getElementById(containerId); 
-        if(!box) return;
-        
+        const box = document.getElementById(containerId); if(!box) return;
         const myLogs = App.db.logs.filter(l => l.roles.includes(roleFilter) || l.roles.includes('all')).reverse().slice(0, 30);
-        
-        if(myLogs.length === 0) { 
-            box.innerHTML = '<div style="color:var(--text-muted); text-align:center; font-size:12px;">لا توجد إشعارات حالياً.</div>'; 
-            return; 
-        }
-        
-        box.innerHTML = myLogs.map(l => `
-            <div class="notif-item">
-                <i class="fas fa-bell" style="color:var(--gold); margin-top:2px;"></i>
-                <div style="flex:1;">
-                    <div>${l.msg}</div>
-                    <span class="notif-time">${l.time}</span>
-                </div>
-            </div>
-        `).join('');
+        if(myLogs.length === 0) { box.innerHTML = '<div style="color:var(--text-muted); text-align:center; font-size:12px;">لا توجد إشعارات حالياً.</div>'; return; }
+        box.innerHTML = myLogs.map(l => `<div class="notif-item"><i class="fas fa-bell" style="color:var(--gold); margin-top:2px;"></i><div style="flex:1;"><div>${l.msg}</div><span class="notif-time">${l.time}</span></div></div>`).join('');
     },
 
-    // فحص الشارات (العدادات)
     checkNotifications: function() {
-        if(!App.curr) return; 
-        let pending = 0;
-        
+        if(!App.curr) return; let pending = 0;
         if(App.curr.role === 'emp') {
             pending = App.db.requests.filter(r => r.subId === App.curr.id && r.stage === 1).length;
             const badge = document.getElementById('empNotifBadge');
-            if(badge) { 
-                badge.style.display = pending > 0 ? 'inline-flex' : 'none'; 
-                badge.innerText = pending; 
-            }
+            if(badge) { badge.style.display = pending > 0 ? 'inline-flex' : 'none'; badge.innerText = pending; }
         } else if(App.curr.role === 'hr') {
             pending = App.db.requests.filter(r => r.stage === 2).length;
             const badge = document.getElementById('mainNotifBadge');
-            if(badge) { 
-                badge.style.display = pending > 0 ? 'inline-block' : 'none'; 
-                badge.innerText = pending; 
-            }
+            if(badge) { badge.style.display = pending > 0 ? 'inline-block' : 'none'; badge.innerText = pending; }
         }
     },
 
-    // تبديل الوضع الليلي
-    toggleTheme: function() { 
-        document.body.classList.toggle('dark-mode'); 
-    },
+    toggleTheme: function() { document.body.classList.toggle('dark-mode'); },
 
-    // التنقل بين الصفحات
     showPage: function(id, el) {
         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        const page = document.getElementById(id);
+        if(page) page.classList.add('active');
+        
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+        if(el) el.classList.add('active-nav');
         
-        if(el) {
-            el.classList.add('active-nav');
-        }
+        if(id === 'returnPage') App.setupReturn();
         
-        if(id === 'returnPage') {
-            App.setupReturn();
+        if(id === 'requestPage' && App.curr) {
+            const contract = App.curr.contract;
+            const diwanGroup = document.getElementById('diwanUploadGroup');
+            if(diwanGroup) {
+                if(contract === 'عقد ثاني' || contract === 'استعانة') {
+                    diwanGroup.style.display = 'block';
+                } else {
+                    diwanGroup.style.display = 'none';
+                }
+            }
         }
         App.checkNotifications();
     },
 
-    // إغلاق النوافذ المنبثقة
-    closeModal: function(id) { 
-        document.getElementById(id).style.display = 'none'; 
-    },
+    closeModal: function(id) { document.getElementById(id).style.display = 'none'; },
 
-    // بدء عملية المصادقة
     triggerAuth: async function() {
-        const id = document.getElementById('loginId').value.trim(); 
-        const role = document.getElementById('loginRole').value;
-        
-        if(!id) {
-            return alert("الرجاء إدخال الرقم المدني.");
-        }
-        
+        const id = document.getElementById('loginId').value.trim(); const role = document.getElementById('loginRole').value;
+        if(!id) return alert("الرجاء إدخال الرقم المدني.");
         const user = App.db.users.find(u => u.id === id && u.role === role);
+        if(!user) return alert("هذا الحساب غير موجود أو الصلاحية غير صحيحة.");
+        if(user.status === 'frozen') return alert("هذا الحساب تم تجميده إدارياً.");
         
-        if(!user) {
-            return alert("هذا الحساب غير موجود أو الصلاحية غير صحيحة.");
-        }
-        if(user.status === 'frozen') {
-            return alert("هذا الحساب تم تجميده إدارياً.");
-        }
-        
-        App.tempLoginData = user; 
-        document.getElementById('authPin').value = '';
+        App.tempLoginData = user; document.getElementById('authPin').value = '';
         document.getElementById('bioStatus').innerText = 'المس للبصمة';
         document.getElementById('fingerIcon').classList.remove('scanning');
         document.getElementById('bioScanner').style.display = 'none';
         document.getElementById('authModal').style.display = 'flex';
-        
         setTimeout(App.triggerNativeBiometric, 500);
     },
 
-    // محاكاة البصمة الحيوية
     triggerNativeBiometric: async function() {
-        const icon = document.getElementById('fingerIcon'); 
-        const status = document.getElementById('bioStatus'); 
-        const scanner = document.getElementById('bioScanner');
-        
-        icon.classList.add('scanning'); 
-        scanner.style.display = 'block'; 
-        status.innerText = 'جاري التحقق من البصمة...';
-        
-        setTimeout(() => { 
-            icon.classList.remove('scanning'); 
-            scanner.style.display = 'none'; 
-            status.innerText = 'تمت المصادقة بنجاح!'; 
-            status.style.color = 'var(--success)'; 
-            setTimeout(App.finalizeLogin, 500); 
-        }, 1500);
+        const icon = document.getElementById('fingerIcon'); const status = document.getElementById('bioStatus'); const scanner = document.getElementById('bioScanner');
+        icon.classList.add('scanning'); scanner.style.display = 'block'; status.innerText = 'جاري التحقق من البصمة...';
+        setTimeout(() => { icon.classList.remove('scanning'); scanner.style.display = 'none'; status.innerText = 'تمت المصادقة بنجاح!'; status.style.color = 'var(--success)'; setTimeout(App.finalizeLogin, 500); }, 1500);
     },
 
-    // الدخول بالرمز السري
     simulatePinLogin: function() {
         const pin = document.getElementById('authPin').value;
-        if(pin && pin === App.tempLoginData.pass) {
-            App.finalizeLogin(); 
-        } else {
-            alert("الرمز السري غير صحيح!");
-        }
+        if(pin && pin === App.tempLoginData.pass) { App.finalizeLogin(); } else { alert("الرمز السري غير صحيح!"); }
     },
 
-    // إنهاء الدخول وتوجيه المستخدم
     finalizeLogin: function() {
-        App.curr = App.tempLoginData; 
-        sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
-        App.closeModal('authModal'); 
-        
-        if(!App.pollInterval) {
-            App.pollInterval = setInterval(App.fetchData, 3000);
-        }
+        App.curr = App.tempLoginData; sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
+        App.closeModal('authModal'); if(!App.pollInterval) App.pollInterval = setInterval(App.fetchData, 3000);
         App.routeUser();
     },
 
-    // توجيه المستخدم حسب الصلاحية
     routeUser: function() {
-        document.getElementById('n-login').style.display = 'none'; 
-        document.getElementById('n-reg').style.display = 'none'; 
-        document.getElementById('n-logout').style.display = 'flex';
-        
-        if(App.curr.role === 'emp') { 
-            document.querySelectorAll('.emp-only').forEach(e => e.style.display = 'flex'); 
-            App.renderEmp(); 
-            App.showPage('empDash'); 
-        }
-        if(App.curr.role === 'cultural') { 
-            document.querySelectorAll('.cul-only').forEach(e => e.style.display = 'flex'); 
-            App.renderCul(); 
-            App.showPage('culturalDash'); 
-        }
-        if(App.curr.role === 'hr') { 
-            document.querySelectorAll('.hr-only').forEach(e => e.style.display = 'flex'); 
-            App.renderHr(); 
-            App.renderHrArchiveLeaves(); 
-            App.renderHrArchiveReturns(); 
-            App.showPage('hrDash'); 
-        }
+        document.getElementById('n-login').style.display = 'none'; document.getElementById('n-reg').style.display = 'none'; document.getElementById('n-logout').style.display = 'flex';
+        if(App.curr.role === 'emp') { document.querySelectorAll('.emp-only').forEach(e => e.style.display = 'flex'); App.renderEmp(); App.showPage('empDash'); }
+        if(App.curr.role === 'cultural') { document.querySelectorAll('.cul-only').forEach(e => e.style.display = 'flex'); App.renderCul(); App.showPage('culturalDash'); }
+        if(App.curr.role === 'hr') { document.querySelectorAll('.hr-only').forEach(e => e.style.display = 'flex'); App.renderHr(); App.renderHrArchiveLeaves(); App.renderHrArchiveReturns(); App.showPage('hrDash'); }
     },
 
-    // تسجيل الخروج
-    logout: function() { 
-        sessionStorage.removeItem('awqaf_user_v2'); 
-        if(App.pollInterval) {
-            clearInterval(App.pollInterval); 
-        }
-        location.reload(); 
-    },
+    logout: function() { sessionStorage.removeItem('awqaf_user_v2'); if(App.pollInterval) clearInterval(App.pollInterval); location.reload(); },
 
-    // تسجيل مستخدم جديد
     register: async function() {
-        const id = document.getElementById('rId').value.trim(); 
-        const pass = document.getElementById('rPass').value; 
-        const name = document.getElementById('rName').value.trim();
+        const id = document.getElementById('rId').value.trim(); const pass = document.getElementById('rPass').value; const name = document.getElementById('rName').value.trim();
+        if(!name || !id || pass.length < 4) return alert("الرجاء استكمال البيانات الأساسية والرمز السري (4 أرقام على الأقل).");
+        if(App.db.users.find(u => u.id === id)) return alert("هذا الرقم المدني مسجل مسبقاً في النظام.");
         
-        if(!name || !id || pass.length < 4) {
-            return alert("الرجاء استكمال البيانات الأساسية والرمز السري (4 أرقام على الأقل).");
-        }
-        if(App.db.users.find(u => u.id === id)) {
-            return alert("هذا الرقم المدني مسجل مسبقاً في النظام.");
-        }
-        
-        const user = { 
-            id: id, 
-            pass: pass, 
-            file: document.getElementById('rFile').value.trim() || 'غير محدد', 
-            name: name, 
-            nationality: document.getElementById('rNat').value || 'غير محدد', 
-            region: document.getElementById('rRegion').value || 'غير محدد', 
-            place: document.getElementById('rPlace').value || 'غير محدد', 
-            job: document.getElementById('rJob').value, 
-            contract: document.getElementById('rContract').value, 
-            phone: document.getElementById('rPhone').value || 'غير محدد', 
-            role: 'emp', 
-            status: 'active', 
-            ts: App.getTimestamp() 
-        };
-        
+        const user = { id: id, pass: pass, file: document.getElementById('rFile').value.trim() || 'غير محدد', name: name, nationality: document.getElementById('rNat').value || 'غير محدد', region: document.getElementById('rRegion').value || 'غير محدد', place: document.getElementById('rPlace').value || 'غير محدد', job: document.getElementById('rJob').value, contract: document.getElementById('rContract').value, phone: document.getElementById('rPhone').value || 'غير محدد', role: 'emp', status: 'active', ts: App.getTimestamp() };
         App.db.users.push(user);
         
-        try { 
-            await fetch('/api/users', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(user) 
-            }); 
-            alert("تم إنشاء الحساب بنجاح."); 
-            App.showPage('loginPage'); 
-        } catch(e) { 
-            alert("تم التسجيل محلياً (لا يوجد اتصال بالخادم)."); 
-            App.showPage('loginPage'); 
-        }
+        try { await fetch('/api/users', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user) }); alert("تم إنشاء الحساب بنجاح."); App.showPage('loginPage'); } 
+        catch(e) { alert("تم التسجيل محلياً (لا يوجد اتصال بالخادم)."); App.showPage('loginPage'); }
     },
 
-    // إظهار وإخفاء حقول تمديد الإجازة
-    toggleExtFields: function() {
-        const type = document.getElementById('reqType').value; 
-        const box = document.getElementById('extBox');
-        
-        if(type === 'تمديد إجازة') {
-            box.style.display = 'block'; 
-            document.getElementById('lblReqStart').innerText = "بداية فترة التمديد"; 
-            document.getElementById('lblReqEnd').innerText = "نهاية فترة التمديد";
-            
-            const myLeaves = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET') && !r.id.startsWith('EXT'));
-            const select = document.getElementById('extLeaveSelect');
-            
-            if(myLeaves.length === 0) {
-                select.innerHTML = '<option value="">- لا يوجد إجازات سابقة قابلة للتمديد -</option>';
-            } else {
-                select.innerHTML = '<option value="">- اختر الإجازة المراد تمديدها -</option>' + myLeaves.map(r => `<option value="${r.id}">(${r.id}) ${r.type} تنتهي في ${r.end}</option>`).join('');
-            }
-        } else { 
-            box.style.display = 'none'; 
-            document.getElementById('lblReqStart').innerText = "تاريخ بداية الفترة"; 
-            document.getElementById('lblReqEnd').innerText = "تاريخ نهاية الفترة"; 
-        }
-    },
-
-    // تعبئة معلومات التمديد
-    fillExtInfo: function() {
-        const reqId = document.getElementById('extLeaveSelect').value; 
-        const info = document.getElementById('extLeaveInfo');
-        
-        if(!reqId) { 
-            info.innerText = ""; 
-            return; 
-        }
-        
-        const origReq = App.db.requests.find(x => x.id === reqId);
-        if(origReq) {
-            info.innerHTML = `تاريخ نهاية الإجازة الأصلية: <span style="color:var(--danger);">${App.formatDate(origReq.end)}</span>`;
-        }
-    },
-
-    // تفعيل وإلغاء البحث عن بديل (في حالة الإعفاء)
     toggleSubSearch: function() {
-        const isAlone = document.getElementById('aloneCheckbox').checked; 
-        const btn = document.getElementById('btnSubmitReq'); 
-        const sInput = document.getElementById('subSearch');
-        
+        const isAlone = document.getElementById('aloneCheckbox').checked; const btn = document.getElementById('btnSubmitReq'); const sInput = document.getElementById('subSearch');
         if(isAlone) {
-            App.tempSub = { 
-                id: "0000", 
-                name: "إعفاء (بمفرده)", 
-                place: App.curr.place, 
-                phone: "--", 
-                job: "--", 
-                region: "--", 
-                nationality: "--", 
-                file: "0000", 
-                contract: "--" 
-            };
-            sInput.disabled = true; 
-            sInput.value = ""; 
-            btn.disabled = false; 
-            document.getElementById('subSearchResults').style.display = 'none'; 
-            document.getElementById('subDataBox').style.display = 'block';
+            App.tempSub = { id: "0000", name: "إعفاء (بمفرده)", place: App.curr.place, phone: "--", job: "--", region: "--", nationality: "--", file: "0000", contract: "--" };
+            sInput.disabled = true; sInput.value = ""; btn.disabled = false; document.getElementById('subSearchResults').style.display = 'none'; document.getElementById('subDataBox').style.display = 'block';
             document.getElementById('sInfoGrid').innerHTML = `<div style="grid-column: span 2; text-align:center; font-weight:bold; color:var(--danger);">تم تفعيل الإعفاء من البديل.</div>`;
-        } else { 
-            App.tempSub = null; 
-            sInput.disabled = false; 
-            btn.disabled = true; 
-            document.getElementById('subDataBox').style.display = 'none'; 
-        }
+        } else { App.tempSub = null; sInput.disabled = false; btn.disabled = true; document.getElementById('subDataBox').style.display = 'none'; }
     },
 
-    // البحث عن بديل
     searchSub: function(val) {
-        const cleanVal = val.trim(); 
-        const box = document.getElementById('subSearchResults');
-        
-        if(cleanVal.length < 2) { 
-            box.style.display = 'none'; 
-            return; 
-        }
-        
-        const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status === 'active' && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
+        const cleanVal = val.trim(); const box = document.getElementById('subSearchResults');
+        if(cleanVal.length < 2) { box.style.display = 'none'; return; }
+        const matches = App.db.users.filter(u => u.role === 'emp' && u.id !== App.curr.id && u.status === 'active' && u.place === App.curr.place && (u.id.includes(cleanVal) || u.name.includes(cleanVal)));
         
         if(matches.length > 0) {
-            box.innerHTML = matches.map(u => `
-                <div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer; font-size:12px;" onclick="App.selectSub('${u.id}')">
-                    <b style="color:var(--primary);">${u.name}</b><br>
-                    <span style="color:var(--text-muted)">المدني: ${u.id} | م: ${u.place}</span>
-                </div>
-            `).join('');
+            box.innerHTML = matches.map(u => `<div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer; font-size:12px;" onclick="App.selectSub('${u.id}')"><b style="color:var(--primary);">${u.name}</b><br><span style="color:var(--text-muted)">المدني: ${u.id} | م: ${u.place}</span></div>`).join('');
         } else {
-            box.innerHTML = '<div style="padding:10px; color:var(--danger); text-align:center; font-size:12px;">لا يوجد زميل مطابق</div>';
+            box.innerHTML = '<div style="padding:10px; color:var(--danger); text-align:center; font-size:12px;">لا يوجد زميل مطابق في نفس مسجدك</div>';
         }
         box.style.display = 'block';
     },
 
-    // اختيار بديل
     selectSub: function(id) {
-        App.tempSub = App.db.users.find(u => u.id === id); 
-        document.getElementById('subSearch').value = App.tempSub.name; 
-        document.getElementById('subSearchResults').style.display = 'none';
-        
-        document.getElementById('sInfoGrid').innerHTML = `
-            <div><strong>الاسم:</strong> ${App.tempSub.name}</div>
-            <div><strong>المدني:</strong> ${App.tempSub.id}</div>
-            <div><strong>المسجد:</strong> ${App.tempSub.place}</div>
-            <div><strong>الوظيفة:</strong> ${App.tempSub.job}</div>
-        `;
-        document.getElementById('subDataBox').style.display = 'block'; 
-        document.getElementById('btnSubmitReq').disabled = false;
+        App.tempSub = App.db.users.find(u => u.id === id); document.getElementById('subSearch').value = App.tempSub.name; document.getElementById('subSearchResults').style.display = 'none';
+        document.getElementById('sInfoGrid').innerHTML = `<div><strong>الاسم:</strong> ${App.tempSub.name}</div><div><strong>المدني:</strong> ${App.tempSub.id}</div><div><strong>المسجد:</strong> ${App.tempSub.place}</div><div><strong>الوظيفة:</strong> ${App.tempSub.job}</div>`;
+        document.getElementById('subDataBox').style.display = 'block'; document.getElementById('btnSubmitReq').disabled = false;
     },
 
-    // إرسال الطلب
     submitRequest: async function() {
         const start = document.getElementById('reqStart').value; 
         const end = document.getElementById('reqEnd').value; 
@@ -1180,181 +788,114 @@ const App = {
         if(!start || !end || !App.tempSub) {
             return alert("الرجاء استكمال تواريخ الفترة واختيار البديل.");
         }
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const startDate = new Date(start);
         
-        const isExt = type === 'تمديد إجازة'; 
-        const origLeaveId = document.getElementById('extLeaveSelect').value;
-        
-        if(isExt && !origLeaveId) {
-            return alert("الرجاء اختيار الإجازة الأصلية المراد تمديدها.");
+        const summerDeadline = new Date('2026-05-21');
+        if(today > summerDeadline) {
+            return alert("عفواً، لا يمكن قبول إجازات بعد تاريخ 2026/05/21م وفقاً للتعميم.");
         }
-        
-        const ts = App.getTimestamp(); 
-        const reqId = isExt ? `EXT-${Math.floor(Math.random()*90000) + 10000}` : `REQ-${Math.floor(Math.random()*90000) + 10000}`; 
+
+        const diffDays = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+        if(diffDays < 7) {
+            return alert("عفواً، يجب تقديم طلب الإجازة قبل (7) أيام من بدايتها على الأقل.");
+        }
+
+        const isContractSpecial = App.curr.contract === 'عقد ثاني' || App.curr.contract === 'استعانة';
+        const diwanFile = document.getElementById('diwanFile').value;
+        if(isContractSpecial && !diwanFile) {
+            return alert("نظراً لطبيعة عقدك، إلزامي إرفاق صورة من تسجيل الإجازة على برنامج الديوان.");
+        }
+
         const isAlone = App.tempSub.id === "0000";
-        
-        const req = { 
-            id: reqId, 
-            empId: App.curr.id, 
-            subId: App.tempSub.id, 
-            type: type, 
-            start: start, 
-            end: end, 
-            stage: isAlone ? 2 : 1, 
-            status: isAlone ? 'بانتظار الشؤون' : 'بانتظار البديل', 
-            ts: ts 
-        };
-        
-        if (isExt) {
-            req.linkedReqId = origLeaveId; 
+
+        if(!isAlone && App.tempSub.place !== App.curr.place) {
+            return alert("عفواً، لابد أن يكون البديل المكلف من نفس المسجد الذي تعمل به.");
         }
+
+        const actingAsSubFor = App.db.requests.find(r => r.subId === App.curr.id && r.stage >= 1 && r.stage !== 0 && new Date(r.end) >= today);
+        if(actingAsSubFor) {
+            const zamil = App.db.users.find(u => u.id === actingAsSubFor.empId);
+            return alert(`عفواً، أنت مسجل كبديل لتغطية الزميل (${zamil ? zamil.name : 'آخر'}) حتى تاريخ ${actingAsSubFor.end}، لا يمكنك تقديم إجازة حتى عودته.`);
+        }
+
+        const sameMosqueReqs = App.db.requests.filter(r => r.stage >= 1 && r.stage !== 0 && r.empId !== App.curr.id);
+        for(let r of sameMosqueReqs) {
+            const u = App.db.users.find(x => x.id === r.empId);
+            if(u && u.place === App.curr.place) {
+                const rStart = new Date(r.start);
+                const rEnd = new Date(r.end);
+                const reqEnd = new Date(end);
+                
+                let gap1 = (startDate - rEnd) / (1000 * 60 * 60 * 24);
+                let gap2 = (rStart - reqEnd) / (1000 * 60 * 60 * 24);
+                
+                if (gap1 < 3 && gap2 < 3) {
+                    return alert(`يجب أن يكون الفارق بين إجازة الإمام والمؤذن 3 أيام على الأقل. هناك إجازة متعارضة للزميل (${u.name}).`);
+                }
+            }
+        }
+
+        const ts = App.getTimestamp(); 
+        const reqId = `REQ-${Math.floor(Math.random()*90000) + 10000}`; 
+        
+        const req = { id: reqId, empId: App.curr.id, subId: App.tempSub.id, type: type, start: start, end: end, stage: isAlone ? 2 : 1, status: isAlone ? 'بانتظار الشؤون' : 'بانتظار البديل', ts: ts };
         
         App.db.requests.push(req);
-        
-        if(isAlone) {
-            App.addLog(['emp_'+App.curr.id], `قدمت طلب ${type} بإعفاء من البديل. الطلب الآن بانتظار الشؤون.`);
-        } else { 
-            App.addLog(['emp_'+App.curr.id], `قدمت طلب ${type} بنجاح، بانتظار موافقة زميلك البديل.`); 
-            App.addLog(['emp_'+App.tempSub.id], `تنبيه: اختارك الزميل (${App.curr.name}) كبديل له.`); 
-        }
-        
+        if(isAlone) { App.addLog(['emp_'+App.curr.id], `قدمت طلب ${type} بإعفاء من البديل. الطلب الآن بانتظار الشؤون.`); } 
+        else { App.addLog(['emp_'+App.curr.id], `قدمت طلب ${type} بنجاح، بانتظار موافقة زميلك البديل.`); App.addLog(['emp_'+App.tempSub.id], `تنبيه: اختارك الزميل (${App.curr.name}) كبديل له.`); }
         App.addLog(['hr'], `تم تقديم طلب ${type} برقم (${reqId}) للموظف ${App.curr.name}.`);
 
         try {
-            await fetch('/api/requests', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(req) 
-            });
-            
-            document.getElementById('btnSubmitReq').style.display = 'none'; 
-            document.getElementById('waLinkArea').style.display = 'block';
-            
+            await fetch('/api/requests', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req) });
+            document.getElementById('btnSubmitReq').style.display = 'none'; document.getElementById('waLinkArea').style.display = 'block';
             if(!isAlone) {
                 const message = `السلام عليكم ورحمة الله ${App.tempSub.name}\nتم اختيارك كبديل لمسجد (${App.curr.place}) للفترة من ${start} إلى ${end}.\nللموافقة يرجى الدخول على النظام: ${window.location.href}`;
                 App.waLink = `https://wa.me/${App.tempSub.phone}?text=${encodeURIComponent(message)}`;
-                document.getElementById('waBtn').style.display = 'inline-flex'; 
-                document.getElementById('waStatusText').innerText = "يجب إرسال رسالة للبديل ليدخل النظام ويوافق.";
+                document.getElementById('waBtn').style.display = 'inline-flex'; document.getElementById('waStatusText').innerText = "يجب إرسال رسالة للبديل ليدخل النظام ويوافق.";
             } else { 
-                document.getElementById('waBtn').style.display = 'none'; 
-                document.getElementById('waStatusTitle').innerHTML = '<i class="fas fa-check-double"></i> تم الإرسال لشؤون العاملين!'; 
-                document.getElementById('waStatusText').innerText = "تم إعفاؤك من البديل بنجاح."; 
-                App.fetchData(); 
+                document.getElementById('waBtn').style.display = 'none'; document.getElementById('waStatusTitle').innerHTML = '<i class="fas fa-check-double"></i> تم الإرسال لشؤون العاملين!'; document.getElementById('waStatusText').innerText = "تم إعفاؤك من البديل بنجاح."; App.fetchData(); 
             }
-        } catch(e) {
-            // تجاهل أخطاء الخادم
-        }
+        } catch(e) {}
     },
 
-    // إرسال واتساب للبديل
-    sendWa: function() { 
-        window.open(App.waLink, '_blank'); 
-        setTimeout(() => location.reload(), 2000); 
-    },
+    sendWa: function() { window.open(App.waLink, '_blank'); setTimeout(() => location.reload(), 2000); },
 
-    // تجهيز قائمة الإجازات للعودة
     setupReturn: function() {
         const myReqs = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET'));
         const select = document.getElementById('retLeave');
-        
-        if(myReqs.length === 0) { 
-            select.innerHTML = '<option value="">لا يوجد إجازات معتمدة سابقة</option>'; 
-            select.disabled = true; 
-        } else { 
-            select.innerHTML = '<option value="">- اختر الإجازة المراد اتخاذ إجراء عليها -</option>' + myReqs.map(r => `<option value="${r.id}">(${r.id}) ${r.type} بدأت في ${r.start}</option>`).join(''); 
-            select.disabled = false; 
-        }
+        if(myReqs.length === 0) { select.innerHTML = '<option value="">لا يوجد إجازات معتمدة سابقة</option>'; select.disabled = true; } 
+        else { select.innerHTML = '<option value="">- اختر الإجازة المراد اتخاذ إجراء عليها -</option>' + myReqs.map(r => `<option value="${r.id}">(${r.id}) ${r.type} بدأت في ${r.start}</option>`).join(''); select.disabled = false; }
     },
 
-    // إرسال طلب عودة أو قطع
     submitReturn: async function() {
-        const reqId = document.getElementById('retLeave').value; 
-        const date = document.getElementById('retDate').value; 
-        const actionType = document.getElementById('retType').value;
-        
-        if(!reqId || !date) {
-            return alert("الرجاء اختيار الإجازة وتاريخ التنفيذ الفعلي.");
-        }
-        
-        const ts = App.getTimestamp(); 
-        const retReqId = `RET-${Math.floor(Math.random()*90000) + 10000}`;
-        
-        const req = { 
-            id: retReqId, 
-            empId: App.curr.id, 
-            subId: '0000', 
-            type: actionType, 
-            linkedReqId: reqId, 
-            start: date, 
-            end: date, 
-            stage: 2, 
-            status: 'بانتظار الشؤون', 
-            ts: ts 
-        };
-        
+        const reqId = document.getElementById('retLeave').value; const date = document.getElementById('retDate').value; const actionType = document.getElementById('retType').value;
+        if(!reqId || !date) return alert("الرجاء اختيار الإجازة وتاريخ التنفيذ الفعلي.");
+        const ts = App.getTimestamp(); const retReqId = `RET-${Math.floor(Math.random()*90000) + 10000}`;
+        const req = { id: retReqId, empId: App.curr.id, subId: '0000', type: actionType, linkedReqId: reqId, start: date, end: date, stage: 2, status: 'بانتظار الشؤون', ts: ts };
         App.db.requests.push(req);
-        
-        App.addLog(['emp_'+App.curr.id], `تم إرسال طلب ${actionType} بنجاح لشؤون العاملين.`); 
-        App.addLog(['hr'], `قدم الموظف ${App.curr.name} طلب ${actionType} وهو بانتظار اعتمادكم.`);
-        
-        try { 
-            await fetch('/api/requests', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(req) 
-            }); 
-            alert("تم إرسال الطلب بنجاح."); 
-            document.getElementById('retDate').value = ""; 
-            App.showPage('empDash'); 
-        } catch(e) { 
-            alert("تم الحفظ محلياً."); 
-            App.showPage('empDash'); 
-        }
+        App.addLog(['emp_'+App.curr.id], `تم إرسال طلب ${actionType} بنجاح لشؤون العاملين.`); App.addLog(['hr'], `قدم الموظف ${App.curr.name} طلب ${actionType} وهو بانتظار اعتمادكم.`);
+        try { await fetch('/api/requests', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req) }); alert("تم إرسال الطلب بنجاح."); document.getElementById('retDate').value = ""; App.showPage('empDash'); } 
+        catch(e) { alert("تم الحفظ محلياً."); App.showPage('empDash'); }
     },
 
-    // معالجة اعتمادات الطلبات
     actionReq: async function(reqId, stage, status) {
-        const r = App.db.requests.find(x => x.id === reqId); 
-        if(!r) return;
-        
-        r.stage = stage; 
-        r.status = status;
-        
-        const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-        const sub = App.db.users.find(u => u.id === r.subId) || {};
+        const r = App.db.requests.find(x => x.id === reqId); if(!r) return;
+        r.stage = stage; r.status = status;
+        const emp = App.db.users.find(u => u.id === r.empId) || {}; const sub = App.db.users.find(u => u.id === r.subId) || {};
         
         if(stage === 2 && r.subId !== '0000' && !r.id.startsWith('RET')) {
-            App.addLog(['emp_'+r.empId], `وافق الزميل البديل (${sub.name}) على التغطية. الطلب الآن بانتظار الشؤون.`); 
-            App.addLog(['emp_'+r.subId], `تم تأكيد موافقتك بنجاح كبديل في مسجد (${emp.place}).`); 
-            App.addLog(['hr'], `وافق البديل على التغطية للموظف (${emp.name}). الطلب جاهز لاعتمادكم.`);
-        } else if (stage === 3) { 
-            App.addLog(['emp_'+r.empId], `تم اعتماد طلبك من الشؤون. بانتظار التوجيه الثقافي.`); 
-            App.addLog(['hr'], `قمتم باعتماد طلب الموظف (${emp.name}) وتحويله للثقافي.`); 
-            App.addLog(['cultural'], `طلب جديد معتمد من الشؤون للموظف (${emp.name}) بانتظاركم.`);
-        } else if (stage === 4) { 
-            App.addLog(['emp_'+r.empId], `مبارك! تم الاعتماد النهائي لطلبك من التوجيه الثقافي.`); 
-            App.addLog(['hr'], `تم الاعتماد النهائي لطلب الموظف (${emp.name}) من قبل التوجيه الثقافي.`);
-        } else if (stage === 0) { 
-            App.addLog(['emp_'+r.empId], `نأسف، تم رفض طلبك في مرحلة: ${status}`); 
-            App.addLog(['hr'], `تم رفض أو إيقاف طلب الموظف (${emp.name}).`); 
-        }
+            App.addLog(['emp_'+r.empId], `وافق الزميل البديل (${sub.name}) على التغطية. الطلب الآن بانتظار الشؤون.`); App.addLog(['emp_'+r.subId], `تم تأكيد موافقتك بنجاح كبديل في مسجد (${emp.place}).`); App.addLog(['hr'], `وافق البديل على التغطية للموظف (${emp.name}). الطلب جاهز لاعتمادكم.`);
+        } else if (stage === 3) { App.addLog(['emp_'+r.empId], `تم اعتماد طلبك من الشؤون. بانتظار التوجيه الثقافي.`); App.addLog(['hr'], `قمتم باعتماد طلب الموظف (${emp.name}) وتحويله للثقافي.`); App.addLog(['cultural'], `طلب جديد معتمد من الشؤون للموظف (${emp.name}) بانتظاركم.`); } 
+        else if (stage === 4) { App.addLog(['emp_'+r.empId], `مبارك! تم الاعتماد النهائي لطلبك من التوجيه الثقافي.`); App.addLog(['hr'], `تم الاعتماد النهائي لطلب الموظف (${emp.name}) من قبل التوجيه الثقافي.`); } 
+        else if (stage === 0) { App.addLog(['emp_'+r.empId], `نأسف، تم رفض طلبك في مرحلة: ${status}`); App.addLog(['hr'], `تم رفض أو إيقاف طلب الموظف (${emp.name}).`); }
         
-        try { 
-            await fetch(`/api/requests/${reqId}`, { 
-                method: 'PUT', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ stage, status }) 
-            }); 
-            App.closeModal('unifiedDetailsModal'); 
-            App.fetchData(); 
-        } catch(e) { 
-            App.closeModal('unifiedDetailsModal'); 
-            App.renderEmp(); 
-            App.renderHr(); 
-            App.renderCul(); 
-        }
+        try { await fetch(`/api/requests/${reqId}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ stage, status }) }); App.closeModal('unifiedDetailsModal'); App.fetchData(); } 
+        catch(e) { App.closeModal('unifiedDetailsModal'); App.renderEmp(); App.renderHr(); App.renderCul(); }
     },
 
-    // فتح نافذة تعديل بياناتي للموظف
     openSelfEdit: function() {
         document.getElementById('sePhone').value = App.curr.phone || ''; 
         document.getElementById('seRegion').value = App.curr.region || ''; 
@@ -1364,7 +905,6 @@ const App = {
         document.getElementById('selfEditModal').style.display = 'flex';
     },
 
-    // حفظ تعديل بيانات الموظف
     saveSelfEdit: async function() {
         App.curr.phone = document.getElementById('sePhone').value; 
         App.curr.region = document.getElementById('seRegion').value; 
@@ -1372,30 +912,16 @@ const App = {
         App.curr.file = document.getElementById('seFile').value;
         
         const newPass = document.getElementById('sePass').value.trim(); 
-        if(newPass && newPass.length >= 4) {
-            App.curr.pass = newPass;
-        }
+        if(newPass && newPass.length >= 4) { App.curr.pass = newPass; }
         
         sessionStorage.setItem('awqaf_user_v2', JSON.stringify(App.curr));
-        
         App.addLog(['hr'], `قام الموظف (${App.curr.name}) بتحديث بياناته الشخصية.`); 
         App.addLog(['emp_'+App.curr.id], `تم تحديث بياناتك الشخصية بنجاح.`);
         
-        try { 
-            await fetch(`/api/users/${App.curr.id}`, { 
-                method: 'PUT', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(App.curr) 
-            }); 
-        } catch(e) {
-            // محلي
-        }
-        
-        App.closeModal('selfEditModal'); 
-        App.renderEmp();
+        try { await fetch(`/api/users/${App.curr.id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(App.curr) }); } catch(e) {}
+        App.closeModal('selfEditModal'); App.renderEmp();
     },
 
-    // عرض واجهة الموظف
     renderEmp: function() {
         const e = App.curr;
         document.getElementById('empHeader').innerHTML = `
@@ -1417,66 +943,30 @@ const App = {
         App.renderLogs('empNotifs', 'emp_' + App.curr.id);
 
         const approvedLeaves = App.db.requests.filter(r => r.empId === App.curr.id && r.stage === 4 && !r.id.startsWith('RET'));
-        
         if(approvedLeaves.length > 0) {
             const last = approvedLeaves[approvedLeaves.length - 1];
             document.getElementById('prevLeaveInfo').style.display = 'block';
-            document.getElementById('prevLeaveContent').innerHTML = `
-                <div><strong>النوع:</strong> ${last.type} (رقم: ${last.id})</div>
-                <div style="direction:ltr; text-align:right;"><strong>من</strong> ${last.start} م <strong>إلى</strong> ${last.end} م</div>
-                <button class="btn btn-print btn-sm" style="margin-top:8px; width:100%;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> طباعة وثيقة الإجازة المعتمدة</button>
-            `;
-        } else { 
-            document.getElementById('prevLeaveInfo').style.display = 'none'; 
-        }
+            document.getElementById('prevLeaveContent').innerHTML = `<div><strong>النوع:</strong> ${last.type} (رقم: ${last.id})</div><div style="direction:ltr; text-align:right;"><strong>من</strong> ${last.start} م <strong>إلى</strong> ${last.end} م</div><button class="btn btn-print btn-sm" style="margin-top:8px; width:100%;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> طباعة وثيقة الإجازة المعتمدة</button>`;
+        } else { document.getElementById('prevLeaveInfo').style.display = 'none'; }
 
         const subTask = App.db.requests.find(r => r.subId === App.curr.id && r.stage === 1);
         const notice = document.getElementById('subNoticeArea');
-        
         if(subTask) {
             const emp = App.db.users.find(u => u.id === subTask.empId);
-            notice.innerHTML = `
-                <div style="background:#fffbeb; padding:12px; border-radius:10px; border:1px solid #fde68a; color:#b45309; margin-bottom:15px; font-size:12px;">
-                    <h4 style="margin:0 0 5px 0;"><i class="fas fa-exclamation-circle"></i> طلب تغطية عمل</h4>
-                    <p style="margin:0;">لقد اختارك الزميل <b>${emp.name}</b> (مسجد: ${emp.place}) كبديل له من تاريخ ${subTask.start} إلى ${subTask.end}.</p>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        <button class="btn btn-success btn-sm" style="flex:1;" onclick="App.actionReq('${subTask.id}', 2, 'موافقة البديل - بانتظار الشؤون')">أوافق على التغطية</button>
-                        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="App.actionReq('${subTask.id}', 0, 'رفض البديل التغطية')">أعتذر عن التغطية</button>
-                    </div>
-                </div>
-            `;
-        } else {
-            notice.innerHTML = '';
-        }
+            notice.innerHTML = `<div style="background:#fffbeb; padding:12px; border-radius:10px; border:1px solid #fde68a; color:#b45309; margin-bottom:15px; font-size:12px;"><h4 style="margin:0 0 5px 0;"><i class="fas fa-exclamation-circle"></i> طلب تغطية عمل</h4><p style="margin:0;">لقد اختارك الزميل <b>${emp.name}</b> (مسجد: ${emp.place}) كبديل له من تاريخ ${subTask.start} إلى ${subTask.end}.</p><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn btn-success btn-sm" style="flex:1;" onclick="App.actionReq('${subTask.id}', 2, 'موافقة البديل - بانتظار الشؤون')">أوافق على التغطية</button><button class="btn btn-danger btn-sm" style="flex:1;" onclick="App.actionReq('${subTask.id}', 0, 'رفض البديل التغطية')">أعتذر عن التغطية</button></div></div>`;
+        } else { notice.innerHTML = ''; }
 
         document.getElementById('empTbody').innerHTML = App.db.requests.filter(r => r.empId === App.curr.id).reverse().map(r => {
             const isRet = r.id.startsWith('RET'); 
             const subTxt = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'معفى (بمفرده)' : (App.db.users.find(u => u.id === r.subId)?.name || 'غير متوفر'));
             const dateTxt = isRet ? `تاريخ التنفيذ: <strong>${r.start} م</strong>` : `الفترة: <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong>`;
-            
             let actions = r.stage === 4 ? `<button class="btn btn-print btn-sm" style="width:100%; margin-top:10px;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> حفظ كمستند PDF</button>` : '';
-            
-            return `
-                <div class="data-card" style="${isRet ? 'border-right:3px solid var(--danger);' : 'border-right:3px solid var(--primary);'}">
-                    <div class="data-card-header">
-                        <span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-file-alt'}"></i> ${r.type}</span>
-                        <span class="badge status-${r.stage}">${r.status}</span>
-                    </div>
-                    <div class="data-card-body">
-                        <p><span>البديل المكلف:</span> <strong>${subTxt}</strong></p>
-                        <p>${dateTxt}</p>
-                        <p><span>تاريخ التقديم:</span> <strong>${r.ts.greg} | ${r.ts.time}</strong></p>
-                    </div>
-                    ${actions}
-                </div>
-            `;
+            return `<div class="data-card" style="${isRet ? 'border-right:3px solid var(--danger);' : 'border-right:3px solid var(--primary);'}"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-file-alt'}"></i> ${r.type}</span><span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>البديل المكلف:</span> <strong>${subTxt}</strong></p><p>${dateTxt}</p><p><span>تاريخ التقديم:</span> <strong>${r.ts.greg} | ${r.ts.time}</strong></p></div>${actions}</div>`;
         }).join('');
     },
 
-    // عرض واجهة التوجيه الثقافي
     renderCul: function() {
         App.renderLogs('culNotifs', 'cultural');
-        
         const fMonth = document.getElementById('culFilterMonth').value; 
         const fYear = document.getElementById('culFilterYear').value; 
         const fStatus = document.getElementById('culFilterStatus').value;
@@ -1485,216 +975,83 @@ const App = {
             const rMonth = String(new Date(r.start).getMonth() + 1).padStart(2, '0'); 
             const rYear = String(new Date(r.start).getFullYear());
             let passS = true;
-            if(fStatus !== 'all') {
-                if(fStatus === 'pending') {
-                    passS = (r.stage === 3);
-                } else {
-                    passS = (r.stage > 3 || r.stage === 0);
-                }
-            }
+            if(fStatus !== 'all') { if(fStatus === 'pending') { passS = (r.stage === 3); } else { passS = (r.stage > 3 || r.stage === 0); } }
             return (fMonth === 'all' || fMonth === rMonth) && (fYear === 'all' || fYear === rYear) && passS;
         });
 
-        document.getElementById('culStatsArea').innerHTML = `
-            <div class="stat-card pending"><h3>${reqs.filter(r => r.stage === 3).length}</h3><p>طلبات بانتظارنا</p></div>
-            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>طلبات معتمدة</p></div>
-            <div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div>
-        `;
+        document.getElementById('culStatsArea').innerHTML = `<div class="stat-card pending"><h3>${reqs.filter(r => r.stage === 3).length}</h3><p>طلبات بانتظارنا</p></div><div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>طلبات معتمدة</p></div><div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div>`;
         
-        if(reqs.length === 0) { 
-            document.getElementById('culTbody').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">الأرشيف فارغ وفقاً للفلتر المختار.</div>'; 
-            return; 
-        }
+        if(reqs.length === 0) { document.getElementById('culTbody').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">الأرشيف فارغ وفقاً للفلتر المختار.</div>'; return; }
 
         document.getElementById('culTbody').innerHTML = reqs.reverse().map(r => {
-            const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-            const isRet = r.id.startsWith('RET');
+            const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
             const subName = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'إعفاء' : (App.db.users.find(u => u.id === r.subId)?.name || '--'));
-            
-            return `
-                <div class="data-card" style="border-right:3px solid ${isRet ? 'var(--danger)' : 'var(--info)'};">
-                    <div class="data-card-header">
-                        <span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-user-tie'}"></i> ${emp.name}</span> 
-                        <span class="badge status-${r.stage}">${r.status}</span>
-                    </div>
-                    <div class="data-card-body">
-                        <p><span>المسجد والملف:</span> <strong>${emp.place} (${emp.file})</strong></p>
-                        <p><span>النوع والبديل:</span> <strong>${r.type} (${subName})</strong></p>
-                        <p>${isRet ? 'تاريخ التنفيذ:' : 'تاريخ الفترة:'} <strong style="direction:rtl;">${isRet ? r.start + ' م' : r.start + ' إلى ' + r.end + ' م'}</strong></p>
-                    </div>
-                    <div class="data-card-actions">
-                        <button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل والاعتماد</button>
-                    </div>
-                </div>
-            `;
+            return `<div class="data-card" style="border-right:3px solid ${isRet ? 'var(--danger)' : 'var(--info)'};"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-user-tie'}"></i> ${emp.name}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>المسجد والملف:</span> <strong>${emp.place} (${emp.file})</strong></p><p><span>النوع والبديل:</span> <strong>${r.type} (${subName})</strong></p><p>${isRet ? 'تاريخ التنفيذ:' : 'تاريخ الفترة:'} <strong style="direction:rtl;">${isRet ? r.start + ' م' : r.start + ' إلى ' + r.end + ' م'}</strong></p></div><div class="data-card-actions"><button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل والاعتماد</button></div></div>`;
         }).join('');
     },
 
-    // التبديل بين شاشات شؤون العاملين
     switchHrTab: function(tab, el) {
         const views = ['hrReqsView', 'hrReturnsPendingView', 'hrArchiveLeaveView', 'hrArchiveReturnView', 'hrEmpsView'];
         views.forEach(v => document.getElementById(v).style.display = 'none');
-        
         document.getElementById(`hr${tab.charAt(0).toUpperCase() + tab.slice(1)}View`).style.display = (tab === 'emps' || tab === 'archiveLeave' || tab === 'archiveReturn') ? 'block' : 'grid';
-        
-        document.querySelectorAll('.hr-tab').forEach(t => t.classList.remove('active')); 
-        el.classList.add('active');
-        
-        if(tab === 'archiveLeave') {
-            App.renderHrArchiveLeaves(); 
-        }
-        if(tab === 'archiveReturn') {
-            App.renderHrArchiveReturns();
-        }
+        document.querySelectorAll('.hr-tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+        if(tab === 'archiveLeave') App.renderHrArchiveLeaves(); 
+        if(tab === 'archiveReturn') App.renderHrArchiveReturns();
     },
 
-    // عرض واجهة شؤون العاملين الأساسية
     renderHr: function() {
         App.renderLogs('hrNotifs', 'hr');
         const allPending = App.db.requests.filter(r => r.stage === 2).reverse();
         
         const leaves = allPending.filter(r => !r.id.startsWith('RET'));
-        if (leaves.length === 0) {
-            document.getElementById('hrReqsView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد إجازات جديد حالياً.</div>';
-        } else {
-            document.getElementById('hrReqsView').innerHTML = leaves.map(r => {
-                const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-                const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u => u.id === r.subId) || {};
-                return `
-                    <div class="data-card" style="border-right:3px solid var(--primary);">
-                        <div class="data-card-header">
-                            <span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span>
-                        </div>
-                        <div class="data-card-body">
-                            <p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p>
-                            <p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p>
-                            <p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p>
-                        </div>
-                        <button class="btn btn-primary" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button>
-                    </div>
-                `;
-            }).join('');
-        }
+        if (leaves.length === 0) { document.getElementById('hrReqsView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد إجازات جديد حالياً.</div>'; } 
+        else { document.getElementById('hrReqsView').innerHTML = leaves.map(r => {
+            const emp = App.db.users.find(u => u.id === r.empId) || {}; const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u => u.id === r.subId) || {};
+            return `<div class="data-card" style="border-right:3px solid var(--primary);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+        }).join(''); }
 
         const returns = allPending.filter(r => r.id.startsWith('RET'));
-        if (returns.length === 0) {
-            document.getElementById('hrReturnsPendingView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد مباشرة أو قطع حالياً.</div>';
-        } else {
-            document.getElementById('hrReturnsPendingView').innerHTML = returns.map(r => {
-                const emp = App.db.users.find(u => u.id === r.empId) || {};
-                return `
-                    <div class="data-card" style="border-right:3px solid var(--danger);">
-                        <div class="data-card-header">
-                            <span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span>
-                        </div>
-                        <div class="data-card-body">
-                            <p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p>
-                            <p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p>
-                            <p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p>
-                        </div>
-                        <button class="btn btn-danger" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button>
-                    </div>
-                `;
-            }).join('');
-        }
+        if (returns.length === 0) { document.getElementById('hrReturnsPendingView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد مباشرة أو قطع حالياً.</div>'; } 
+        else { document.getElementById('hrReturnsPendingView').innerHTML = returns.map(r => {
+            const emp = App.db.users.find(u => u.id === r.empId) || {};
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-danger" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+        }).join(''); }
 
         const emps = App.db.users.filter(u => u.role === 'emp');
         document.getElementById('hrEmpTbody').innerHTML = emps.map(u => {
             const isF = u.status === 'frozen';
-            return `
-                <div class="data-card employee-card" data-search="${u.name} ${u.id} ${u.file || ''}">
-                    <div class="data-card-header">
-                        <span class="data-card-title"><i class="fas fa-user"></i> ${u.name}</span> 
-                        <span class="badge ${isF ? 'status-0' : 'status-4'}">${isF ? 'مجمد' : 'نشط'}</span>
-                    </div>
-                    <div class="data-card-body">
-                        <p><span>المدني / الهاتف:</span> <strong>${u.id} / ${u.phone || '--'}</strong></p>
-                        <p><span>الملف / المسجد:</span> <strong>${u.file || '--'} / ${u.place}</strong></p>
-                    </div>
-                    <div class="data-card-actions">
-                        <button class="btn ${isF ? 'btn-success' : 'btn-danger'} btn-sm" style="flex:1" onclick="App.toggleEmpStatus('${u.id}')"><i class="fas fa-${isF ? 'play' : 'pause'}"></i></button>
-                        <button class="btn btn-info btn-sm" style="flex:2" onclick="App.openEditEmp('${u.id}')"><i class="fas fa-edit"></i> تعديل</button>
-                    </div>
-                </div>
-            `;
+            return `<div class="data-card employee-card" data-search="${u.name} ${u.id} ${u.file || ''}"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-user"></i> ${u.name}</span> <span class="badge ${isF ? 'status-0' : 'status-4'}">${isF ? 'مجمد' : 'نشط'}</span></div><div class="data-card-body"><p><span>المدني / الهاتف:</span> <strong>${u.id} / ${u.phone || '--'}</strong></p><p><span>الملف / المسجد:</span> <strong>${u.file || '--'} / ${u.place}</strong></p></div><div class="data-card-actions"><button class="btn ${isF ? 'btn-success' : 'btn-danger'} btn-sm" style="flex:1" onclick="App.toggleEmpStatus('${u.id}')"><i class="fas fa-${isF ? 'play' : 'pause'}"></i></button><button class="btn btn-info btn-sm" style="flex:2" onclick="App.openEditEmp('${u.id}')"><i class="fas fa-edit"></i> تعديل</button></div></div>`;
         }).join('');
     },
 
-    // عرض أرشيف الإجازات لشؤون العاملين
     renderHrArchiveLeaves: function() {
-        const fM = document.getElementById('hrALMonth').value; 
-        const fY = document.getElementById('hrALYear').value; 
-        const fT = document.getElementById('hrALType').value;
-        
+        const fM = document.getElementById('hrALMonth').value; const fY = document.getElementById('hrALYear').value; const fT = document.getElementById('hrALType').value;
         let reqs = App.db.requests.filter(r => !r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
-            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && 
-                   (fY === 'all' || String(rD.getFullYear()) === fY) && 
-                   (fT === 'all' || r.type === fT);
+            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && (fY === 'all' || String(rD.getFullYear()) === fY) && (fT === 'all' || r.type === fT);
         });
 
-        document.getElementById('hrALStats').innerHTML = `
-            <div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div>
-            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div>
-            <div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>
-        `;
-        
+        document.getElementById('hrALStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>الإجمالي</p></div><div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div><div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>`;
         document.getElementById('hrALTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `
-                <div class="data-card">
-                    <div class="data-card-header">
-                        <span class="data-card-title">${r.type}</span> 
-                        <span class="badge status-${r.stage}">${r.status}</span>
-                    </div>
-                    <div class="data-card-body">
-                        <p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p>
-                        <p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p>
-                    </div>
-                    <button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button>
-                </div>
-            `;
+            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
-    // عرض أرشيف المباشرة لشؤون العاملين
     renderHrArchiveReturns: function() {
-        const fM = document.getElementById('hrARMonth').value; 
-        const fY = document.getElementById('hrARYear').value; 
-        const fT = document.getElementById('hrARType').value;
-        
+        const fM = document.getElementById('hrARMonth').value; const fY = document.getElementById('hrARYear').value; const fT = document.getElementById('hrARType').value;
         let reqs = App.db.requests.filter(r => r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
-            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && 
-                   (fY === 'all' || String(rD.getFullYear()) === fY) && 
-                   (fT === 'all' || r.type === fT);
+            return (fM === 'all' || String(rD.getMonth() + 1).padStart(2, '0') === fM) && (fY === 'all' || String(rD.getFullYear()) === fY) && (fT === 'all' || r.type === fT);
         });
 
-        document.getElementById('hrARStats').innerHTML = `
-            <div class="stat-card total"><h3>${reqs.length}</h3><p>إجمالي المباشرة</p></div>
-            <div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div>
-            <div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>
-        `;
-        
+        document.getElementById('hrARStats').innerHTML = `<div class="stat-card total"><h3>${reqs.length}</h3><p>إجمالي المباشرة</p></div><div class="stat-card approved"><h3>${reqs.filter(r => r.stage === 4).length}</h3><p>معتمدة</p></div><div class="stat-card rejected"><h3>${reqs.filter(r => r.stage === 0).length}</h3><p>مرفوضة</p></div>`;
         document.getElementById('hrARTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `
-                <div class="data-card" style="border-right:3px solid var(--danger);">
-                    <div class="data-card-header">
-                        <span class="data-card-title">${r.type}</span> 
-                        <span class="badge status-${r.stage}">${r.status}</span>
-                    </div>
-                    <div class="data-card-body">
-                        <p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p>
-                        <p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p>
-                    </div>
-                    <button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button>
-                </div>
-            `;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
-    // البحث السريع في الموظفين
     filterEmps: function(val) {
         const term = val.toLowerCase().trim();
         document.querySelectorAll('.employee-card').forEach(card => {
@@ -1702,270 +1059,101 @@ const App = {
         });
     },
 
-    // فتح نافذة التفاصيل الشاملة
     openDetails: function(reqId) {
-        const r = App.db.requests.find(x => x.id === reqId); 
-        if(!r) return;
-        
-        const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-        const isRet = r.id.startsWith('RET');
+        const r = App.db.requests.find(x => x.id === reqId); if(!r) return;
+        const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
         
         document.getElementById('modalReqTime').innerText = `${r.ts.greg} م | ${r.ts.time}`;
         document.getElementById('compType').innerText = r.type;
         document.getElementById('compDates').innerText = isRet ? `${r.start} م` : `من ${r.start} م إلى ${r.end} م`;
         
-        let subBadge = 'status-2'; 
-        let subTxt = 'بانتظار الموافقة';
+        let subBadge = 'status-2'; let subTxt = 'بانتظار الموافقة';
+        if(isRet) { subBadge = 'status-1'; subTxt = 'إجراء إداري'; } 
+        else if(r.subId === '0000') { subBadge = 'status-1'; subTxt = 'مُعفى من البديل'; } 
+        else if(r.stage >= 2) { subBadge = 'status-4'; subTxt = 'تمت الموافقة من البديل'; } 
+        else if(r.stage === 0) { subBadge = 'status-0'; subTxt = 'مرفوض إدارياً'; }
         
-        if(isRet) { 
-            subBadge = 'status-1'; 
-            subTxt = 'إجراء إداري'; 
-        } else if(r.subId === '0000') { 
-            subBadge = 'status-1'; 
-            subTxt = 'مُعفى من البديل'; 
-        } else if(r.stage >= 2) { 
-            subBadge = 'status-4'; 
-            subTxt = 'تمت الموافقة من البديل'; 
-        } else if(r.stage === 0) { 
-            subBadge = 'status-0'; 
-            subTxt = 'مرفوض إدارياً'; 
-        }
-        
-        document.getElementById('compSubStatus').className = `badge ${subBadge}`; 
-        document.getElementById('compSubStatus').innerText = subTxt;
+        document.getElementById('compSubStatus').className = `badge ${subBadge}`; document.getElementById('compSubStatus').innerText = subTxt;
 
-        document.getElementById('compEmp').innerHTML = `
-            <p><span>الاسم بالكامل:</span> <strong>${emp.name || '--'}</strong></p>
-            <p><span>الرقم المدني:</span> <strong>${emp.id || '--'}</strong></p>
-            <p><span>رقم الهاتف:</span> <strong>${emp.phone || '--'}</strong></p>
-            <p><span>رقم الملف:</span> <strong>${emp.file || '--'}</strong></p>
-            <p><span>اسم المسجد:</span> <strong>${emp.place || '--'}</strong></p>
-            <p><span>الوظيفة (العقد):</span> <strong>${emp.job || '--'} (${emp.contract || '--'})</strong></p>
-        `;
+        document.getElementById('compEmp').innerHTML = `<p><span>الاسم بالكامل:</span> <strong>${emp.name || '--'}</strong></p><p><span>الرقم المدني:</span> <strong>${emp.id || '--'}</strong></p><p><span>رقم الهاتف:</span> <strong>${emp.phone || '--'}</strong></p><p><span>رقم الملف:</span> <strong>${emp.file || '--'}</strong></p><p><span>اسم المسجد:</span> <strong>${emp.place || '--'}</strong></p><p><span>الوظيفة (العقد):</span> <strong>${emp.job || '--'} (${emp.contract || '--'})</strong></p>`;
         
         if (isRet || r.linkedReqId) {
             const orig = App.db.requests.find(x => x.id === r.linkedReqId) || {};
             document.getElementById('compSubTitle').innerHTML = `<i class="fas fa-file-alt"></i> الإجازة الأصلية المرتبطة`;
             document.getElementById('compSubCard').style.background = '#fef2f2';
-            document.getElementById('compSub').innerHTML = `
-                <p><span>رقم الطلب الأصلي:</span> <strong>${orig.id || '--'}</strong></p>
-                <p><span>نوع الإجازة:</span> <strong>${orig.type || '--'}</strong></p>
-                <p><span>تاريخ البداية:</span> <strong>${App.formatDate(orig.start)}</strong></p>
-                <p><span>تاريخ النهاية:</span> <strong>${App.formatDate(orig.end)}</strong></p>
-                <p><span>حالة الإجازة:</span> <strong>${orig.status || '--'}</strong></p>
-            `;
+            document.getElementById('compSub').innerHTML = `<p><span>رقم الطلب الأصلي:</span> <strong>${orig.id || '--'}</strong></p><p><span>نوع الإجازة:</span> <strong>${orig.type || '--'}</strong></p><p><span>تاريخ البداية:</span> <strong>${App.formatDate(orig.start)}</strong></p><p><span>تاريخ النهاية:</span> <strong>${App.formatDate(orig.end)}</strong></p><p><span>حالة الإجازة:</span> <strong>${orig.status || '--'}</strong></p>`;
         } else {
             const sub = r.subId === '0000' ? {name:'مُعفى (بدون بديل)', id:'--', phone:'--', file:'--', place:'--', job:'--', contract:'--'} : (App.db.users.find(u => u.id === r.subId) || {});
             document.getElementById('compSubTitle').innerHTML = `<i class="fas fa-user-check"></i> بيانات البديل المكلف`;
             document.getElementById('compSubCard').style.background = 'var(--bg)';
-            document.getElementById('compSub').innerHTML = `
-                <p><span>الاسم بالكامل:</span> <strong>${sub.name || '--'}</strong></p>
-                <p><span>الرقم المدني:</span> <strong>${sub.id || '--'}</strong></p>
-                <p><span>رقم الهاتف:</span> <strong>${sub.phone || '--'}</strong></p>
-                <p><span>رقم الملف:</span> <strong>${sub.file || '--'}</strong></p>
-                <p><span>اسم المسجد:</span> <strong>${sub.place || '--'}</strong></p>
-                <p><span>الوظيفة (العقد):</span> <strong>${sub.job || '--'} (${sub.contract || '--'})</strong></p>
-            `;
+            document.getElementById('compSub').innerHTML = `<p><span>الاسم بالكامل:</span> <strong>${sub.name || '--'}</strong></p><p><span>الرقم المدني:</span> <strong>${sub.id || '--'}</strong></p><p><span>رقم الهاتف:</span> <strong>${sub.phone || '--'}</strong></p><p><span>رقم الملف:</span> <strong>${sub.file || '--'}</strong></p><p><span>اسم المسجد:</span> <strong>${sub.place || '--'}</strong></p><p><span>الوظيفة (العقد):</span> <strong>${sub.job || '--'} (${sub.contract || '--'})</strong></p>`;
         }
         
         let btns = '';
         if(App.curr.role === 'hr' && r.stage === 2) {
-            btns = `
-                <button class="btn btn-primary" style="flex:1;" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')"><i class="fas fa-check"></i> اعتماد لشؤون العاملين</button>
-                <button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من شؤون العاملين')"><i class="fas fa-times"></i> رفض الطلب</button>
-            `;
+            btns = `<button class="btn btn-primary" style="flex:1;" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')"><i class="fas fa-check"></i> اعتماد لشؤون العاملين</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من شؤون العاملين')"><i class="fas fa-times"></i> رفض الطلب</button>`;
         } else if(App.curr.role === 'cultural' && r.stage === 3) {
-            btns = `
-                <button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد نهائي (الثقافي)</button>
-                <button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button>
-            `;
+            btns = `<button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد نهائي (الثقافي)</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button>`;
         } else if(r.stage === 4) {
-            btns = `
-                <button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة الوثيقة المعتمدة (PDF)</button>
-            `;
+            btns = `<button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة الوثيقة المعتمدة (PDF)</button>`;
         }
         
         document.getElementById('modalActionButtons').innerHTML = btns; 
         document.getElementById('unifiedDetailsModal').style.display = 'flex';
     },
 
-    // تجميد/تفعيل الموظف
     toggleEmpStatus: async function(id) { 
-        const u = App.db.users.find(x => x.id === id); 
-        const newStatus = u.status === 'frozen' ? 'active' : 'frozen'; 
-        u.status = newStatus; 
-        
-        try { 
-            await fetch(`/api/users/${id}`, { 
-                method: 'PUT', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ status: newStatus }) 
-            }); 
-        } catch(e) {
-            // محلي
-        } 
+        const u = App.db.users.find(x => x.id === id); const newStatus = u.status === 'frozen' ? 'active' : 'frozen'; u.status = newStatus; 
+        try { await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ status: newStatus }) }); } catch(e) {} 
         App.fetchData(); 
     },
 
-    // فتح نافذة تعديل بيانات الموظف (لشؤون العاملين)
     openEditEmp: function(id) { 
         const u = App.db.users.find(x => x.id === id); 
-        document.getElementById('edId').value = u.id; 
-        document.getElementById('edName').value = u.name || ''; 
-        document.getElementById('edFile').value = u.file || ''; 
-        document.getElementById('edNat').value = u.nationality || ''; 
-        document.getElementById('edRegion').value = u.region || ''; 
-        document.getElementById('edPlace').value = u.place || ''; 
-        document.getElementById('edJob').value = u.job || ''; 
-        document.getElementById('edContract').value = u.contract || ''; 
-        document.getElementById('edPhone').value = u.phone || ''; 
-        document.getElementById('edPass').value = ""; 
+        document.getElementById('edId').value = u.id; document.getElementById('edName').value = u.name || ''; document.getElementById('edFile').value = u.file || ''; document.getElementById('edNat').value = u.nationality || ''; document.getElementById('edRegion').value = u.region || ''; document.getElementById('edPlace').value = u.place || ''; document.getElementById('edJob').value = u.job || ''; document.getElementById('edContract').value = u.contract || ''; document.getElementById('edPhone').value = u.phone || ''; document.getElementById('edPass').value = ""; 
         document.getElementById('hrEditEmpModal').style.display = 'flex'; 
     },
 
-    // حفظ تعديل بيانات الموظف
     saveEditEmp: async function() { 
-        const id = document.getElementById('edId').value; 
-        const u = App.db.users.find(x => x.id === id); 
-        
-        u.name = document.getElementById('edName').value; 
-        u.file = document.getElementById('edFile').value; 
-        u.nationality = document.getElementById('edNat').value; 
-        u.region = document.getElementById('edRegion').value; 
-        u.place = document.getElementById('edPlace').value; 
-        u.job = document.getElementById('edJob').value; 
-        u.contract = document.getElementById('edContract').value; 
-        u.phone = document.getElementById('edPhone').value; 
-        
-        const newPass = document.getElementById('edPass').value.trim(); 
-        if(newPass && newPass.length >= 4) {
-            u.pass = newPass;
-        }
-        
-        try { 
-            await fetch(`/api/users/${id}`, { 
-                method: 'PUT', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(u) 
-            }); 
-        } catch(e) {
-            // محلي
-        } 
-        
-        App.closeModal('hrEditEmpModal'); 
-        App.fetchData(); 
+        const id = document.getElementById('edId').value; const u = App.db.users.find(x => x.id === id); 
+        u.name = document.getElementById('edName').value; u.file = document.getElementById('edFile').value; u.nationality = document.getElementById('edNat').value; u.region = document.getElementById('edRegion').value; u.place = document.getElementById('edPlace').value; u.job = document.getElementById('edJob').value; u.contract = document.getElementById('edContract').value; u.phone = document.getElementById('edPhone').value; 
+        const newPass = document.getElementById('edPass').value.trim(); if(newPass && newPass.length >= 4) { u.pass = newPass; }
+        try { await fetch(`/api/users/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(u) }); } catch(e) {} 
+        App.closeModal('hrEditEmpModal'); App.fetchData(); 
     },
 
-    // تصدير البيانات لإكسيل
     exportToExcel: function() {
-        if(App.db.requests.length === 0) {
-            return alert("لا توجد بيانات حالياً لتصديرها.");
-        }
-        
+        if(App.db.requests.length === 0) return alert("لا توجد بيانات حالياً لتصديرها.");
         const expData = App.db.requests.map(r => { 
-            const e = App.db.users.find(u => u.id === r.empId) || {}; 
-            const s = r.subId === '0000' ? {name:'مُعفى بدون بديل'} : (App.db.users.find(u => u.id === r.subId) || {}); 
-            return { 
-                "رقم الطلب": r.id, 
-                "الاسم": e.name, 
-                "المدني": e.id, 
-                "الهاتف": e.phone, 
-                "رقم الملف": e.file, 
-                "المسجد": e.place, 
-                "البديل المكلف": s.name, 
-                "نوع الإجراء": r.type, 
-                "من تاريخ": App.formatDate(r.start), 
-                "إلى تاريخ": App.formatDate(r.end), 
-                "حالة الطلب": r.status, 
-                "تاريخ التقديم": `${r.ts.greg} م - ${r.ts.time}` 
-            } 
+            const e = App.db.users.find(u => u.id === r.empId) || {}; const s = r.subId === '0000' ? {name:'مُعفى بدون بديل'} : (App.db.users.find(u => u.id === r.subId) || {}); 
+            return { "رقم الطلب": r.id, "الاسم": e.name, "المدني": e.id, "الهاتف": e.phone, "رقم الملف": e.file, "المسجد": e.place, "البديل المكلف": s.name, "نوع الإجراء": r.type, "من تاريخ": App.formatDate(r.start), "إلى تاريخ": App.formatDate(r.end), "حالة الطلب": r.status, "تاريخ التقديم": `${r.ts.greg} م - ${r.ts.time}` } 
         });
-        
-        const ws = XLSX.utils.json_to_sheet(expData); 
-        ws['!dir'] = 'rtl'; 
-        const wb = XLSX.utils.book_new(); 
-        XLSX.utils.book_append_sheet(wb, ws, "سجل منظومة الإجازات"); 
-        XLSX.writeFile(wb, `سجل_المنظومة_المركزية.xlsx`);
+        const ws = XLSX.utils.json_to_sheet(expData); ws['!dir'] = 'rtl'; const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "سجل منظومة الإجازات"); XLSX.writeFile(wb, `سجل_المنظومة_المركزية.xlsx`);
     },
 
-    // طباعة سجل شؤون العاملين كجدول
     printHrArchive: function() {
-        const area = document.getElementById('printArea'); 
-        const ts = App.getTimestamp();
-        
-        let html = `
-            <div style="text-align:center; padding:20px; direction:rtl; font-family:'Cairo';">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid black; padding-bottom:10px; margin-bottom:20px;">
-                    <img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
-                    <div style="text-align:center;">
-                        <h2 style="margin:0;">دولة الكويت - وزارة الشؤون الإسلامية</h2>
-                        <h3 style="margin:5px 0;">سجل أرشيف الإدارة المركزية لشؤون العاملين</h3>
-                    </div>
-                    <img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
-                </div>
-                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; text-align:right;">
-                    <thead>
-                        <tr style="background:#eee;">
-                            <th style="border:1px solid #000; padding:8px;">رقم الطلب</th>
-                            <th style="border:1px solid #000; padding:8px;">اسم الموظف</th>
-                            <th style="border:1px solid #000; padding:8px;">نوع الإجراء</th>
-                            <th style="border:1px solid #000; padding:8px;">التاريخ / الفترة</th>
-                            <th style="border:1px solid #000; padding:8px;">الحالة النهائية</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
+        const area = document.getElementById('printArea'); const ts = App.getTimestamp();
+        let html = `<div style="text-align:center; padding:20px; direction:rtl; font-family:'Cairo';"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid black; padding-bottom:10px; margin-bottom:20px;"><img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'"><div style="text-align:center;"><h2 style="margin:0;">دولة الكويت - وزارة الشؤون الإسلامية</h2><h3 style="margin:5px 0;">سجل أرشيف الإدارة المركزية لشؤون العاملين</h3></div><img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'"></div><table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; text-align:right;"><thead><tr style="background:#eee;"><th style="border:1px solid #000; padding:8px;">رقم الطلب</th><th style="border:1px solid #000; padding:8px;">اسم الموظف</th><th style="border:1px solid #000; padding:8px;">نوع الإجراء</th><th style="border:1px solid #000; padding:8px;">التاريخ / الفترة</th><th style="border:1px solid #000; padding:8px;">الحالة النهائية</th></tr></thead><tbody>`;
         
         App.db.requests.reverse().forEach(r => {
-            const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-            const isRet = r.id.startsWith('RET');
-            html += `
-                <tr>
-                    <td style="border:1px solid #000; padding:8px;">${r.id}</td>
-                    <td style="border:1px solid #000; padding:8px;">${emp.name}</td>
-                    <td style="border:1px solid #000; padding:8px;">${r.type}</td>
-                    <td style="border:1px solid #000; padding:8px;">${isRet ? r.start + ' م' : r.start + ' م إلى ' + r.end + ' م'}</td>
-                    <td style="border:1px solid #000; padding:8px; font-weight:bold;">${r.status}</td>
-                </tr>
-            `;
+            const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
+            html += `<tr><td style="border:1px solid #000; padding:8px;">${r.id}</td><td style="border:1px solid #000; padding:8px;">${emp.name}</td><td style="border:1px solid #000; padding:8px;">${r.type}</td><td style="border:1px solid #000; padding:8px;">${isRet ? r.start + ' م' : r.start + ' م إلى ' + r.end + ' م'}</td><td style="border:1px solid #000; padding:8px; font-weight:bold;">${r.status}</td></tr>`;
         });
         
-        html += `
-                    </tbody>
-                </table>
-                <p style="text-align:right; font-size:10px; color:#555;">* تم استخراج هذا السجل آلياً من المنظومة بتاريخ: ${ts.greg} م | ${ts.time}</p>
-            </div>
-        `;
-        
-        area.innerHTML = html; 
-        document.getElementById('mainContainer').style.display = 'none';
-        
-        setTimeout(() => { 
-            window.print(); 
-            area.innerHTML = ''; 
-            document.getElementById('mainContainer').style.display = 'block'; 
-        }, 500);
+        html += `</tbody></table><p style="text-align:right; font-size:10px; color:#555;">* تم استخراج هذا السجل آلياً من المنظومة بتاريخ: ${ts.greg} م | ${ts.time}</p></div>`;
+        area.innerHTML = html; document.getElementById('mainContainer').style.display = 'none';
+        setTimeout(() => { window.print(); area.innerHTML = ''; document.getElementById('mainContainer').style.display = 'block'; }, 500);
     },
 
-    // طباعة وثيقة الموظف المعتمدة (للحفظ كـ PDF)
     printTicket: function(id) {
-        App.closeModal('unifiedDetailsModal'); 
-        
-        const r = App.db.requests.find(x => x.id === id); 
-        if(!r) return;
-        
-        const emp = App.db.users.find(u => u.id === r.empId) || {}; 
-        const isRet = r.id.startsWith('RET');
+        App.closeModal('unifiedDetailsModal'); const r = App.db.requests.find(x => x.id === id); if(!r) return;
+        const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
         const sub = isRet ? {name:'إجراء إداري مقيد في النظام'} : (r.subId === '0000' ? {name:'مُعفى (بدون بديل)'} : (App.db.users.find(u => u.id === r.subId) || {name:'--'}));
-        
-        const area = document.getElementById('printArea'); 
-        const ts = App.getTimestamp();
+        const area = document.getElementById('printArea'); const ts = App.getTimestamp();
         
         document.getElementById('mainContainer').style.display = 'none';
-        
         area.innerHTML = `
             <div style="border:3px double #000; padding:20px; direction:rtl; font-family:'Cairo'; max-width:800px; margin:0 auto; background:white; color:black;">
-                
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:20px;">
                     <img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" width="70" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
                     <div style="text-align:center; line-height:1.4;">
@@ -1975,65 +1163,30 @@ const App = {
                     </div>
                     <img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" width="70" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
                 </div>
-                
                 <div style="text-align:center; background:#f3f4f6; border:1px solid #d1d5db; padding:10px; margin-bottom:25px;">
                     <h3 style="margin:0; font-size:18px; color:#111827; letter-spacing:1px;">تصريح إجراء معتمد (رقم: ${r.id})</h3>
                 </div>
-                
                 <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-size:15px;">
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; width:30%; font-weight:bold;">الاسم الرباعي:</td>
-                        <td style="border:1px solid #000; padding:10px; font-weight:bold; color:var(--primary);">${emp.name || '--'}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">الرقم المدني / الملف:</td>
-                        <td style="border:1px solid #000; padding:10px;">${emp.id || '--'} &nbsp; | &nbsp; ملف رقم: ${emp.file || '--'}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">جهة العمل (المسجد):</td>
-                        <td style="border:1px solid #000; padding:10px;">${emp.place || '--'} - منطقة ${emp.region || '--'}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">نوع الإجراء المعتمد:</td>
-                        <td style="border:1px solid #000; padding:10px; font-weight:bold; font-size:16px;">${r.type}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'تاريخ التنفيذ الفعلي:' : 'الفترة المعتمدة:'}</td>
-                        <td style="border:1px solid #000; padding:10px; direction:rtl;">${isRet ? r.start + ' م' : 'من تاريخ ' + r.start + ' م إلى ' + r.end + ' م'}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'ملاحظات الإجراء:' : 'الزميل البديل المكلف:'}</td>
-                        <td style="border:1px solid #000; padding:10px; background:#eef2ff;">${sub.name || '--'}</td>
-                    </tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; width:30%; font-weight:bold;">الاسم الرباعي:</td><td style="border:1px solid #000; padding:10px; font-weight:bold; color:var(--primary);">${emp.name || '--'}</td></tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">الرقم المدني / الملف:</td><td style="border:1px solid #000; padding:10px;">${emp.id || '--'} &nbsp; | &nbsp; ملف رقم: ${emp.file || '--'}</td></tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">جهة العمل (المسجد):</td><td style="border:1px solid #000; padding:10px;">${emp.place || '--'} - منطقة ${emp.region || '--'}</td></tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">نوع الإجراء المعتمد:</td><td style="border:1px solid #000; padding:10px; font-weight:bold; font-size:16px;">${r.type}</td></tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'تاريخ التنفيذ الفعلي:' : 'الفترة المعتمدة:'}</td><td style="border:1px solid #000; padding:10px; direction:rtl;">${isRet ? r.start + ' م' : 'من تاريخ ' + r.start + ' م إلى ' + r.end + ' م'}</td></tr>
+                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'ملاحظات الإجراء:' : 'الزميل البديل المكلف:'}</td><td style="border:1px solid #000; padding:10px; background:#eef2ff;">${sub.name || '--'}</td></tr>
                 </table>
-                
                 <div style="display:flex; justify-content:space-between; margin-top:40px; font-weight:bold; font-size:16px; padding:0 20px;">
-                    <div style="text-align:center;">
-                        <p style="margin-bottom:20px;">اعتماد شؤون العاملين</p>
-                        <p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p>
-                    </div>
-                    <div style="text-align:center;">
-                        <p style="margin-bottom:20px;">اعتماد التوجيه الثقافي</p>
-                        <p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p>
-                    </div>
+                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد شؤون العاملين</p><p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p></div>
+                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد التوجيه الثقافي</p><p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p></div>
                 </div>
-                
                 <div style="margin-top:50px; border-top:1px dashed #000; padding-top:15px; font-size:11px; text-align:right; color:#444;">
-                    * هذه الوثيقة تعتبر مستنداً رسمياً مستخرجاً من النظام الآلي لمنظومة الإجازات.<br>
-                    * تاريخ استخراج الوثيقة: ${ts.greg} م - الموافق ${ts.hijri} هـ | في تمام الساعة: ${ts.time}
+                    * هذه الوثيقة تعتبر مستنداً رسمياً مستخرجاً من النظام الآلي لمنظومة الإجازات.<br>* تاريخ استخراج الوثيقة: ${ts.greg} م - الموافق ${ts.hijri} هـ | في تمام الساعة: ${ts.time}
                 </div>
             </div>
         `;
-        
-        setTimeout(() => { 
-            window.print(); 
-            area.innerHTML = ''; 
-            document.getElementById('mainContainer').style.display = 'block'; 
-        }, 500);
+        setTimeout(() => { window.print(); area.innerHTML = ''; document.getElementById('mainContainer').style.display = 'block'; }, 500);
     }
 };
 
-// بدء تشغيل المنظومة عند تحميل الصفحة
 window.onload = App.init;
 </script>
 </body>
