@@ -450,6 +450,43 @@
     <div id="requestPage" class="card">
         <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-top:0; font-size:16px;"><i class="fas fa-calendar-plus"></i> تقديم طلب جديد</h3>
         
+                <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:15px; border-radius:10px; margin-bottom:20px; font-size:13px; line-height:1.8; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+            <h4 style="margin-top:0; margin-bottom:10px; color:#b45309; border-bottom:1px dashed #fcd34d; padding-bottom:8px; font-size:14px;">
+                <i class="fas fa-exclamation-triangle"></i> تعميم إداري هام
+            </h4>
+            <p style="margin:0 0 10px 0; font-weight:bold;">تنويه من الإدارة، نرجو من الأخوة الأفاضل الأئمة والخطباء والمؤذنين مراعاة الآتي:</p>
+            <ol style="margin:0; padding-right:20px; list-style-type: arabic-indic;">
+                <li><strong>أولاً:</strong> عند تقديم طلب الإجازة يكون قبل سبعة أيام من بدايتها على الأقل.</li>
+                <li><strong>ثانياً:</strong> عدم القيام بأية إجراءات للسفر (حجز تذاكر - موعد مسبق خارج البلاد) دون اعتماد الإجازة رسمياً.</li>
+                <li><strong>ثالثاً:</strong> عدم قبول أي تمديد للإجازة، وعند التأخير لمدة (7) أيام يعد انقطاعاً عن العمل.</li>
+                <li><strong>رابعاً:</strong> ضرورة توقيع البديل (موافقته بالنظام) على نموذج الإجازة، ولابد أن يكون البديل من نفس المسجد.</li>
+                <li><strong>خامساً:</strong> يتم تسجيل الإجازة على برنامج الديوان للعاملين على بند العقد الثاني والاستعانة وإرسال صورة من التسجيل.</li>
+                <li><strong>سادساً:</strong> لا يحق للبديل التقدم بطلب إجازة إلا بعد عودة زميله المجاز من إجازته.</li>
+                <li><strong>سابعاً:</strong> يراعى عند تقديم إجازة (الإمام أو المؤذن) أن يكون الفارق بين الإجازتين ثلاثة أيام على الأقل.</li>
+                <li><strong>ثامناً:</strong> آخر موعد لتقديم إجازات الصيف هو <strong style="color:var(--danger);">2026/05/21م</strong>، ولن تقبل أي إجازة بعد هذا التاريخ.</li>
+            </ol>
+        </div>
+        ```
+
+### كيف سيبدو التعديل في الكود الخاص بك:
+عند إضافته، سيصبح قسم تقديم الطلب كالتالي:
+```html
+    <div id="requestPage" class="card">
+        <h3 style="color:var(--primary); border-bottom:2px solid var(--gold); padding-bottom:8px; margin-top:0; font-size:16px;"><i class="fas fa-calendar-plus"></i> تقديم طلب جديد</h3>
+        
+        <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:15px; border-radius:10px; margin-bottom:20px; font-size:13px; line-height:1.8; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+            <h4 style="margin-top:0; margin-bottom:10px; color:#b45309; border-bottom:1px dashed #fcd34d; padding-bottom:8px; font-size:14px;">
+                <i class="fas fa-exclamation-triangle"></i> تعميم إداري هام
+            </h4>
+            </div>
+        <div class="form-grid">
+            <div class="form-group"><label>نوع الطلب</label>
+                <select id="reqType" class="form-control" onchange="App.toggleExtFields()">
+                    <option>إجازة دورية</option><option>إجازة خاصة</option>
+                    ```
+
+هذا التنسيق يستخدم ألواناً تحذيرية هادئة (الأصفر/البرتقالي) تتناسب مع نظامك، وستلفت انتباه الموظف مباشرة قبل اختيار "نوع الطلب" أو "تحديد التواريخ".
+
         <div class="form-grid">
             <div class="form-group"><label>نوع الطلب</label>
                 <select id="reqType" class="form-control" onchange="App.toggleExtFields()">
