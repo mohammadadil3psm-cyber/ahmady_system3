@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>برنامج الإجزات - محافظة الأحمدي</title>
+    <title>برنامج الإجازات - محافظة الأحمدي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -218,14 +218,23 @@
             .stats-grid { grid-template-columns: 1fr 1fr; }
         }
 
+        /* تنسيقات الطباعة الخاصة بالنماذج الرسمية */
         @media print {
-            @page { size: auto; margin: 0mm; }
-            body, html { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+            @page { size: A4; margin: 10mm; }
+            body, html { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; font-family: 'Amiri', serif !important; }
             .no-print, nav, .top-bar, header, button, .modal-overlay, .notifications-panel, .hr-tabs, .filter-bar, .stats-grid { display: none !important; }
-            .card { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
-            #printArea { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 15px !important; border: none !important; background: white !important; direction: rtl; }
+            .card { display: none !important; }
+            #printArea { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; background: white !important; direction: rtl; }
             #mainContainer { display: none !important; } 
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            .official-form { font-size: 14px; line-height: 1.5; color: #000; }
+            .official-form .form-box { border: 2px solid #000; border-radius: 15px; padding: 15px; margin-bottom: 10px; background: #fff; }
+            .official-form table { width: 100%; border-collapse: collapse; }
+            .official-form .top-table td { border: 1px solid #000; padding: 4px 8px; text-align: center; font-weight: bold; }
+            .official-form .footer-table td { border: 1px solid #000; padding: 10px; text-align: center; font-weight: bold; width: 33.33%; height: 60px; vertical-align: top;}
+            .official-form h2.form-title { text-align: center; margin: -10px auto 15px auto; padding: 5px 20px; border: 2px dotted #000; display: table; background: #f9f9f9; font-size: 18px; }
+            .official-form .dotted-line { border-bottom: 2px dotted #000; display: inline-block; min-width: 150px; }
         }
     </style>
 </head>
@@ -597,7 +606,7 @@ const App = {
     db: { users: [], requests: [], returnActions: [], logs: [] },
     curr: null, tempSub: null, waLink: "", tempLoginData: null, pollInterval: null,
 
-    formatDate: function(dateStr) { return !dateStr ? '--' : `${dateStr} م`; },
+    formatDate: function(dateStr) { return !dateStr ? '--' : `${dateStr}`; },
 
     init: function() { App.fetchData(); App.updateClocks(); setInterval(App.updateClocks, 1000); },
 
@@ -633,7 +642,8 @@ const App = {
     getTimestamp: function() {
         const now = new Date();
         return {
-            greg: now.toLocaleDateString('ar-KW', {year:'numeric', month:'2-digit', day:'2-digit'}),
+            greg: now.toLocaleDateString('en-CA'), // YYYY-MM-DD format
+            gregKw: now.toLocaleDateString('ar-KW', {year:'numeric', month:'2-digit', day:'2-digit'}),
             hijri: new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {year:'numeric', month:'2-digit', day:'2-digit'}).format(now),
             time: now.toLocaleTimeString('ar-KW', {hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit'})
         };
@@ -641,7 +651,7 @@ const App = {
 
     addLog: async function(roles, msg) {
         const ts = App.getTimestamp();
-        const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.greg} - ${ts.time}` };
+        const logEntry = { id: Date.now().toString(), roles: roles, msg: msg, time: `${ts.gregKw} - ${ts.time}` };
         App.db.logs.push(logEntry); 
         try { await fetch('/api/logs', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(logEntry) }); App.fetchData(); } catch(e) {}
         App.checkNotifications();
@@ -925,7 +935,7 @@ const App = {
         if(approvedLeaves.length > 0) {
             const last = approvedLeaves[approvedLeaves.length - 1];
             document.getElementById('prevLeaveInfo').style.display = 'block';
-            document.getElementById('prevLeaveContent').innerHTML = `<div><strong>النوع:</strong> ${last.type} (رقم: ${last.id})</div><div style="direction:ltr; text-align:right;"><strong>من</strong> ${last.start} م <strong>إلى</strong> ${last.end} م</div><button class="btn btn-print btn-sm" style="margin-top:8px; width:100%;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> طباعة وثيقة الإجازة المعتمدة</button>`;
+            document.getElementById('prevLeaveContent').innerHTML = `<div><strong>النوع:</strong> ${last.type} (رقم: ${last.id})</div><div style="direction:ltr; text-align:right;"><strong>من</strong> ${last.start} <strong>إلى</strong> ${last.end}</div><button class="btn btn-print btn-sm" style="margin-top:8px; width:100%;" onclick="App.printTicket('${last.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي المعتمد</button>`;
         } else { document.getElementById('prevLeaveInfo').style.display = 'none'; }
 
         const subTask = App.db.requests.find(r => r.subId === App.curr.id && r.stage === 1);
@@ -938,9 +948,9 @@ const App = {
         document.getElementById('empTbody').innerHTML = App.db.requests.filter(r => r.empId === App.curr.id).reverse().map(r => {
             const isRet = r.id.startsWith('RET'); 
             const subTxt = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'معفى (بمفرده)' : (App.db.users.find(u => u.id === r.subId)?.name || 'غير متوفر'));
-            const dateTxt = isRet ? `تاريخ التنفيذ: <strong>${r.start} م</strong>` : `الفترة: <strong style="direction:rtl;">من ${r.start} م إلى ${r.end} م</strong>`;
-            let actions = r.stage === 4 ? `<button class="btn btn-print btn-sm" style="width:100%; margin-top:10px;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> حفظ كمستند PDF</button>` : '';
-            return `<div class="data-card" style="${isRet ? 'border-right:3px solid var(--danger);' : 'border-right:3px solid var(--primary);'}"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-file-alt'}"></i> ${r.type}</span><span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>البديل المكلف:</span> <strong>${subTxt}</strong></p><p>${dateTxt}</p><p><span>تاريخ التقديم:</span> <strong>${r.ts.greg} | ${r.ts.time}</strong></p></div>${actions}</div>`;
+            const dateTxt = isRet ? `تاريخ التنفيذ: <strong>${r.start}</strong>` : `الفترة: <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong>`;
+            let actions = r.stage === 4 ? `<button class="btn btn-print btn-sm" style="width:100%; margin-top:10px;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي المعتمد</button>` : '';
+            return `<div class="data-card" style="${isRet ? 'border-right:3px solid var(--danger);' : 'border-right:3px solid var(--primary);'}"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-file-alt'}"></i> ${r.type}</span><span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>البديل المكلف:</span> <strong>${subTxt}</strong></p><p>${dateTxt}</p><p><span>تاريخ التقديم:</span> <strong>${r.ts.gregKw} | ${r.ts.time}</strong></p></div>${actions}</div>`;
         }).join('');
     },
 
@@ -965,7 +975,7 @@ const App = {
         document.getElementById('culTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
             const subName = isRet ? 'إجراء إداري' : (r.subId === '0000' ? 'إعفاء' : (App.db.users.find(u => u.id === r.subId)?.name || '--'));
-            return `<div class="data-card" style="border-right:3px solid ${isRet ? 'var(--danger)' : 'var(--info)'};"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-user-tie'}"></i> ${emp.name}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>المسجد والملف:</span> <strong>${emp.place} (${emp.file})</strong></p><p><span>النوع والبديل:</span> <strong>${r.type} (${subName})</strong></p><p>${isRet ? 'تاريخ التنفيذ:' : 'تاريخ الفترة:'} <strong style="direction:rtl;">${isRet ? r.start + ' م' : r.start + ' إلى ' + r.end + ' م'}</strong></p></div><div class="data-card-actions"><button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل والاعتماد</button></div></div>`;
+            return `<div class="data-card" style="border-right:3px solid ${isRet ? 'var(--danger)' : 'var(--info)'};"><div class="data-card-header"><span class="data-card-title"><i class="fas ${isRet ? 'fa-undo' : 'fa-user-tie'}"></i> ${emp.name}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>المسجد والملف:</span> <strong>${emp.place} (${emp.file})</strong></p><p><span>النوع والبديل:</span> <strong>${r.type} (${subName})</strong></p><p>${isRet ? 'تاريخ التنفيذ:' : 'تاريخ الفترة:'} <strong style="direction:rtl;">${isRet ? r.start : r.start + ' إلى ' + r.end}</strong></p></div><div class="data-card-actions"><button class="btn btn-info" style="width:100%" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل والاعتماد</button></div></div>`;
         }).join('');
     },
 
@@ -986,14 +996,14 @@ const App = {
         if (leaves.length === 0) { document.getElementById('hrReqsView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد إجازات جديد حالياً.</div>'; } 
         else { document.getElementById('hrReqsView').innerHTML = leaves.map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {}; const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u => u.id === r.subId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--primary);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--primary);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
         }).join(''); }
 
         const returns = allPending.filter(r => r.id.startsWith('RET'));
         if (returns.length === 0) { document.getElementById('hrReturnsPendingView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد مباشرة أو قطع حالياً.</div>'; } 
         else { document.getElementById('hrReturnsPendingView').innerHTML = returns.map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-danger" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><button class="btn btn-danger" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
         }).join(''); }
 
         const emps = App.db.users.filter(u => u.role === 'emp');
@@ -1003,12 +1013,11 @@ const App = {
         }).join('');
     },
 
-    // تم تحديث الدالة لتدعم البحث النصي لأرشيف الإجازات
     renderHrArchiveLeaves: function() {
         const fM = document.getElementById('hrALMonth').value; 
         const fY = document.getElementById('hrALYear').value; 
         const fT = document.getElementById('hrALType').value;
-        const sText = document.getElementById('hrALSearch').value.toLowerCase().trim(); // الكلمة المفتاحية للبحث
+        const sText = document.getElementById('hrALSearch').value.toLowerCase().trim();
 
         let reqs = App.db.requests.filter(r => !r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
@@ -1018,7 +1027,6 @@ const App = {
             const matchY = (fY === 'all' || String(rD.getFullYear()) === fY);
             const matchT = (fT === 'all' || r.type === fT);
             
-            // تحقق البحث: يطابق رقم الطلب أو اسم الموظف أو المدني
             const matchS = sText === '' || 
                            r.id.toLowerCase().includes(sText) || 
                            (emp.name && emp.name.toLowerCase().includes(sText)) || 
@@ -1031,16 +1039,15 @@ const App = {
         
         document.getElementById('hrALTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
-    // تم تحديث الدالة لتدعم البحث النصي لأرشيف المباشرة
     renderHrArchiveReturns: function() {
         const fM = document.getElementById('hrARMonth').value; 
         const fY = document.getElementById('hrARYear').value; 
         const fT = document.getElementById('hrARType').value;
-        const sText = document.getElementById('hrARSearch').value.toLowerCase().trim(); // الكلمة المفتاحية للبحث
+        const sText = document.getElementById('hrARSearch').value.toLowerCase().trim();
 
         let reqs = App.db.requests.filter(r => r.id.startsWith('RET')).filter(r => {
             const rD = new Date(r.start); 
@@ -1050,7 +1057,6 @@ const App = {
             const matchY = (fY === 'all' || String(rD.getFullYear()) === fY);
             const matchT = (fT === 'all' || r.type === fT);
 
-            // تحقق البحث: يطابق رقم الطلب أو اسم الموظف أو المدني
             const matchS = sText === '' || 
                            r.id.toLowerCase().includes(sText) || 
                            (emp.name && emp.name.toLowerCase().includes(sText)) || 
@@ -1063,7 +1069,7 @@ const App = {
         
         document.getElementById('hrARTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start} م</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
         }).join('');
     },
 
@@ -1078,7 +1084,7 @@ const App = {
         const r = App.db.requests.find(x => x.id === reqId); if(!r) return;
         const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
         
-        document.getElementById('modalReqTime').innerText = `${r.ts.greg} م | ${r.ts.time}`;
+        document.getElementById('modalReqTime').innerText = `${r.ts.gregKw} م | ${r.ts.time}`;
         document.getElementById('compType').innerText = r.type;
         document.getElementById('compDates').innerText = isRet ? `${r.start} م` : `من ${r.start} م إلى ${r.end} م`;
         
@@ -1110,7 +1116,7 @@ const App = {
         } else if(App.curr.role === 'cultural' && r.stage === 3) {
             btns = `<button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد نهائي (الثقافي)</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button>`;
         } else if(r.stage === 4) {
-            btns = `<button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة الوثيقة المعتمدة (PDF)</button>`;
+            btns = `<button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي المعتمد</button>`;
         }
         
         document.getElementById('modalActionButtons').innerHTML = btns; 
@@ -1141,7 +1147,7 @@ const App = {
         if(App.db.requests.length === 0) return alert("لا توجد بيانات حالياً لتصديرها.");
         const expData = App.db.requests.map(r => { 
             const e = App.db.users.find(u => u.id === r.empId) || {}; const s = r.subId === '0000' ? {name:'مُعفى بدون بديل'} : (App.db.users.find(u => u.id === r.subId) || {}); 
-            return { "رقم الطلب": r.id, "الاسم": e.name, "المدني": e.id, "الهاتف": e.phone, "رقم الملف": e.file, "المسجد": e.place, "البديل المكلف": s.name, "نوع الإجراء": r.type, "من تاريخ": App.formatDate(r.start), "إلى تاريخ": App.formatDate(r.end), "حالة الطلب": r.status, "تاريخ التقديم": `${r.ts.greg} م - ${r.ts.time}` } 
+            return { "رقم الطلب": r.id, "الاسم": e.name, "المدني": e.id, "الهاتف": e.phone, "رقم الملف": e.file, "المسجد": e.place, "البديل المكلف": s.name, "نوع الإجراء": r.type, "من تاريخ": App.formatDate(r.start), "إلى تاريخ": App.formatDate(r.end), "حالة الطلب": r.status, "تاريخ التقديم": `${r.ts.gregKw} م - ${r.ts.time}` } 
         });
         const ws = XLSX.utils.json_to_sheet(expData); ws['!dir'] = 'rtl'; const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "سجل منظومة الإجازات"); XLSX.writeFile(wb, `سجل_المنظومة_المركزية.xlsx`);
     },
@@ -1155,50 +1161,475 @@ const App = {
             html += `<tr><td style="border:1px solid #000; padding:8px;">${r.id}</td><td style="border:1px solid #000; padding:8px;">${emp.name}</td><td style="border:1px solid #000; padding:8px;">${r.type}</td><td style="border:1px solid #000; padding:8px;">${isRet ? r.start + ' م' : r.start + ' م إلى ' + r.end + ' م'}</td><td style="border:1px solid #000; padding:8px; font-weight:bold;">${r.status}</td></tr>`;
         });
         
-        html += `</tbody></table><p style="text-align:right; font-size:10px; color:#555;">* تم استخراج هذا السجل آلياً من المنظومة بتاريخ: ${ts.greg} م | ${ts.time}</p></div>`;
+        html += `</tbody></table><p style="text-align:right; font-size:10px; color:#555;">* تم استخراج هذا السجل آلياً من المنظومة بتاريخ: ${ts.gregKw} م | ${ts.time}</p></div>`;
         area.innerHTML = html; document.getElementById('mainContainer').style.display = 'none';
         setTimeout(() => { window.print(); area.innerHTML = ''; document.getElementById('mainContainer').style.display = 'block'; }, 500);
     },
 
+    // طباعة النماذج الرسمية المتوافقة مع الصور
     printTicket: function(id) {
-        App.closeModal('unifiedDetailsModal'); const r = App.db.requests.find(x => x.id === id); if(!r) return;
-        const emp = App.db.users.find(u => u.id === r.empId) || {}; const isRet = r.id.startsWith('RET');
-        const sub = isRet ? {name:'إجراء إداري مقيد في النظام'} : (r.subId === '0000' ? {name:'مُعفى (بدون بديل)'} : (App.db.users.find(u => u.id === r.subId) || {name:'--'}));
-        const area = document.getElementById('printArea'); const ts = App.getTimestamp();
+        App.closeModal('unifiedDetailsModal'); 
+        const r = App.db.requests.find(x => x.id === id); if(!r) return;
+        const emp = App.db.users.find(u => u.id === r.empId) || {}; 
+        const isRet = r.id.startsWith('RET');
+        const ts = App.getTimestamp();
+
+        // حساب المدة
+        let durationDays = '--';
+        if (r.start && r.end) {
+            let startD = new Date(r.start);
+            let endD = new Date(r.end);
+            let timeDiff = Math.abs(endD - startD);
+            durationDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+        }
         
-        document.getElementById('mainContainer').style.display = 'none';
-        area.innerHTML = `
-            <div style="border:3px double #000; padding:20px; direction:rtl; font-family:'Cairo'; max-width:800px; margin:0 auto; background:white; color:black;">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:20px;">
-                    <img src="WhatsApp Image 2026-04-22 at 9.23.16 PM.jpeg" width="70" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
-                    <div style="text-align:center; line-height:1.4;">
-                        <h2 style="margin:0; font-size:20px;">دولة الكويت</h2>
-                        <h3 style="margin:5px 0; font-size:18px;">وزارة الشؤون الإسلامية</h3>
-                        <p style="margin:0; font-size:15px; font-weight:bold;">إدارة مساجد محافظة الأحمدي</p>
-                    </div>
-                    <img src="WhatsApp Image 2026-04-23 at 1.24.41 PM.jpeg" width="70" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png'">
+        let startYear = r.start ? new Date(r.start).getFullYear() : '--';
+        let currentYear = new Date().getFullYear();
+
+        // ترويسة النموذج الموحدة
+        const headerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px; font-weight:bold; font-size:16px;">
+                <div style="width: 30%;">
+                    <table class="top-table">
+                        <tr><td>رقم الملف</td><td>${emp.file || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}</td></tr>
+                        <tr><td>رقم البصمة</td><td>&nbsp;</td></tr>
+                        <tr><td>الرقم المدني</td><td>${emp.id || '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}</td></tr>
+                    </table>
                 </div>
-                <div style="text-align:center; background:#f3f4f6; border:1px solid #d1d5db; padding:10px; margin-bottom:25px;">
-                    <h3 style="margin:0; font-size:18px; color:#111827; letter-spacing:1px;">تصريح إجراء معتمد (رقم: ${r.id})</h3>
+                <div style="width: 30%; text-align: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Emblem_of_Kuwait.svg/120px-Emblem_of_Kuwait.svg.png" width="80" style="margin-top: -10px;">
                 </div>
-                <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-size:15px;">
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; width:30%; font-weight:bold;">الاسم الرباعي:</td><td style="border:1px solid #000; padding:10px; font-weight:bold; color:var(--primary);">${emp.name || '--'}</td></tr>
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">الرقم المدني / الملف:</td><td style="border:1px solid #000; padding:10px;">${emp.id || '--'} &nbsp; | &nbsp; ملف رقم: ${emp.file || '--'}</td></tr>
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">جهة العمل (المسجد):</td><td style="border:1px solid #000; padding:10px;">${emp.place || '--'} - منطقة ${emp.region || '--'}</td></tr>
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">نوع الإجراء المعتمد:</td><td style="border:1px solid #000; padding:10px; font-weight:bold; font-size:16px;">${r.type}</td></tr>
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'تاريخ التنفيذ الفعلي:' : 'الفترة المعتمدة:'}</td><td style="border:1px solid #000; padding:10px; direction:rtl;">${isRet ? r.start + ' م' : 'من تاريخ ' + r.start + ' م إلى ' + r.end + ' م'}</td></tr>
-                    <tr><td style="border:1px solid #000; padding:10px; background:#f9fafb; font-weight:bold;">${isRet ? 'ملاحظات الإجراء:' : 'الزميل البديل المكلف:'}</td><td style="border:1px solid #000; padding:10px; background:#eef2ff;">${sub.name || '--'}</td></tr>
-                </table>
-                <div style="display:flex; justify-content:space-between; margin-top:40px; font-weight:bold; font-size:16px; padding:0 20px;">
-                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد شؤون العاملين</p><p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p></div>
-                    <div style="text-align:center;"><p style="margin-bottom:20px;">اعتماد التوجيه الثقافي</p><p style="color:#065f46; border:2px dashed #065f46; padding:5px 15px; display:inline-block; border-radius:5px; font-size:14px;">[ مُعْتَمَد إلكترونياً ]</p></div>
-                </div>
-                <div style="margin-top:50px; border-top:1px dashed #000; padding-top:15px; font-size:11px; text-align:right; color:#444;">
-                    * هذه الوثيقة تعتبر مستنداً رسمياً مستخرجاً من النظام الآلي لمنظومة الإجازات.<br>* تاريخ استخراج الوثيقة: ${ts.greg} م - الموافق ${ts.hijri} هـ | في تمام الساعة: ${ts.time}
+                <div style="width: 35%; text-align: right; line-height: 1.4;">
+                    وزارة الأوقاف والشئون الإسلامية<br>
+                    إدارة الموارد البشرية والتطوير الاداري<br>
+                    مراقبة شئون الموظفين<br>
+                    قسم الإجازات والدوام
                 </div>
             </div>
         `;
-        setTimeout(() => { window.print(); area.innerHTML = ''; document.getElementById('mainContainer').style.display = 'block'; }, 500);
+
+        let formTitle = '';
+        let bodyHTML = '';
+        let rulesHTML = '';
+
+        // تحديد النموذج المناسب حسب نوع الطلب
+        if (r.type === 'إجازة دورية') {
+            formTitle = 'إجـــازة دوريــــة';
+            bodyHTML = `
+                <div class="form-box">
+                    <p style="font-weight:bold;">السيد الفاضل / وكيل الوزارة <span style="float:left">المحترم</span></p>
+                    <p style="font-weight:bold;">بواسطة السيد / <span class="dotted-line" style="width:300px;"></span> المحترم</p>
+                    <p>بعد التحية :</p>
+                    <p style="text-indent: 30px; font-weight:bold;">أرجو التكرم بالموافقة على منحي إجازة دورية لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما إعتبارا من &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م</p>
+                    <p style="text-align:center; font-weight:bold;">وتفضلوا بقبول فائق الإحترام</p>
+                    <table style="width:100%; margin-top:10px; line-height:2;">
+                        <tr>
+                            <td style="width:50%;">الإســــــم : <strong>${emp.name || ''}</strong></td>
+                            <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
+                            <td>تاريــــــخ التعيين : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">رقم الهاتف : <strong>${emp.phone || ''}</strong></td>
+                        </tr>
+                    </table>
+                    <div style="margin-top:15px;">
+                        <span style="float:right; font-weight:bold;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="float:left; font-weight:bold; text-align:center;">توقيع مقدم الطلب<br>........................................</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات الرئيس المباشر :</p>
+                    <p style="font-weight:bold;">ظروف العمل تسمح بقيام المذكور بالإجازة المطلوبة لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) أيام اعتبارا من &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="margin-right:20%;">الرئيس المباشر</span>
+                        <span style="float:left;">مدير الإدارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات قسم الإجازات والدوام :</p>
+                    <p style="font-weight:bold; text-indent: 20px;">* للمــــــذكور رصيـــد من الإجـــــازات قدره ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) يوما / أيام .</p>
+                    <p style="font-weight:bold; text-indent: 20px;">* الرصيد المتبقي بعد منحه هذه الإجازة قدره ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) يوما / أيام .</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="margin-right:15%;">الموظف المختص</span>
+                        <span style="margin-right:15%;">رئيس القسم</span>
+                        <span style="float:left;">مراقب شئون الموظفين</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">قرار الوزارة :</p>
+                    <p style="font-weight:bold;">- يمنح المذكور إجازة دورية مدتها ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام اعتبارا من &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م وحتى نهاية &nbsp;&nbsp;${r.end}&nbsp;&nbsp; م</p>
+                    <p style="font-weight:bold;">- يبلغ هذا القرار لمن يلزم لتنفيذه أو العلم به .</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="float:left; margin-left: 50px;">وكيل الوزارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            `;
+        } else if (r.type === 'إجازة خاصة') {
+            formTitle = 'إجـــازة خاصـــة';
+            bodyHTML = `
+                <div class="form-box">
+                    <p style="font-weight:bold;">السيد الفاضل / وكيل الوزارة <span style="float:left">المحترم</span></p>
+                    <p>بعد التحية :</p>
+                    <p style="text-indent: 30px; font-weight:bold;">أرجو التكرم بالموافقة على منحي إجازة خاصة بدون راتب لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام .</p>
+                    <p style="text-indent: 30px; font-weight:bold;">اعتبارا من &nbsp;&nbsp;&nbsp;${r.start}&nbsp;&nbsp;&nbsp; م &nbsp;&nbsp;&nbsp;&nbsp; وإلى &nbsp;&nbsp;&nbsp;${r.end}&nbsp;&nbsp;&nbsp; م</p>
+                    <table style="width:100%; margin-top:10px; line-height:2;">
+                        <tr>
+                            <td style="width:50%;">الإســــــم : <strong>${emp.name || ''}</strong></td>
+                            <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">مقر العمل : <strong>${emp.place || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">رقم الهــــــــاتف : <strong>${emp.phone || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">توقيع مقدم الطلب / <strong>........................................</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات الرئيس المباشر :</p>
+                    <p style="font-weight:bold;">لا مانع من منح المذكور أعلاه إجازة خاصة بدون راتب لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام اعتبارا من &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="margin-right:20%;">الرئيس المباشر</span>
+                        <span style="float:left;">مدير الإدارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات قسم الإجازات والدوام :</p>
+                    <p style="font-weight:bold;"><input type="checkbox"> يجوز منح المذكور المدة المطلوبة .</p>
+                    <p style="font-weight:bold;"><input type="checkbox"> لا يجوز منح المذكور المدة المطلوبة بسبب / ..............................................................</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="margin-right:15%;">الموظف المختص</span>
+                        <span style="margin-right:15%;">رئيس القسم</span>
+                        <span style="float:left;">مراقب شئون الموظفين</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box" style="padding-bottom: 30px;">
+                    <p style="font-weight:bold;">قرار الوزارة : يعتمد ،،،،</p>
+                    <div style="margin-top:20px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="float:left; margin-left: 50px;">وكيل الوزارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            `;
+            rulesHTML = `
+                <div style="text-align:center; font-weight:bold; font-size:12px; margin-top:5px; border:1px solid #000; padding:2px; display:inline-block; margin-right:45%;">تعليـمـــــــات</div>
+                <div style="font-size:11px; margin-top:5px;">
+                    1- تمنح هذه الإجازة لمن لم يكمل 6 أشهر على تسلمه العمل ولمن استنفذ رصيده من الإجازات الدورية .<br>
+                    2- تمنح هذه الإجازة لأعضاء الهيئة التعليمية ومن في حكمهم المشمولين بقرار 1980/5م بشأن عطلتي الربيع والصيف .<br>
+                    3- مدة هذه الإجازة 15 يوما خلال العام الميلادي ويجوز تجزئتها .
+                </div>
+            `;
+        } else if (r.type === 'إذن انقطاع') {
+            formTitle = 'إذن بالانقطاع للعاملين على بند المكافآت';
+            bodyHTML = `
+                <div class="form-box">
+                    <p style="font-weight:bold;">السيد الفاضل / وكيل الوزارة <span style="float:left">المحترم</span></p>
+                    <p>بعد التحية :</p>
+                    <p style="text-indent: 30px; font-weight:bold;">أرجو التكرم بالموافقة على منحي إجازة إذن بالانقطاع لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام</p>
+                    <p style="text-indent: 30px; font-weight:bold;">اعتبارا من &nbsp;&nbsp;&nbsp;${r.start}&nbsp;&nbsp;&nbsp; م &nbsp;&nbsp;&nbsp;&nbsp; وإلى &nbsp;&nbsp;&nbsp;${r.end}&nbsp;&nbsp;&nbsp; م</p>
+                    <table style="width:100%; margin-top:10px; line-height:2;">
+                        <tr>
+                            <td style="width:50%;">الإســــــم : <strong>${emp.name || ''}</strong></td>
+                            <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">مقر العمل : <strong>${emp.place || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">رقم الهــــــــاتف : <strong>${emp.phone || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">توقيع مقدم الطلب / <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span style="float:right; font-weight:bold;">التاريخ : ${ts.gregKw} م .</span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات الرئيس المباشر :</p>
+                    <p style="font-weight:bold;">لا مانع من منح المذكور إجازة لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام اعتبارا من &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="margin-right:20%;">الرئيس المباشر</span>
+                        <span style="float:left;">مدير الإدارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات قسم الإجازات والدوام :</p>
+                    <div style="border:1px solid #000; border-radius:10px; padding:10px; margin:10px 0; font-weight:bold;">
+                        يمنح المذكور [ إذن بالانقطاع ] لمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) يوما / أيام اعتبارا من &nbsp;&nbsp;&nbsp;${r.start}&nbsp;&nbsp;&nbsp; م وحتى &nbsp;&nbsp;&nbsp;${r.end}&nbsp;&nbsp;&nbsp; م
+                    </div>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="margin-right:15%;">الموظف المختص</span>
+                        <span style="margin-right:15%;">رئيس القسم</span>
+                        <span style="float:left;">مراقب شئون الموظفين</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box" style="padding-bottom: 30px;">
+                    <p style="font-weight:bold;">قرار الوزارة : يعتمد ،،،،</p>
+                    <div style="margin-top:20px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="float:left; margin-left: 50px;">وكيل الوزارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            `;
+        } else if (r.type === 'مباشرة عمل') {
+            formTitle = 'نموذج عودة من الإجازة';
+            let origStart = '........';
+            let origEnd = '........';
+            if(r.linkedReqId) {
+               const orig = App.db.requests.find(x => x.id === r.linkedReqId);
+               if(orig) { origStart = orig.start; origEnd = orig.end; }
+            }
+            bodyHTML = `
+                <div class="form-box">
+                    <p style="font-weight:bold;">السيد الفاضل / وكيل الوزارة <span style="float:left">المحترم</span></p>
+                    <p style="font-weight:bold;">بواسطة السيد / <span class="dotted-line" style="width:300px;"></span> المحترم</p>
+                    <p>بعد التحية ،،،،</p>
+                    <p style="text-indent: 30px; font-weight:bold;">أفيد سيادتكم أني عدت من إجازتي ( ...................... ) في تاريخ &nbsp;&nbsp;${r.start}&nbsp;&nbsp; م والممنوحة لي</p>
+                    <p style="font-weight:bold;">إعتبارا من تاريخ &nbsp;&nbsp;${origStart}&nbsp;&nbsp; م حتى نهاية &nbsp;&nbsp;${origEnd}&nbsp;&nbsp; م ، ولم أتأخر / وقد تأخرت مدة ( ............ ) أيام / يوم .</p>
+                    <table style="width:100%; margin-top:10px; line-height:2;">
+                        <tr>
+                            <td style="width:50%;">الإســــــم : <strong>${emp.name || ''}</strong></td>
+                            <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
+                            <td>تاريــــــخ التعيين : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">رقم الهاتف : <strong>${emp.phone || ''}</strong></td>
+                        </tr>
+                    </table>
+                    <div style="margin-top:15px;">
+                        <span style="float:right; font-weight:bold;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="float:left; font-weight:bold; text-align:center;">توقيع مقدم الطلب<br>........................................</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold;">الرئيس المباشر: باشر العمل يوم ( ........................ ) الموافق &nbsp;&nbsp;&nbsp;${r.start}&nbsp;&nbsp;&nbsp; م .</p>
+                    <p style="font-weight:bold;">ملاحظــــــات : ..............................................................................................................</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="margin-right:25%;">الرئيس المباشر</span>
+                        <span style="float:left;">مدير الإدارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات قسم الإجازات والدوام :-</p>
+                    <p>...................................................................................................................................................</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="margin-right:25%;">الموظف المختص</span>
+                        <span style="margin-right:25%;">رئيس القسم</span>
+                        <span style="float:left;">مراقب شئون الموظفين</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box" style="padding-bottom: 30px;">
+                    <p style="font-weight:bold;">قـــــرار الــــوزارة :-</p>
+                    <p>...................................................................................................................................................</p>
+                    <div style="margin-top:20px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="float:left; margin-left: 50px;">وكيل الوزارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            `;
+             rulesHTML = `
+                <div style="text-align:center; font-weight:bold; font-size:12px; margin-top:5px; border:1px solid #000; padding:2px; display:inline-block; margin-right:45%;">تعليـمـــــــات</div>
+                <div style="font-size:11px; margin-top:5px;">
+                    1- يجب تعبئة البيانات الوظيفية كاملة وتسلم لإدارة الموارد البشرية والتطوير الاداري فور مباشرة العمل .<br>
+                    2- في حالة وجود فرق بين انتهاء الإجازة وتاريخ مباشرة العمل ، يجب ذكر سبب التأخير مع إرفاق المستندات الدالة على ذلك وإلا اعتبرت المدة إنقطاع عن العمل .<br>
+                    3- في حالة الحصول على إجازة مرضية أثناء الإجازة تستوجب اعتمادها من المجلس الطبي ، يسلم النموذج فور مباشرة العمل مع حضور صاحب العلاقة لاستلام كتاب التحويل .
+                </div>
+            `;
+        } else {
+            // نماذج التعديل - الإلغاء - القطع
+            let rTitle = r.type;
+            let checks = { 'تعديل': '', 'تمديد': '', 'قطع': '', 'إلغاء': '' };
+            if(r.type.includes('تعديل')) checks['تعديل'] = 'checked';
+            if(r.type.includes('قطع')) checks['قطع'] = 'checked';
+            if(r.type.includes('إلغاء')) checks['إلغاء'] = 'checked';
+
+            formTitle = 'طـلــــب';
+            bodyHTML = `
+                <div class="form-box">
+                    <div style="text-align:center; margin-bottom:15px; font-size:18px;">
+                        تعديل <input type="radio" ${checks['تعديل']}> &nbsp;&nbsp;
+                        تمديد <input type="radio" ${checks['تمديد']}> &nbsp;&nbsp;
+                        قطع <input type="radio" ${checks['قطع']}> &nbsp;&nbsp;
+                        إلغاء <input type="radio" ${checks['إلغاء']}>
+                    </div>
+                    <p style="font-weight:bold;">السيد الفاضل / وكيل الوزارة <span style="float:left">المحترم</span></p>
+                    <p>بعد التحية :</p>
+                    <p style="text-indent: 30px; font-weight:bold;">أرجو التكرم الموافقة على ${r.type} إجازتي ( ...................... ) الممنوحة لي إعتبارا من تاريخ &nbsp;${r.start}&nbsp; م</p>
+                    <p style="font-weight:bold;">ولمدة ( &nbsp;&nbsp;&nbsp;${durationDays}&nbsp;&nbsp;&nbsp; ) بسبب : ......................................................................................</p>
+                    <table style="width:100%; margin-top:10px; line-height:2;">
+                        <tr>
+                            <td style="width:50%;">الإســــــم : <strong>${emp.name || ''}</strong></td>
+                            <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
+                            <td>تاريــــــخ التعيين : <strong>........................................</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">رقم الهاتف : <strong>${emp.phone || ''}</strong></td>
+                        </tr>
+                    </table>
+                    <div style="margin-top:15px;">
+                        <span style="float:right; font-weight:bold;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="float:left; font-weight:bold; text-align:center;">توقيع مقدم الطلب<br>........................................</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات الرئيس المباشر :</p>
+                    <p style="font-weight:bold;">لا مانع من ( .......................... ) الإجازة المطلوبة ولمدة ( .................... ) يوما / أيام إعتبارا من &nbsp;&nbsp;&nbsp;${r.start}&nbsp;&nbsp;&nbsp; م</p>
+                    <div style="margin-top:15px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : ${ts.gregKw} م .</span>
+                        <span style="margin-right:20%;">الرئيس المباشر</span>
+                        <span style="float:left;">مدير الإدارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <p style="font-weight:bold; text-decoration:underline;">ملاحظات قسم الإجازات والدوام :</p>
+                    <p style="font-weight:bold;">لا مانع من ....................... إجازته ( ولمدة ......... يوما/ أيام ) اعتبارا 
+                    <span style="float:left; text-align:center; margin-left: 20px;">
+                        من &nbsp;&nbsp; / &nbsp;&nbsp; / 20 م <br><br>
+                        إلى &nbsp;&nbsp; / &nbsp;&nbsp; / 20 م
+                    </span>
+                    <span style="float:left; margin-left: 50px;">(صافي المدة &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; يوم / أيام) .</span>
+                    </p>
+                    <div style="clear:both;"></div>
+                    <div style="margin-top:25px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="margin-right:15%;">الموظف المختص</span>
+                        <span style="margin-right:15%;">رئيس القسم</span>
+                        <span style="float:left;">مراقب شئون الموظفين</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+
+                <div class="form-box" style="padding-bottom: 30px;">
+                    <p style="font-weight:bold;">قـــــرار الــــوزارة :-</p>
+                    <p>...................................................................................................................................................</p>
+                    <div style="margin-top:20px; font-weight:bold;">
+                        <span style="float:right;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 20 م .</span>
+                        <span style="float:left; margin-left: 50px;">وكيل الوزارة</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            `;
+             rulesHTML = `
+                <div style="text-align:center; font-weight:bold; font-size:12px; margin-top:5px; border:1px solid #000; padding:2px; display:inline-block; margin-right:45%;">تعليـمـــــــات</div>
+                <div style="font-size:10px; margin-top:5px;">
+                    1- لا يجوز تأجيل الإجازة الدورية أو تقصيرها أو قطعها بعد القيام بها إلا لأسباب تقتضيها مصلحة العمل ولا عبرة بطلب الموظف قطع إجازته بعد القيام بها ويعتمد تاريخ القطع من تاريخ إعتماد الرئيس المباشر .<br>
+                    2- الإجازة التي مدتها (15) يوما فأكثر عند طلب الإلغاء أو قطعها لنفس المدة يجب أولاً على الموظف مقدم الطلب مراجعة الإدارة المالية قبل الاعتماد لتوريد مستحقات الإجازة.<br>
+                    3- يجب تسليم طلب التعديل أو الإلغاء لإدارة الموارد البشرية والتطوير الاداري قبل الشروع بالقيام بالإجازة بوقت كاف .<br>
+                    4- عند تمديد الإجازة يجب مراجعة قسم الإجازات والدوام لمعرفة الرصيد المستحق قبل إعتماد طلب التمديد ويسلم كذلك قبل انتهاء مدة الإجازة وعدا ذلك تعتبر المدة إنقطاع عن العمل طبقاً لنص المادة (81) من قانون ونظام الخدمة المدنية لسنة 1979م .<br>
+                    5- يجب على مقدم الطلب تعبئة بياناته الوظيفية كاملة .
+                </div>
+            `;
+        }
+
+        // تذييل الصفحة (المربعات السفلية) المشترك بين النماذج
+        const footerHTML = `
+            <div style="margin-top:10px;">
+                <table class="footer-table">
+                    <tr>
+                        <td>سجلت ببطاقة الإجازات<br><br><span style="font-weight:normal; font-size:12px;">الموظف المسئول : ............................</span></td>
+                        <td>تمت الإضافة بالنظام المتكامل<br><br><span style="font-weight:normal; font-size:12px;">الموظف المسئول : ............................</span></td>
+                        <td>سجلت بالبصمة (SAP)<br><br><span style="font-weight:normal; font-size:12px;">الموظف المسئول : ............................</span></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; font-size:12px;">
+                <span>النسخة الأولى : للإدارة المالية</span>
+                <span>النسخة الثانية : للملفات</span>
+                <span>النسخة الثالثة : للإدارة التابع لها مقدم الطلب</span>
+            </div>
+        `;
+
+        const area = document.getElementById('printArea'); 
+        document.getElementById('mainContainer').style.display = 'none';
+        
+        area.innerHTML = `
+            <div class="official-form">
+                ${headerHTML}
+                <h2 class="form-title">${formTitle}</h2>
+                ${bodyHTML}
+                ${footerHTML}
+                ${rulesHTML}
+            </div>
+        `;
+        
+        setTimeout(() => { 
+            window.print(); 
+            area.innerHTML = ''; 
+            document.getElementById('mainContainer').style.display = 'block'; 
+        }, 500);
     }
 };
 
@@ -1206,3 +1637,4 @@ window.onload = App.init;
 </script>
 </body>
 </html>
+
