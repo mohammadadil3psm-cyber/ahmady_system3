@@ -540,7 +540,7 @@
         </div>
         
         <input type="hidden" id="compReqId">
-        <div style="display:flex; gap:8px; margin-top:20px; flex-wrap:wrap; justify-content:center;" id="modalActionButtons"></div>
+        <div style="display:flex; gap:8px; margin-top:20px; flex-direction:column; justify-content:center;" id="modalActionButtons"></div>
     </div>
 </div>
 
@@ -996,14 +996,14 @@ const App = {
         if (leaves.length === 0) { document.getElementById('hrReqsView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد إجازات جديد حالياً.</div>'; } 
         else { document.getElementById('hrReqsView').innerHTML = leaves.map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {}; const sub = r.subId === '0000' ? {name:'بمفرده'} : App.db.users.find(u => u.id === r.subId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--primary);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--primary);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-hashtag"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>النوع (البديل):</span> <strong>${r.type} (${sub.name})</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn btn-primary" style="flex:1;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> الاعتماد</button><button class="btn btn-print" style="flex:1;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج</button></div></div>`;
         }).join(''); }
 
         const returns = allPending.filter(r => r.id.startsWith('RET'));
         if (returns.length === 0) { document.getElementById('hrReturnsPendingView').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:13px;">لا يوجد وارد مباشرة أو قطع حالياً.</div>'; } 
         else { document.getElementById('hrReturnsPendingView').innerHTML = returns.map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><button class="btn btn-danger" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> التفاصيل والاعتماد</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title"><i class="fas fa-undo"></i> ${r.id}</span></div><div class="data-card-body"><p><span>الاسم (الملف):</span> <strong>${emp.name} (${emp.file})</strong></p><p><span>الإجراء المطلوب:</span> <strong>${r.type}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn btn-danger" style="flex:1;" onclick="App.openDetails('${r.id}')"><i class="fas fa-stamp"></i> الاعتماد</button><button class="btn btn-print" style="flex:1;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج</button></div></div>`;
         }).join(''); }
 
         const emps = App.db.users.filter(u => u.role === 'emp');
@@ -1039,7 +1039,7 @@ const App = {
         
         document.getElementById('hrALTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>الفترة:</span> <strong style="direction:rtl;">من ${r.start} إلى ${r.end}</strong></p></div><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn btn-print-outline" style="flex:1;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل</button><button class="btn btn-print" style="flex:1;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج</button></div></div>`;
         }).join('');
     },
 
@@ -1069,7 +1069,7 @@ const App = {
         
         document.getElementById('hrARTbody').innerHTML = reqs.reverse().map(r => {
             const emp = App.db.users.find(u => u.id === r.empId) || {};
-            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><button class="btn btn-print-outline" style="margin-top:10px;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل الكاملة</button></div>`;
+            return `<div class="data-card" style="border-right:3px solid var(--danger);"><div class="data-card-header"><span class="data-card-title">${r.type}</span> <span class="badge status-${r.stage}">${r.status}</span></div><div class="data-card-body"><p><span>الموظف:</span> <strong>${emp.name || '--'}</strong></p><p><span>رقم الطلب:</span> <strong>${r.id}</strong></p><p><span>تاريخ التنفيذ:</span> <strong style="direction:rtl;">${r.start}</strong></p></div><div style="display:flex; gap:8px; margin-top:10px;"><button class="btn btn-print-outline" style="flex:1;" onclick="App.openDetails('${r.id}')"><i class="fas fa-eye"></i> التفاصيل</button><button class="btn btn-print" style="flex:1;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج</button></div></div>`;
         }).join('');
     },
 
@@ -1112,10 +1112,10 @@ const App = {
         
         let btns = '';
         if(App.curr.role === 'hr' && r.stage === 2) {
-            btns = `<button class="btn btn-primary" style="flex:1;" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')"><i class="fas fa-check"></i> اعتماد لشؤون العاملين</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من شؤون العاملين')"><i class="fas fa-times"></i> رفض الطلب</button>`;
+            btns = `<div style="display:flex; width:100%; gap:8px; margin-bottom:10px;"><button class="btn btn-primary" style="flex:1;" onclick="App.actionReq('${r.id}', 3, 'معتمد شؤون - بانتظار الثقافي')"><i class="fas fa-check"></i> اعتماد لشؤون العاملين</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض من شؤون العاملين')"><i class="fas fa-times"></i> رفض الطلب</button></div><button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي</button>`;
         } else if(App.curr.role === 'cultural' && r.stage === 3) {
-            btns = `<button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد نهائي (الثقافي)</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button>`;
-        } else if(r.stage === 4) {
+            btns = `<div style="display:flex; width:100%; gap:8px; margin-bottom:10px;"><button class="btn btn-success" style="flex:1;" onclick="App.actionReq('${r.id}', 4, 'معتمد نهائياً')"><i class="fas fa-stamp"></i> اعتماد نهائي (الثقافي)</button><button class="btn btn-danger" style="flex:1;" onclick="App.actionReq('${r.id}', 0, 'مرفوض ثقافياً')"><i class="fas fa-times"></i> رفض الطلب</button></div><button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي</button>`;
+        } else {
             btns = `<button class="btn btn-print" style="width:100%;" onclick="App.printTicket('${r.id}')"><i class="fas fa-print"></i> طباعة النموذج الرسمي المعتمد</button>`;
         }
         
@@ -1228,8 +1228,8 @@ const App = {
                             <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
                         </tr>
                         <tr>
-                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
-                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''} - عقد ${emp.contract || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>${emp.contract || '........................................'}</strong></td>
                         </tr>
                         <tr>
                             <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
@@ -1295,8 +1295,8 @@ const App = {
                             <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
                         </tr>
                         <tr>
-                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
-                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''} - عقد ${emp.contract || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>${emp.contract || '........................................'}</strong></td>
                         </tr>
                         <tr>
                             <td colspan="2">مقر العمل : <strong>${emp.place || ''}</strong></td>
@@ -1365,8 +1365,8 @@ const App = {
                             <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
                         </tr>
                         <tr>
-                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
-                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''} - عقد ${emp.contract || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>${emp.contract || '........................................'}</strong></td>
                         </tr>
                         <tr>
                             <td colspan="2">مقر العمل : <strong>${emp.place || ''}</strong></td>
@@ -1438,8 +1438,8 @@ const App = {
                             <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
                         </tr>
                         <tr>
-                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
-                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''} - عقد ${emp.contract || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>${emp.contract || '........................................'}</strong></td>
                         </tr>
                         <tr>
                             <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
@@ -1524,8 +1524,8 @@ const App = {
                             <td style="width:50%;">الجنسيــــــــــــة : <strong>${emp.nationality || ''}</strong></td>
                         </tr>
                         <tr>
-                            <td>الوظيفـــــة : <strong>${emp.job || ''}</strong></td>
-                            <td>الدرجة والمجموعة : <strong>........................................</strong></td>
+                            <td>الوظيفـــــة : <strong>${emp.job || ''} - عقد ${emp.contract || ''}</strong></td>
+                            <td>الدرجة والمجموعة : <strong>${emp.contract || '........................................'}</strong></td>
                         </tr>
                         <tr>
                             <td>مقر العمل : <strong>${emp.place || ''}</strong></td>
@@ -1637,4 +1637,3 @@ window.onload = App.init;
 </script>
 </body>
 </html>
-
